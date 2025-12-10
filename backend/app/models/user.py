@@ -1,7 +1,8 @@
 import uuid
-from sqlmodel import SQLModel, Field
-from pydantic import EmailStr
 from datetime import datetime, timezone
+
+from pydantic import EmailStr
+from sqlmodel import Field, SQLModel
 
 
 # Shared properties
@@ -30,6 +31,8 @@ class UserRegister(SQLModel):
 
 class UserPublic(UserBase):
     id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
 
 
 class UsersPublic(SQLModel):

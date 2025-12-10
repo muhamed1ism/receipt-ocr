@@ -2,7 +2,7 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import col, delete, func, select
+from sqlmodel import func, select
 
 from app import crud
 from app.api.deps import (
@@ -43,8 +43,9 @@ def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
 
     statement = select(User).offset(skip).limit(limit)
     users = session.exec(statement).all()
+    pub_users = [UserPublic.model_validate(u) for u in users]
 
-    return UsersPublic(data=users, count=count)
+    return UsersPublic(data=pub_users, count=count)
 
 
 @router.post(

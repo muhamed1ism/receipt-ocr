@@ -1,6 +1,7 @@
 import uuid
-from sqlmodel import SQLModel, Field
 from datetime import datetime, timezone
+
+from sqlmodel import Field, SQLModel
 
 
 class ReceiptDetailsBase(SQLModel):
