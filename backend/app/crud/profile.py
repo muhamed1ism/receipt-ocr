@@ -1,8 +1,10 @@
+import uuid
 from typing import Any
 
-from sqlmodel import Session, select
+from sqlmodel import Session, func, select
 
-from app.models import Profile, ProfileCreate, ProfileUpdate
+from app.models import Profile, ProfileCreate, ProfileUpdate, ProfileUpdateMe
+from app.models.profile import ProfilePublic, ProfilesPublic
 
 
 def create_profile(*, session: Session, profile_create: ProfileCreate) -> Profile:
@@ -19,9 +21,9 @@ def update_profile(
     *,
     session: Session,
     db_profile: Profile,
-    profile_in: ProfileUpdate,
+    profile_update: ProfileUpdate | ProfileUpdateMe,
 ) -> Any:
-    profile_data = profile_in.model_dump(exclude_unset=True)
+    profile_data = profile_update.model_dump(exclude_unset=True)
     extra_data = {}
 
     db_profile.sqlmodel_update(profile_data, update=extra_data)
@@ -31,6 +33,17 @@ def update_profile(
     return db_profile
 
 
-def get_profile_by_user_id(*, session: Session, user_id: str) -> Profile | None:
+def get_all_profiles(*, session: Session, skip: int = 0, limit: int = 100) -> Any:
+    count_statement = select(func.count()).select_from(Profile)
+    count = session.exec(count_statement).one()
+
+    statement = select(Profile).offset(skip).limit(limit)
+    profiles = session.exec(statement).all()
+    pub_profiles = [ProfilePublic.model_validate(u) for u in profiles]
+
+    return ProfilesPublic(data=pub_profiles, count=count)
+
+
+def get_profile_by_user_id(*, session: Session, user_id: uuid.UUID) -> Profile | None:
     statement = select(Profile).where(user_id == Profile.user_id)
     return session.exec(statement).first()

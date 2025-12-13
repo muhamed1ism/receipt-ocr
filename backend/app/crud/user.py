@@ -1,9 +1,9 @@
-from typing import Any
-
 from sqlmodel import Session, select
 
 from app.core.security import get_password_hash, verify_password
 from app.models import User, UserCreate, UserUpdate
+from app.models.common import Message
+from app.models.user import UserUpdateMe
 
 
 def create_user(*, session: Session, user_create: UserCreate) -> User:
@@ -17,7 +17,7 @@ def create_user(*, session: Session, user_create: UserCreate) -> User:
     return db_obj
 
 
-def update_user(*, session: Session, db_user: User, user_in: UserUpdate) -> Any:
+def update_user(*, session: Session, db_user: User, user_in: UserUpdate) -> User:
     user_data = user_in.model_dump(exclude_unset=True)
     extra_data = {}
 
@@ -30,6 +30,27 @@ def update_user(*, session: Session, db_user: User, user_in: UserUpdate) -> Any:
     session.commit()
     session.refresh(db_user)
     return db_user
+
+
+def update_user_me(
+    *, session: Session, user_update: UserUpdateMe, my_user: User
+) -> User:
+    user_data = user_update.model_dump(exclude_unset=True)
+    my_user.sqlmodel_update(user_data)
+    session.add(my_user)
+    session.commit()
+    session.refresh(my_user)
+    return my_user
+
+
+def update_password_me(
+    *, session: Session, new_password: str, my_user: User
+) -> Message:
+    hashed_password = get_password_hash(new_password)
+    my_user.hashed_password = hashed_password
+    session.add(my_user)
+    session.commit()
+    return Message(message="Password updated successfully")
 
 
 def get_user_by_email(*, session: Session, email: str) -> User | None:

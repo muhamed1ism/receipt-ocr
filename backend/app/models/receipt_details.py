@@ -21,17 +21,12 @@ class ReceiptDetails(ReceiptDetailsBase, table=True):
 
 
 class ReceiptDetailsCreate(ReceiptDetailsBase):
-    pass
+    receipt_id: uuid.UUID
 
 
 class ReceiptDetailsPublic(ReceiptDetailsBase):
     id: uuid.UUID
     receipt_id: uuid.UUID
-
-
-class ReceiptDetailssPublic(SQLModel):
-    data: list[ReceiptDetailsPublic]
-    count: int
 
 
 class ReceiptDetailsUpdate(SQLModel):
