@@ -1,15 +1,20 @@
 from sqlmodel import Session, func, select
 
-from app.models import Store, StoreCreate, StorePublic, StoresPublic, StoreUpdate
+from app.models import Store, StoreCreate, StorePublic, StoresPublic, StoreUpdate, StoreReceiptIn
 
 
-def create_store(*, session: Session, store_create: StoreCreate) -> Store:
+def get_or_create_store(*, session: Session, store_data: StoreCreate | StoreReceiptIn) -> Store:
+    store = session.exec(
+        select(Store).where(Store.name == store_data.name)
+    ).one()
+    if store:
+        return store
+
     db_obj = Store.model_validate(
-        store_create,
+        store_data,
     )
     session.add(db_obj)
-    session.commit()
-    session.refresh(db_obj)
+    session.flush()
     return db_obj
 
 

@@ -3,24 +3,30 @@ from typing import Any
 
 from sqlmodel import Session
 
+from app.crud.product import get_or_create_product
 from app.models import ReceiptItem, ReceiptItemCreate, ReceiptItemUpdate
 
 
 def create_receipt_item(
     *,
     session: Session,
-    receipt_item_create: ReceiptItemCreate,
-    receipt_id: uuid.UUID,
+    receipt_item_data: ReceiptItemCreate,
+    receipt_id: uuid.UUID | None,
 ) -> ReceiptItem:
-    receipt_item_data = receipt_item_create.model_copy(
-        update={"receipt_id": receipt_id}
+    product = get_or_create_product(session=session, product_data=receipt_item_data.product)
+
+    receipt_item_create = receipt_item_data.model_dump(
+        exclude={
+            "product",
+        }
     )
-    db_obj = ReceiptItem.model_validate(
-        receipt_item_data,
+    db_obj = ReceiptItem(
+        **receipt_item_create,
+        receipt_id=receipt_id,
+        product_id=product.id,
     )
     session.add(db_obj)
-    session.commit()
-    session.refresh(db_obj)
+    session.flush()
     return db_obj
 
 

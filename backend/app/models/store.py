@@ -6,8 +6,6 @@ from sqlmodel import Field, SQLModel
 
 class StoreBase(SQLModel):
     name: str = Field(max_length=100)
-    address: str | None = Field(default=None, max_length=255)
-    city: str | None = Field(default=None, max_length=100)
     jib: str | None = Field(default=None, max_length=50)
     pib: str | None = Field(default=None, max_length=50)
 
@@ -22,6 +20,10 @@ class StoreCreate(StoreBase):
     pass
 
 
+class StoreReceiptIn(StoreBase):
+    pass
+
+
 class StorePublic(StoreBase):
     id: uuid.UUID
 
@@ -33,8 +35,6 @@ class StoresPublic(SQLModel):
 
 class StoreUpdate(SQLModel):
     name: str | None = Field(default=None, max_length=100)
-    address: str | None = Field(default=None, max_length=255)
-    city: str | None = Field(default=None, max_length=100)
     jib: str | None = Field(default=None, max_length=50)
     pib: str | None = Field(default=None, max_length=50)
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

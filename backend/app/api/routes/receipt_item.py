@@ -76,7 +76,7 @@ def create_receipt_details(
 
     receipt_item = crud.create_receipt_item(
         session=session,
-        receipt_item_create=receipt_item_in,
+        receipt_item_data=receipt_item_in,
         receipt_id=receipt_id,
     )
 

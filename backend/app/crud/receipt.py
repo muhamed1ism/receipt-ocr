@@ -2,19 +2,43 @@ import uuid
 
 from sqlmodel import Session, func, select
 
+from app.crud import get_or_create_store, create_receipt_item
+from app.crud.branch import get_or_create_branch
 from app.models import Receipt, ReceiptCreate, ReceiptUpdate
 from app.models.receipt import ReceiptPublic, ReceiptsPublic
 from app.models.user import User
 
 
-def create_receipt(*, session: Session, receipt_create: ReceiptCreate) -> Receipt:
-    db_obj = Receipt.model_validate(
-        receipt_create,
-    )
-    session.add(db_obj)
-    session.commit()
-    session.refresh(db_obj)
-    return db_obj
+def create_receipt(*, session: Session, receipt_data: ReceiptCreate, user_id: uuid.UUID) -> Receipt:
+    with session.begin():
+        store = get_or_create_store(session=session, store_data=receipt_data.store)
+        branch = get_or_create_branch(session=session, branch_data=receipt_data.branch, store_id=store.id)
+
+
+        receipt_create = receipt_data.model_dump(
+            exclude={
+                "store",
+                "branch",
+                "items",
+            }
+        )
+
+        receipt = Receipt(
+            **receipt_create,
+            user_id=user_id,
+            branch_id=branch.id,
+        )
+
+        session.add(receipt)
+        session.flush()
+
+        created_items = []
+        for item in receipt_data.items:
+            db_item = create_receipt_item(session=session, receipt_item_data=item, receipt_id=receipt.id)
+            created_items.append(db_item)
+
+        receipt.items = created_items
+        return receipt
 
 
 def update_receipt(

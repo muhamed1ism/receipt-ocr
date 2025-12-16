@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 from sqlmodel import Field, Relationship, SQLModel
 
-from app.models.receipt import Receipt
+from app.models import Receipt
 
 
 class ReceiptItemBase(SQLModel):
@@ -14,7 +14,7 @@ class ReceiptItemBase(SQLModel):
 
 
 class ReceiptItem(ReceiptItemBase, table=True):
-    id: uuid.UUID = Field(primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     receipt_id: uuid.UUID = Field(
         foreign_key="receipt.id", nullable=False, ondelete="CASCADE"
     )
@@ -25,8 +25,10 @@ class ReceiptItem(ReceiptItemBase, table=True):
 
 
 class ReceiptItemCreate(ReceiptItemBase):
-    receipt_id: uuid.UUID
+    pass
 
+class ReceiptItemReceiptIn(ReceiptItemBase):
+    pass
 
 class ReceiptItemPublic(ReceiptItemBase):
     id: uuid.UUID

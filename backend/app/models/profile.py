@@ -4,6 +4,8 @@ from datetime import date, datetime, timezone
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlmodel import Field, SQLModel
 
+from app.enums import CurrencyEnum
+
 
 class ProfileBase(SQLModel):
     first_name: str = Field(max_length=100)
@@ -13,6 +15,7 @@ class ProfileBase(SQLModel):
     country: str | None = Field(default=None, max_length=100)
     address: str | None = Field(default=None, max_length=255)
     city: str | None = Field(default=None, max_length=100)
+    currency_preference: CurrencyEnum = Field(default=CurrencyEnum.BAM)
 
 
 class Profile(ProfileBase, table=True):
@@ -46,4 +49,5 @@ class ProfileUpdate(SQLModel):
     country: str | None = Field(default=None, max_length=100)
     address: str | None = Field(default=None, max_length=255)
     city: str | None = Field(default=None, max_length=100)
+    currency_preference: str | None = Field(default=None)
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

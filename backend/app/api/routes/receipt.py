@@ -67,8 +67,7 @@ def create_receipt(
     """
     Create my new receipt.
     """
-    receipt_data = receipt_in.model_copy(update={"user_id": current_user.id})
-    receipt = crud.create_receipt(session=session, receipt_create=receipt_data)
+    receipt = crud.create_receipt(session=session, receipt_data=receipt_in, user_id=current_user.id)
     return ReceiptPublic.model_validate(receipt)
 
 

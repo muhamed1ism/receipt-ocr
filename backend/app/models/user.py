@@ -48,5 +48,4 @@ class UserUpdate(UserBase):
 
 class UserUpdateMe(SQLModel):
     email: EmailStr | None = Field(default=None, max_length=255)
-    password: str | None = Field(default=None, min_length=8, max_length=128)
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
