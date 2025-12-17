@@ -1,6 +1,7 @@
 from sqlmodel import Session, func, select
 
-from app.models import Store, StoreCreate, StorePublic, StoresPublic, StoreUpdate, StoreReceiptIn
+from app.models import Store
+from app.schemas import StoreCreate, StoreReceiptIn, StorePublic, StoresPublic, StoreUpdate
 
 
 def get_or_create_store(*, session: Session, store_data: StoreCreate | StoreReceiptIn) -> Store:
@@ -10,12 +11,13 @@ def get_or_create_store(*, session: Session, store_data: StoreCreate | StoreRece
     if store:
         return store
 
-    db_obj = Store.model_validate(
+    new_store = Store.model_validate(
         store_data,
     )
-    session.add(db_obj)
-    session.flush()
-    return db_obj
+    session.add(new_store)
+    session.commit()
+    session.refresh(new_store)
+    return new_store
 
 
 def update_store(

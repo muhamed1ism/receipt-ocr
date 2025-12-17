@@ -3,8 +3,8 @@ from typing import Any
 
 from sqlmodel import Session, func, select
 
-from app.models import Profile, ProfileCreate, ProfileUpdate, ProfileUpdateMe
-from app.models.profile import ProfilePublic, ProfilesPublic
+from app.models import Profile
+from app.schemas import ProfileCreate, ProfilePublic, ProfilesPublic, ProfileUpdate
 
 
 def create_profile(*, session: Session, profile_create: ProfileCreate) -> Profile:
@@ -21,7 +21,7 @@ def update_profile(
     *,
     session: Session,
     db_profile: Profile,
-    profile_update: ProfileUpdate | ProfileUpdateMe,
+    profile_update: ProfileUpdate,
 ) -> Any:
     profile_data = profile_update.model_dump(exclude_unset=True)
     extra_data = {}

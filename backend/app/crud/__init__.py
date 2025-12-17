@@ -1,3 +1,4 @@
+from .branch import *
 from .profile import *
 from .receipt import *
 from .receipt_details import *

@@ -4,7 +4,8 @@ from typing import Any
 from sqlmodel import Session
 
 from app.crud.product import get_or_create_product
-from app.models import ReceiptItem, ReceiptItemCreate, ReceiptItemUpdate
+from app.models import ReceiptItem
+from app.schemas import ReceiptItemCreate, ReceiptItemUpdate
 
 
 def create_receipt_item(

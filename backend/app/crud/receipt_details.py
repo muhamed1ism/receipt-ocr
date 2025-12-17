@@ -3,30 +3,32 @@ from typing import Any
 
 from sqlmodel import Session, select
 
-from app.models import (
-    ReceiptDetails,
-    ReceiptDetailsCreate,
-    ReceiptDetailsUpdate,
-)
+from app.models import ReceiptDetails
+from app.schemas import ReceiptDetailsCreate, ReceiptDetailsUpdate, ReceiptDetailsReceiptIn
 
-
-def create_receipt_details(
-    *,
-    session: Session,
-    receipt_details_create: ReceiptDetailsCreate,
-    receipt_id: uuid.UUID,
+def get_or_create_receipt_details(
+        *,
+        session: Session,
+        receipt_details_data: ReceiptDetailsCreate | ReceiptDetailsReceiptIn,
+        receipt_id
 ) -> ReceiptDetails:
-    receipt_details_data = receipt_details_create.model_copy(
-        update={"receipt_id": receipt_id}
-    )
+        details = session.exec(
+            select(ReceiptDetails).where(ReceiptDetails.receipt_id == receipt_id)
+        ).first()
+        if details:
+            return details
 
-    db_obj = ReceiptDetails.model_validate(
-        receipt_details_data,
-    )
-    session.add(db_obj)
-    session.commit()
-    session.refresh(db_obj)
-    return db_obj
+        receipt_details_create = receipt_details_data.model_copy(
+            update={"receipt_id": receipt_id}
+        )
+
+        new_details = ReceiptDetails.model_validate(
+            receipt_details_create,
+        )
+        session.add(new_details)
+        session.commit()
+        session.refresh(new_details)
+        return new_details
 
 
 def update_receipt_details(

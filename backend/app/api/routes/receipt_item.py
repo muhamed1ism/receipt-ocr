@@ -4,14 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app import crud
 from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
-from app.models import (
-    Receipt,
-    ReceiptItemCreate,
-    ReceiptItemPublic,
-    ReceiptItemsPublic,
-    ReceiptItemUpdate,
-)
-from app.models.receipt_item import ReceiptItem
+from app.models import Receipt, ReceiptItem
+from app.schemas import ReceiptItemCreate, ReceiptItemPublic, ReceiptItemsPublic, ReceiptItemUpdate
 
 router = APIRouter(prefix="/receipt_item", tags=["receipt_item"])
 

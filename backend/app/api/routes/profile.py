@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app import crud
 from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
-from app.models import (
+from app.schemas import (
     ProfileCreate,
     ProfilePublic,
     ProfilesPublic,

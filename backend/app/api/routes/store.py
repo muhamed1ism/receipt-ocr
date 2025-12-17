@@ -4,9 +4,8 @@ from fastapi import APIRouter, HTTPException, status
 
 from app import crud
 from app.api.deps import SessionDep
-from app.models import Store, StorePublic, StoresPublic
-from app.models.receipt import Receipt
-from app.models.store import StoreCreate
+from app.models import Store, Receipt
+from app.schemas import StoreCreate, StorePublic, StoresPublic
 
 router = APIRouter(prefix="/store", tags=["store"])
 

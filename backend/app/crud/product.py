@@ -1,6 +1,7 @@
 from sqlmodel import Session, select
 
-from app.models import ProductCreate, Product, ProductReceiptItemIn
+from app.models import Product
+from app.schemas import ProductCreate, ProductReceiptItemIn
 
 
 def get_or_create_product(*, session: Session, product_data: ProductCreate | ProductReceiptItemIn) -> Product:

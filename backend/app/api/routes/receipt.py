@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app import crud
 from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
-from app.models import (
+from app.crud import get_or_create_store, get_or_create_branch, get_or_create_receipt_details, create_receipt_item
+from app.schemas import (
     ReceiptCreate,
     ReceiptPublic,
     ReceiptsPublic,
@@ -67,8 +68,25 @@ def create_receipt(
     """
     Create my new receipt.
     """
-    receipt = crud.create_receipt(session=session, receipt_data=receipt_in, user_id=current_user.id)
-    return ReceiptPublic.model_validate(receipt)
+    store = get_or_create_store(session=session, store_data=receipt_in.store)
+    branch = get_or_create_branch(session=session, branch_data=receipt_in.branch, store_id=store.id)
+    get_or_create_receipt_details(
+        session=session,
+        receipt_details_data=receipt_in.details,
+        receipt_id=receipt_in.id
+    )
+    new_receipt = crud.create_receipt(
+        session=session,
+        receipt_data=receipt_in,
+        user_id=current_user.id,
+        branch_id=branch.id,
+    )
+
+    created_items = []
+    for item in receipt_in.items:
+        db_item = create_receipt_item(session=session, receipt_item_data=item, receipt_id=new_receipt.id)
+        created_items.append(db_item)
+    return ReceiptPublic.model_validate(new_receipt)
 
 
 @router.patch(
@@ -80,7 +98,7 @@ def update_receipt(
     *, session: SessionDep, receipt_in: ReceiptUpdate, receipt_id: uuid.UUID
 ) -> ReceiptPublic:
     """
-    Update user receipt with receipt_id.
+    Update the user receipt with receipt_id.
     """
 
     receipt = crud.get_receipt_by_id(session=session, receipt_id=receipt_id)
