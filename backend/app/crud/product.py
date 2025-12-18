@@ -5,17 +5,18 @@ from app.schemas import ProductCreate, ProductReceiptItemIn
 
 
 def get_or_create_product(*, session: Session, product_data: ProductCreate | ProductReceiptItemIn) -> Product:
+    print({'PRODUCT': product_data})
     product = session.exec(
         select(Product).where(
             Product.name == product_data.name,
             Product.brand == product_data.brand,
         )
-    ).first()
+    ).one_or_none()
 
     if product:
         return product
 
-    db_obj = Product.model_validate(product_data)
-    session.add(db_obj)
+    new_product = Product.model_validate(product_data)
+    session.add(new_product)
     session.flush()
-    return db_obj
+    return new_product

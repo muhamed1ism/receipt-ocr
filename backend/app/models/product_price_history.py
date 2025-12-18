@@ -15,7 +15,7 @@ class ProductPriceHistoryBase(SQLModel):
 class ProductPriceHistory(ProductPriceHistoryBase, table=True):
     id: uuid.UUID = Field(primary_key=True)
     receipt_item_id: uuid.UUID = Field(
-        foreign_key="receipt_item.id", nullable=False, ondelete="CASCADE"
+        foreign_key="receiptitem.id", nullable=False, ondelete="CASCADE"
     )
     product_id: uuid.UUID = Field(
         foreign_key="product.id", nullable=False, ondelete="CASCADE"

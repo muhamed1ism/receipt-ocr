@@ -68,18 +68,19 @@ def create_receipt(
     """
     Create my new receipt.
     """
+    print(receipt_in)
     store = get_or_create_store(session=session, store_data=receipt_in.store)
     branch = get_or_create_branch(session=session, branch_data=receipt_in.branch, store_id=store.id)
-    get_or_create_receipt_details(
-        session=session,
-        receipt_details_data=receipt_in.details,
-        receipt_id=receipt_in.id
-    )
     new_receipt = crud.create_receipt(
         session=session,
         receipt_data=receipt_in,
         user_id=current_user.id,
         branch_id=branch.id,
+    )
+    get_or_create_receipt_details(
+        session=session,
+        receipt_details_data=receipt_in.details,
+        receipt_id=new_receipt.id
     )
 
     created_items = []

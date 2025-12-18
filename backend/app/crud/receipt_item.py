@@ -5,7 +5,7 @@ from sqlmodel import Session
 
 from app.crud.product import get_or_create_product
 from app.models import ReceiptItem
-from app.schemas import ReceiptItemCreate, ReceiptItemUpdate
+from app.schemas import ReceiptItemCreate, ReceiptItemUpdate, ProductCreate
 
 
 def create_receipt_item(
@@ -14,7 +14,13 @@ def create_receipt_item(
     receipt_item_data: ReceiptItemCreate,
     receipt_id: uuid.UUID | None,
 ) -> ReceiptItem:
-    product = get_or_create_product(session=session, product_data=receipt_item_data.product)
+    product_data = ProductCreate(
+        name=receipt_item_data.name,
+    )
+    product = get_or_create_product(
+        session=session,
+        product_data=product_data
+    )
 
     receipt_item_create = receipt_item_data.model_dump(
         exclude={
@@ -27,7 +33,8 @@ def create_receipt_item(
         product_id=product.id,
     )
     session.add(db_obj)
-    session.flush()
+    session.commit()
+    session.refresh(db_obj)
     return db_obj
 
 
