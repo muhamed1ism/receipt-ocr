@@ -28,6 +28,7 @@ dependencies = [
     "pydantic-extra-types>=2.10.6",
     "phonenumbers>=9.0.20",
     "pyjwt>=2.10.1",
+    "uv>=0.9.18",
 ]
 
 [dependency-groups]

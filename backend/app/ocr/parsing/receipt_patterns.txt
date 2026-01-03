@@ -1,0 +1,31 @@
+
+=== TEST1 (first 8 lines) ===
+0: čaffe bar
+1: "RETRO'
+2: Ruđera Boskoviča 23, 21000 Split
+3: šAT Obrt ža ugostiteljstvo i prijevoz
+4: vl. Herbert Hrgovic
+5: Naživ čijena Kol. Iznos
+6: kava mlijeko VELIK 2,10 1,00 2,10
+7: ukupno (EUR) : 2,10
+WiFi line 22: WIFI:retro 1234
+
+=== TEST10 (first 8 lines) ===
+0: đomagojeva obala 11,210oo Split
+1: Vukovarska_11 lb,21000 Split
+2: METRO čOMMERčE đ.O.O.
+3: Naživ čijena Kol. Iznos
+4: kava š MLIJEKOM VE 2,40 1,00 2,40
+5: KAPUčINO 3,00 1,00 3,00
+6: JAMNIčA OKUšI 0,33 3,20 1,00 3,20
+7: ukupno (EUR): 8,60
+
+=== TEST11 (first 8 lines) ===
+0: đomagojeva obala 11,210oo Split
+1: Vukovarska 11 lb,21000 Split
+2: METRO čOMMERčE đ.0.0.
+3: Naživ čijena Kol. Iznos
+4: KAPUčINO 3,00 1,00 3,00
+5: LIMUNAđA 0.20 3,50 1,00 3,50
+6: ukupno (EUR): 6,50
+7: Nain plaanja : NOVčANIčE

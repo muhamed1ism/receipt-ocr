@@ -5,28 +5,30 @@ from sqlmodel import Session
 
 from app.crud.product import get_or_create_product
 from app.models import ReceiptItem
-from app.schemas import ReceiptItemCreate, ReceiptItemUpdate, ProductCreate
+from app.schemas import ProductCreate, ReceiptItemCreate, ReceiptItemUpdate
 
 
 def create_receipt_item(
     *,
     session: Session,
     receipt_item_data: ReceiptItemCreate,
-    receipt_id: uuid.UUID | None,
+    receipt_id: uuid.UUID,
 ) -> ReceiptItem:
     product_data = ProductCreate(
         name=receipt_item_data.name,
     )
-    product = get_or_create_product(
-        session=session,
-        product_data=product_data
-    )
+    product = get_or_create_product(session=session, product_data=product_data)
+
+    # if receipt has no unit price it should be equal to total price
+    if not receipt_item_data.price:
+        receipt_item_data.price = receipt_item_data.total_price
 
     receipt_item_create = receipt_item_data.model_dump(
         exclude={
             "product",
         }
     )
+
     db_obj = ReceiptItem(
         **receipt_item_create,
         receipt_id=receipt_id,

@@ -1,0 +1,64 @@
+# PaddleOCR Configuration for Croatian Receipt OCR
+# This configuration file defines optimal settings for processing Balkan (Croatian/Bosnian) receipts
+
+# ===== LANGUAGE SETTINGS =====
+# Croatian uses Latin script (a, b, c, č, ć, d, dž, đ, e, f, g, h, i, j, k, l, lj, m, n, nj, o, p, r, s, š, t, u, v, z, ž)
+lang: hr # Croatian language model with Latin character support
+
+# ===== OCR PIPELINE SETTINGS =====
+# Text detection model
+use_gpu: True # Auto-detected based on hardware availability (will use CPU if GPU not available)
+det_algorithm: DB # Default detection algorithm (Differentiable Binarization)
+det_model_dir: null # Use default PP-OCRv5 detection model
+
+# Text recognition model
+rec_algorithm: SVTR_LCNet # Default PP-OCRv5 recognition algorithm
+rec_model_dir: null # Use default PP-OCRv5 recognition model
+rec_char_dict_path: null # Use default character dictionary for Croatian/Latin
+
+# Character set for Croatian Latin script
+# Includes: A-Z, a-z, 0-9, and Croatian special characters (Č, Ć, Đ, Š, Ž, č, ć, đ, š, ž)
+# PaddleOCR's 'hr' model automatically includes these characters
+
+# ===== ORIENTATION & ROTATION =====
+# Receipt photos may be captured at various angles
+use_angle_cls: False # Deprecated - use use_textline_orientation instead
+use_textline_orientation: False # Disable text line orientation detection (receipts are typically upright after cropping)
+use_doc_orientation_classify: False # Disable document orientation (we handle rotation manually in preprocessing)
+use_doc_unwarping: False # Disable document unwarping (we handle perspective correction in cropper)
+
+# ===== PERFORMANCE SETTINGS =====
+enable_mkldnn: True # Enable Intel MKL-DNN acceleration for CPU inference
+precision: fp32 # Use FP32 precision (fp16 only available on GPU)
+
+# ===== TEXT DETECTION PARAMETERS =====
+det_limit_side_len: 1920 # Maximum side length for detection (increased for better small text detection)
+det_limit_type: max # Limit type: 'max' or 'min'
+
+# Detection post-processing - OPTIMIZED FOR THERMAL RECEIPTS
+det_db_thresh: 0.05 # Threshold for binarization (VERY LOW: 0.3 -> 0.1 for maximum sensitivity)
+det_db_box_thresh: 0.2 # Threshold for filtering text boxes (VERY LOW: 0.6 -> 0.3 to catch all boxes)
+det_db_unclip_ratio: 1.7 # Expand text box ratio (INCREASED: 1.5 -> 2.5 for maximum text capture)
+
+# ===== TEXT RECOGNITION PARAMETERS =====
+rec_batch_num: 6 # Batch size for recognition (increase for better GPU utilization)
+max_text_length: 50 # Maximum text length per line (INCREASED: 25 -> 50 for longer receipt lines)
+
+# Recognition image processing
+
+rec_image_shape: "3, 48, 320" # Input shape for recognition model (channels, height, width)
+
+# ===== OUTPUT SETTINGS =====
+show_log: True # Disable verbose logging for production
+save_log_path: ./paddleocr_logs/ # Log directory (only used if show_log=True)
+
+# ===== RECEIPT-SPECIFIC OPTIMIZATIONS =====
+# These settings are optimized for receipt OCR characteristics:
+# - Small, dense text (store names, items, prices)
+# - Tabular layout (columns for item, quantity, price)
+# - Mixed content (text + numbers + special characters)
+# - Croatian language context (Latin script with special characters)
+
+# Note: This configuration works with PaddleOCR v3.x (requires PaddlePaddle 3.0+)
+# For Croatian Latin character support, ensure the 'hr' language model is downloaded:
+#   paddleocr --lang hr --image_dir <test_image_path>

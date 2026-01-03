@@ -1,10 +1,23 @@
+from typing import Any
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlmodel import String
 
 from app import crud
-from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
-from app.crud import get_or_create_store, get_or_create_branch, get_or_create_receipt_details, create_receipt_item
+from app.api.deps import (
+    CurrentUser,
+    SessionDep,
+    get_current_active_superuser,
+    get_current_user,
+)
+from app.crud import (
+    create_receipt_item,
+    get_or_create_branch,
+    get_or_create_receipt_details,
+    get_or_create_store,
+)
+from app.models.receipt import Receipt
 from app.schemas import (
     ReceiptCreate,
     ReceiptPublic,
@@ -68,9 +81,10 @@ def create_receipt(
     """
     Create my new receipt.
     """
-    print(receipt_in)
     store = get_or_create_store(session=session, store_data=receipt_in.store)
-    branch = get_or_create_branch(session=session, branch_data=receipt_in.branch, store_id=store.id)
+    branch = get_or_create_branch(
+        session=session, branch_data=receipt_in.branch, store_id=store.id
+    )
     new_receipt = crud.create_receipt(
         session=session,
         receipt_data=receipt_in,
@@ -80,12 +94,14 @@ def create_receipt(
     get_or_create_receipt_details(
         session=session,
         receipt_details_data=receipt_in.details,
-        receipt_id=new_receipt.id
+        receipt_id=new_receipt.id,
     )
 
     created_items = []
     for item in receipt_in.items:
-        db_item = create_receipt_item(session=session, receipt_item_data=item, receipt_id=new_receipt.id)
+        db_item = create_receipt_item(
+            session=session, receipt_item_data=item, receipt_id=new_receipt.id
+        )
         created_items.append(db_item)
     return ReceiptPublic.model_validate(new_receipt)
 
@@ -112,3 +128,27 @@ def update_receipt(
         session=session, db_receipt=receipt, receipt_update=receipt_in
     )
     return ReceiptPublic.model_validate(new_receipt)
+
+
+@router.delete("/{receipt_id}", dependencies=[Depends(get_current_user)])
+def delete_receipt(
+    *, session: SessionDep, receipt_id: uuid.UUID, current_user: CurrentUser
+) -> Any:
+    receipt = session.get(Receipt, receipt_id)
+    if not receipt:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Receipt not found",
+        )
+
+    if receipt.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You're not authorized to delete this receipt",
+        )
+
+    session.delete(receipt)
+    session.commit()
+    session.refresh(receipt)
+
+    return "Receipt Deleted"
