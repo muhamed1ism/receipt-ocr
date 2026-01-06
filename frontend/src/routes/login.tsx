@@ -1,14 +1,14 @@
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   createFileRoute,
   Link as RouterLink,
   redirect,
-} from "@tanstack/react-router"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+} from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import type { Body_login_login_access_token as AccessToken } from "@/client"
-import { AuthLayout } from "@/components/Common/AuthLayout"
+import type { Body_login_login_access_token as AccessToken } from "@/client";
+import { AuthLayout } from "@/components/Common/AuthLayout";
 import {
   Form,
   FormControl,
@@ -16,11 +16,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { LoadingButton } from "@/components/ui/loading-button"
-import { PasswordInput } from "@/components/ui/password-input"
-import useAuth, { isLoggedIn } from "@/hooks/useAuth"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { PasswordInput } from "@/components/ui/password-input";
+import useAuth, { isLoggedIn } from "@/hooks/useAuth";
 
 const formSchema = z.object({
   username: z.email(),
@@ -28,9 +28,9 @@ const formSchema = z.object({
     .string()
     .min(1, { message: "Password is required" })
     .min(8, { message: "Password must be at least 8 characters" }),
-}) satisfies z.ZodType<AccessToken>
+}) satisfies z.ZodType<AccessToken>;
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
 export const Route = createFileRoute("/login")({
   component: Login,
@@ -38,13 +38,13 @@ export const Route = createFileRoute("/login")({
     if (isLoggedIn()) {
       throw redirect({
         to: "/",
-      })
+      });
     }
   },
-})
+});
 
 function Login() {
-  const { loginMutation } = useAuth()
+  const { loginMutation } = useAuth();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
@@ -53,16 +53,19 @@ function Login() {
       username: "",
       password: "",
     },
-  })
+  });
 
   const onSubmit = (data: FormData) => {
-    if (loginMutation.isPending) return
-    loginMutation.mutate(data)
-  }
-
+    if (loginMutation.isPending) return;
+    loginMutation.mutate(data);
+  };
 
   return (
     <AuthLayout>
+      <h1 className="block lg:hidden receipt-text uppercase text-4xl font-medium text-center mt-4 mb-20">
+        Troškomjer
+      </h1>
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -81,6 +84,7 @@ function Login() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
+                      className="border-0 border-b-2 rounded-none border-dashed border-foreground"
                       data-testid="email-input"
                       placeholder="user@example.com"
                       type="email"
@@ -99,32 +103,38 @@ function Login() {
                 <FormItem>
                   <div className="flex items-center">
                     <FormLabel>Password</FormLabel>
-                    <RouterLink
-                      to="/recover-password"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
-                    >
-                      Forgot your password?
-                    </RouterLink>
                   </div>
                   <FormControl>
                     <PasswordInput
+                      className="border-0 border-b-2 rounded-none border-dashed border-foreground"
                       data-testid="password-input"
                       placeholder="Password"
                       {...field}
                     />
                   </FormControl>
                   <FormMessage className="text-xs" />
+                  <RouterLink
+                    to="/recover-password"
+                    className="ml-auto text-sm underline-offset-4 hover:underline mt-2"
+                  >
+                    Forgot your password?
+                  </RouterLink>
                 </FormItem>
               )}
             />
 
-            <LoadingButton type="submit" loading={loginMutation.isPending}>
+            <LoadingButton
+              type="submit"
+              variant="outline"
+              className="border-0 hover:border-2 border-dashed border-foreground text-white bg-emerald-600 dark:bg-emerald-700"
+              loading={loginMutation.isPending}
+            >
               Log In
             </LoadingButton>
           </div>
 
           <div className="text-center text-sm">
-            Don't have an account yet?{" "}
+            Don't have an account yet? <br />
             <RouterLink to="/signup" className="underline underline-offset-4">
               Sign up
             </RouterLink>
@@ -132,5 +142,5 @@ function Login() {
         </form>
       </Form>
     </AuthLayout>
-  )
+  );
 }

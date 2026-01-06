@@ -1,12 +1,12 @@
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   createFileRoute,
   Link as RouterLink,
   redirect,
-} from "@tanstack/react-router"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { AuthLayout } from "@/components/Common/AuthLayout"
+} from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { AuthLayout } from "@/components/Common/AuthLayout";
 import {
   Form,
   FormControl,
@@ -14,11 +14,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { LoadingButton } from "@/components/ui/loading-button"
-import { PasswordInput } from "@/components/ui/password-input"
-import useAuth, { isLoggedIn } from "@/hooks/useAuth"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { PasswordInput } from "@/components/ui/password-input";
+import useAuth, { isLoggedIn } from "@/hooks/useAuth";
 
 const formSchema = z
   .object({
@@ -35,9 +35,9 @@ const formSchema = z
   .refine((data) => data.password === data.confirm_password, {
     message: "The passwords don't match",
     path: ["confirm_password"],
-  })
+  });
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
 export const Route = createFileRoute("/signup")({
   component: SignUp,
@@ -45,13 +45,13 @@ export const Route = createFileRoute("/signup")({
     if (isLoggedIn()) {
       throw redirect({
         to: "/",
-      })
+      });
     }
   },
-})
+});
 
 function SignUp() {
-  const { signUpMutation } = useAuth()
+  const { signUpMutation } = useAuth();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
@@ -62,15 +62,15 @@ function SignUp() {
       password: "",
       confirm_password: "",
     },
-  })
+  });
 
   const onSubmit = (data: FormData) => {
-    if (signUpMutation.isPending) return
+    if (signUpMutation.isPending) return;
 
     // exclude confirm_password from submission data
-    const { confirm_password: _confirm_password, ...submitData } = data
-    signUpMutation.mutate(submitData)
-  }
+    const { confirm_password: _confirm_password, ...submitData } = data;
+    signUpMutation.mutate(submitData);
+  };
 
   return (
     <AuthLayout>
@@ -95,6 +95,7 @@ function SignUp() {
                       data-testid="full-name-input"
                       placeholder="User"
                       type="text"
+                      className="border-0 border-b-2 rounded-none border-dashed border-foreground"
                       {...field}
                     />
                   </FormControl>
@@ -114,6 +115,7 @@ function SignUp() {
                       data-testid="email-input"
                       placeholder="user@example.com"
                       type="email"
+                      className="border-0 border-b-2 rounded-none border-dashed border-foreground"
                       {...field}
                     />
                   </FormControl>
@@ -132,6 +134,7 @@ function SignUp() {
                     <PasswordInput
                       data-testid="password-input"
                       placeholder="Password"
+                      className="border-0 border-b-2 rounded-none border-dashed border-foreground"
                       {...field}
                     />
                   </FormControl>
@@ -150,6 +153,7 @@ function SignUp() {
                     <PasswordInput
                       data-testid="confirm-password-input"
                       placeholder="Confirm Password"
+                      className="border-0 border-b-2 rounded-none border-dashed border-foreground"
                       {...field}
                     />
                   </FormControl>
@@ -160,15 +164,16 @@ function SignUp() {
 
             <LoadingButton
               type="submit"
-              className="w-full"
               loading={signUpMutation.isPending}
+              variant="outline"
+              className="border-0 hover:border-2 border-dashed border-foreground text-white bg-emerald-600 dark:bg-emerald-700"
             >
               Sign Up
             </LoadingButton>
           </div>
 
           <div className="text-center text-sm">
-            Already have an account?{" "}
+            Already have an account? <br />
             <RouterLink to="/login" className="underline underline-offset-4">
               Log in
             </RouterLink>
@@ -176,7 +181,7 @@ function SignUp() {
         </form>
       </Form>
     </AuthLayout>
-  )
+  );
 }
 
-export default SignUp
+export default SignUp;
