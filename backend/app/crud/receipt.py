@@ -1,17 +1,25 @@
 import uuid
+from collections.abc import Sequence
 
 from sqlmodel import Session, func, select
 
-from app.models import User, Receipt
-from app.schemas import ReceiptCreate, ReceiptUpdate, ReceiptPublic, ReceiptsPublic
+from app.models import Receipt, User
+from app.schemas import (
+    ReceiptCreate,
+    ReceiptPublic,
+    ReceiptPublicWithItems,
+    ReceiptsPublic,
+    ReceiptUpdate,
+)
+from app.schemas.receipt import ReceiptsPublicWithItems
 
 
 def create_receipt(
-        *,
-        session: Session,
-        receipt_data: ReceiptCreate,
-        user_id: uuid.UUID,
-        branch_id: uuid.UUID
+    *,
+    session: Session,
+    receipt_data: ReceiptCreate,
+    user_id: uuid.UUID,
+    branch_id: uuid.UUID,
 ) -> Receipt:
     receipt_create = receipt_data.model_dump(
         exclude={
@@ -68,15 +76,23 @@ def get_all_receipts(
 
 
 def get_my_receipts(
-    *, session: Session, skip: int = 0, limit: int = 0, my_user: User
-) -> ReceiptsPublic | None:
+    *,
+    session: Session,
+    skip: int = 0,
+    limit: int = 0,
+    my_user: User,
+) -> ReceiptsPublicWithItems | None:
     count_statement = (
         select(func.count()).select_from(Receipt).where(Receipt.user_id == my_user.id)
     )
     count = session.exec(count_statement).one()
 
-    statement = select(Receipt).offset(skip).limit(limit)
+    statement = (
+        select(Receipt).where(Receipt.user_id == my_user.id).offset(skip).limit(limit)
+    )
     receipts = session.exec(statement).all()
-    pub_receipts = [ReceiptPublic.model_validate(r) for r in receipts]
+    receipt_list: Sequence[ReceiptPublicWithItems] = [
+        ReceiptPublicWithItems.model_validate(r) for r in receipts
+    ]
 
-    return ReceiptsPublic(data=pub_receipts, count=count)
+    return ReceiptsPublicWithItems(data=receipt_list, count=count)

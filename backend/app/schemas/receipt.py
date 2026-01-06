@@ -1,13 +1,17 @@
 import uuid
+from collections.abc import Sequence
 from datetime import datetime, timezone
 
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field, SQLModel
 
 from app.enums import CurrencyEnum
-from app.models import ReceiptBase, ReceiptItem
+from app.models import ReceiptBase
 from app.schemas.branch import BranchReceiptIn
 from app.schemas.receipt_details import ReceiptDetailsReceiptIn
-from app.schemas.receipt_item import ReceiptItemCreate
+from app.schemas.receipt_item import (
+    ReceiptItemCreate,
+    ReceiptItemPublic,
+)
 from app.schemas.store import StoreReceiptIn
 
 
@@ -22,7 +26,15 @@ class ReceiptPublic(ReceiptBase):
     id: uuid.UUID
     created_at: datetime
     updated_at: datetime
-    items: list["ReceiptItem"] = []
+
+
+class ReceiptPublicWithItems(ReceiptPublic):
+    items: list[ReceiptItemPublic] = []
+
+
+class ReceiptsPublicWithItems(SQLModel):
+    data: Sequence[ReceiptPublicWithItems]
+    count: int
 
 
 class ReceiptsPublic(SQLModel):

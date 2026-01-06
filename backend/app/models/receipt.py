@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
+from sqlalchemy.orm import Mapped
 from sqlmodel import Field, Relationship, SQLModel
 
 from app.enums import CurrencyEnum
@@ -29,4 +30,7 @@ class Receipt(ReceiptBase, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-    items: list["ReceiptItem"] = Relationship(back_populates="receipt")
+    items: Mapped[list["ReceiptItem"]] = Relationship(
+        back_populates="receipt",
+        sa_relationship_kwargs={"lazy": "selectin"},
+    )

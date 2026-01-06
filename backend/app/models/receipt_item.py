@@ -1,11 +1,9 @@
 import uuid
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING
 
 from sqlmodel import Field, Relationship, SQLModel
 
-if TYPE_CHECKING:
-    from .receipt import Receipt
+from .receipt import Receipt
 
 
 class ReceiptItemBase(SQLModel):
@@ -26,4 +24,4 @@ class ReceiptItem(ReceiptItemBase, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-    receipt: "Receipt" = Relationship(back_populates="items")
+    receipt: Receipt | None = Relationship(back_populates="items")

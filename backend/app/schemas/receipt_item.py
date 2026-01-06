@@ -16,11 +16,11 @@ class ReceiptItemReceiptIn(ReceiptItemBase):
 
 class ReceiptItemPublic(ReceiptItemBase):
     id: uuid.UUID
-    receipt_id: uuid.UUID
+    # receipt_id: uuid.UUID
 
 
 class ReceiptItemsPublic(SQLModel):
-    data: list[ReceiptItemPublic]
+    data: list[ReceiptItemPublic] = []
     count: int
 
 

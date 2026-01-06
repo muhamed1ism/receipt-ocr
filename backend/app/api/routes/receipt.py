@@ -1,8 +1,7 @@
-from typing import Any
 import uuid
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import String
 
 from app import crud
 from app.api.deps import (
@@ -24,6 +23,7 @@ from app.schemas import (
     ReceiptsPublic,
     ReceiptUpdate,
 )
+from app.schemas.receipt import ReceiptsPublicWithItems
 
 router = APIRouter(prefix="/receipt", tags=["receipt"])
 
@@ -51,24 +51,27 @@ def read_receipts(
 
 @router.get(
     "/me",
-    response_model=ReceiptsPublic,
+    response_model=ReceiptsPublicWithItems,
 )
 def read_receipts_me(
-    session: SessionDep, current_user: CurrentUser, skip: int = 0, limit: int = 100
-) -> ReceiptsPublic | None:
+    session: SessionDep,
+    current_user: CurrentUser,
+    skip: int = 0,
+    limit: int = 100,
+) -> ReceiptsPublicWithItems | None:
     """
     Retrieve current user receipts.
     """
-    receipt = crud.get_my_receipts(
+    receipts = crud.get_my_receipts(
         session=session, skip=skip, limit=limit, my_user=current_user
     )
-    if not receipt:
+    if not receipts:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Receipt not found",
         )
 
-    return receipt
+    return receipts
 
 
 @router.post(

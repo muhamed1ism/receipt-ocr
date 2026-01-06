@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field, SQLModel
 
 from app.models import ReceiptDetailsBase
 
@@ -9,8 +9,10 @@ from app.models import ReceiptDetailsBase
 class ReceiptDetailsCreate(ReceiptDetailsBase):
     receipt_id: uuid.UUID
 
+
 class ReceiptDetailsReceiptIn(ReceiptDetailsBase):
     pass
+
 
 class ReceiptDetailsPublic(ReceiptDetailsBase):
     id: uuid.UUID
