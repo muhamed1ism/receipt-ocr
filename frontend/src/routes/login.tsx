@@ -81,10 +81,10 @@ function Login() {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="font-semibold">Email</FormLabel>
                   <FormControl>
                     <Input
-                      className="border-0 border-b-2 rounded-none border-dashed border-foreground"
+                      className=""
                       data-testid="email-input"
                       placeholder="user@example.com"
                       type="email"
@@ -102,11 +102,10 @@ function Login() {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center">
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel className="font-semibold">Password</FormLabel>
                   </div>
                   <FormControl>
                     <PasswordInput
-                      className="border-0 border-b-2 rounded-none border-dashed border-foreground"
                       data-testid="password-input"
                       placeholder="Password"
                       {...field}
@@ -125,8 +124,7 @@ function Login() {
 
             <LoadingButton
               type="submit"
-              variant="outline"
-              className="border-0 hover:border-2 border-dashed border-foreground text-white bg-emerald-600 dark:bg-emerald-700"
+              className="w-full"
               loading={loginMutation.isPending}
             >
               Log In

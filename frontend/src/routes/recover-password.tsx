@@ -1,15 +1,15 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import {
   createFileRoute,
   Link as RouterLink,
   redirect,
-} from "@tanstack/react-router"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+} from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { LoginService } from "@/client"
-import { AuthLayout } from "@/components/Common/AuthLayout"
+import { LoginService } from "@/client";
+import { AuthLayout } from "@/components/Common/AuthLayout";
 import {
   Form,
   FormControl,
@@ -17,18 +17,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { LoadingButton } from "@/components/ui/loading-button"
-import { isLoggedIn } from "@/hooks/useAuth"
-import useCustomToast from "@/hooks/useCustomToast"
-import { handleError } from "@/utils"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { isLoggedIn } from "@/hooks/useAuth";
+import useCustomToast from "@/hooks/useCustomToast";
+import { handleError } from "@/utils";
 
 const formSchema = z.object({
   email: z.email(),
-})
+});
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
 export const Route = createFileRoute("/recover-password")({
   component: RecoverPassword,
@@ -36,10 +36,10 @@ export const Route = createFileRoute("/recover-password")({
     if (isLoggedIn()) {
       throw redirect({
         to: "/",
-      })
+      });
     }
   },
-})
+});
 
 function RecoverPassword() {
   const form = useForm<FormData>({
@@ -47,28 +47,28 @@ function RecoverPassword() {
     defaultValues: {
       email: "",
     },
-  })
-  const { showSuccessToast, showErrorToast } = useCustomToast()
+  });
+  const { showSuccessToast, showErrorToast } = useCustomToast();
 
   const recoverPassword = async (data: FormData) => {
     await LoginService.recoverPassword({
       email: data.email,
-    })
-  }
+    });
+  };
 
   const mutation = useMutation({
     mutationFn: recoverPassword,
     onSuccess: () => {
-      showSuccessToast("Password recovery email sent successfully")
-      form.reset()
+      showSuccessToast("Password recovery email sent successfully");
+      form.reset();
     },
     onError: handleError.bind(showErrorToast),
-  })
+  });
 
   const onSubmit = async (data: FormData) => {
-    if (mutation.isPending) return
-    mutation.mutate(data)
-  }
+    if (mutation.isPending) return;
+    mutation.mutate(data);
+  };
 
   return (
     <AuthLayout>
@@ -87,7 +87,7 @@ function RecoverPassword() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="font-semibold">Email</FormLabel>
                   <FormControl>
                     <Input
                       data-testid="email-input"
@@ -112,12 +112,15 @@ function RecoverPassword() {
 
           <div className="text-center text-sm">
             Remember your password?{" "}
-            <RouterLink to="/login" className="underline underline-offset-4">
+            <RouterLink
+              to="/login"
+              className="underline underline-offset-4 font-semibold"
+            >
               Log in
             </RouterLink>
           </div>
         </form>
       </Form>
     </AuthLayout>
-  )
+  );
 }

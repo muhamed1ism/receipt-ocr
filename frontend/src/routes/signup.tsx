@@ -89,13 +89,12 @@ function SignUp() {
               name="full_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                  <FormLabel className="font-semibold">Full Name</FormLabel>
                   <FormControl>
                     <Input
                       data-testid="full-name-input"
                       placeholder="User"
                       type="text"
-                      className="border-0 border-b-2 rounded-none border-dashed border-foreground"
                       {...field}
                     />
                   </FormControl>
@@ -109,13 +108,12 @@ function SignUp() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="font-semibold">Email</FormLabel>
                   <FormControl>
                     <Input
                       data-testid="email-input"
                       placeholder="user@example.com"
                       type="email"
-                      className="border-0 border-b-2 rounded-none border-dashed border-foreground"
                       {...field}
                     />
                   </FormControl>
@@ -129,12 +127,11 @@ function SignUp() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="font-semibold">Password</FormLabel>
                   <FormControl>
                     <PasswordInput
                       data-testid="password-input"
                       placeholder="Password"
-                      className="border-0 border-b-2 rounded-none border-dashed border-foreground"
                       {...field}
                     />
                   </FormControl>
@@ -148,12 +145,13 @@ function SignUp() {
               name="confirm_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel className="font-semibold">
+                    Confirm Password
+                  </FormLabel>
                   <FormControl>
                     <PasswordInput
                       data-testid="confirm-password-input"
                       placeholder="Confirm Password"
-                      className="border-0 border-b-2 rounded-none border-dashed border-foreground"
                       {...field}
                     />
                   </FormControl>
@@ -165,8 +163,7 @@ function SignUp() {
             <LoadingButton
               type="submit"
               loading={signUpMutation.isPending}
-              variant="outline"
-              className="border-0 hover:border-2 border-dashed border-foreground text-white bg-emerald-600 dark:bg-emerald-700"
+              className="w-full mt-2"
             >
               Sign Up
             </LoadingButton>

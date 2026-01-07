@@ -1,19 +1,27 @@
-import { FaGithub, FaLinkedinIn } from "react-icons/fa"
-import { FaXTwitter } from "react-icons/fa6"
+import { FaGithub, FaLinkedinIn } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 const socialLinks = [
-  { icon: FaGithub, href: "https://github.com/fastapi/fastapi", label: "GitHub" },
+  {
+    icon: FaGithub,
+    href: "https://github.com/fastapi/fastapi",
+    label: "GitHub",
+  },
   { icon: FaXTwitter, href: "https://x.com/fastapi", label: "X" },
-  { icon: FaLinkedinIn, href: "https://linkedin.com/company/fastapi", label: "LinkedIn" },
-]
+  {
+    icon: FaLinkedinIn,
+    href: "https://linkedin.com/company/fastapi",
+    label: "LinkedIn",
+  },
+];
 
 export function Footer() {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="border-t-2 border-dashed border-foreground py-4 px-6">
       <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-        <p className="text-muted-foreground text-sm">
+        <p className="text-muted-foreground receipt-text text-sm">
           Troškomjer - {currentYear}
         </p>
         <div className="flex items-center gap-4">
@@ -32,5 +40,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
