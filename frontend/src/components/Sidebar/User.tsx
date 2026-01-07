@@ -1,7 +1,7 @@
-import { Link as RouterLink } from "@tanstack/react-router"
-import { ChevronsUpDown, LogOut, Settings } from "lucide-react"
+import { Link as RouterLink } from "@tanstack/react-router";
+import { ChevronsUpDown, LogOut, Settings } from "lucide-react";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,19 +9,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import useAuth from "@/hooks/useAuth"
-import { getInitials } from "@/utils"
+} from "@/components/ui/sidebar";
+import useAuth from "@/hooks/useAuth";
+import { getInitials } from "@/utils";
 
 interface UserInfoProps {
-  fullName?: string
-  email?: string
+  fullName?: string;
+  email?: string;
 }
 
 function UserInfo({ fullName, email }: UserInfoProps) {
@@ -37,40 +37,38 @@ function UserInfo({ fullName, email }: UserInfoProps) {
         <p className="text-xs text-muted-foreground truncate w-full">{email}</p>
       </div>
     </div>
-  )
+  );
 }
 
 export function User({ user }: { user: any }) {
-  const { logout } = useAuth()
-  const { isMobile, setOpenMobile } = useSidebar()
+  const { logout } = useAuth();
+  const { isMobile, setOpenMobile } = useSidebar();
+  const borderDashed =
+    "border-2 border-foreground/0 data-[state=open]:bg-sidebar-accent data-[state=open]:border-2 data-[state=open]:border-dashed data-[state=open]:border-foreground/30 hover:border-dashed hover:border-2 hover:border-foreground/10 data-[state=open]:text-sidebar-accent-foreground";
 
-  if (!user) return null
+  if (!user) return null;
 
   const handleMenuClick = () => {
     if (isMobile) {
-      setOpenMobile(false)
+      setOpenMobile(false);
     }
-  }
+  };
   const handleLogout = async () => {
-    logout()
-  }
+    logout();
+  };
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              data-testid="user-menu"
-            >
+            <SidebarMenuButton size="lg" data-testid="user-menu">
               <UserInfo fullName={user?.full_name} email={user?.email} />
               <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg receipt-text font-semibold"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -78,14 +76,14 @@ export function User({ user }: { user: any }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <UserInfo fullName={user?.full_name} email={user?.email} />
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-transparent border-t-1 border-foreground/30 border-dashed" />
             <RouterLink to="/settings" onClick={handleMenuClick}>
-              <DropdownMenuItem>
+              <DropdownMenuItem className={borderDashed}>
                 <Settings />
                 User Settings
               </DropdownMenuItem>
             </RouterLink>
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem className={borderDashed} onClick={handleLogout}>
               <LogOut />
               Log Out
             </DropdownMenuItem>
@@ -93,5 +91,5 @@ export function User({ user }: { user: any }) {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

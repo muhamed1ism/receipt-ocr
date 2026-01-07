@@ -81,7 +81,7 @@ function Login() {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Email</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
                       className=""
@@ -102,7 +102,7 @@ function Login() {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center">
-                    <FormLabel className="font-semibold">Password</FormLabel>
+                    <FormLabel>Password</FormLabel>
                   </div>
                   <FormControl>
                     <PasswordInput
@@ -133,7 +133,10 @@ function Login() {
 
           <div className="text-center text-sm">
             Don't have an account yet? <br />
-            <RouterLink to="/signup" className="underline underline-offset-4">
+            <RouterLink
+              to="/signup"
+              className="underline underline-offset-4 font-semibold"
+            >
               Sign up
             </RouterLink>
           </div>

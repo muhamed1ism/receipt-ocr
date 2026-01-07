@@ -1,37 +1,43 @@
-import { Monitor, Moon, Sun } from "lucide-react"
+import { Monitor, Moon, Sun } from "lucide-react";
 
-import { type Theme, useTheme } from "@/components/theme-provider"
-import { Button } from "@/components/ui/button"
+import { type Theme, useTheme } from "@/components/theme-provider";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-type LucideIcon = React.FC<React.SVGProps<SVGSVGElement>>
+type LucideIcon = React.FC<React.SVGProps<SVGSVGElement>>;
 
 const ICON_MAP: Record<Theme, LucideIcon> = {
   system: Monitor,
   light: Sun,
   dark: Moon,
-}
+};
 
 export const SidebarAppearance = () => {
-  const { isMobile } = useSidebar()
-  const { setTheme, theme } = useTheme()
-  const Icon = ICON_MAP[theme]
+  const { isMobile } = useSidebar();
+  const { setTheme, theme } = useTheme();
+  const Icon = ICON_MAP[theme];
+  const dashedBorder =
+    "border-2 border-foreground/0 data-[state=open]:border-2 data-[state=open]:border-dashed data-[state=open]:border-foreground/30 hover:border-dashed hover:border-2 hover:border-foreground/10";
 
   return (
     <SidebarMenuItem>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <SidebarMenuButton tooltip="Appearance" data-testid="theme-button">
+          <SidebarMenuButton
+            className={dashedBorder}
+            tooltip="Appearance"
+            data-testid="theme-button"
+          >
             <Icon className="size-4 text-muted-foreground" />
             <span>Appearance</span>
             <span className="sr-only">Toggle theme</span>
@@ -45,6 +51,7 @@ export const SidebarAppearance = () => {
           <DropdownMenuItem
             data-testid="light-mode"
             onClick={() => setTheme("light")}
+            className={dashedBorder}
           >
             <Sun className="mr-2 h-4 w-4" />
             Light
@@ -52,22 +59,26 @@ export const SidebarAppearance = () => {
           <DropdownMenuItem
             data-testid="dark-mode"
             onClick={() => setTheme("dark")}
+            className={dashedBorder}
           >
             <Moon className="mr-2 h-4 w-4" />
             Dark
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("system")}>
+          <DropdownMenuItem
+            className={dashedBorder}
+            onClick={() => setTheme("system")}
+          >
             <Monitor className="mr-2 h-4 w-4" />
             System
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </SidebarMenuItem>
-  )
-}
+  );
+};
 
 export const Appearance = () => {
-  const { setTheme } = useTheme()
+  const { setTheme } = useTheme();
 
   return (
     <div className="flex items-center justify-center">
@@ -101,5 +112,5 @@ export const Appearance = () => {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  )
-}
+  );
+};

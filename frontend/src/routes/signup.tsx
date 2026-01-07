@@ -89,7 +89,7 @@ function SignUp() {
               name="full_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Full Name</FormLabel>
+                  <FormLabel>Full Name</FormLabel>
                   <FormControl>
                     <Input
                       data-testid="full-name-input"
@@ -108,7 +108,7 @@ function SignUp() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Email</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
                       data-testid="email-input"
@@ -127,7 +127,7 @@ function SignUp() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Password</FormLabel>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <PasswordInput
                       data-testid="password-input"
@@ -145,9 +145,7 @@ function SignUp() {
               name="confirm_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">
-                    Confirm Password
-                  </FormLabel>
+                  <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
                     <PasswordInput
                       data-testid="confirm-password-input"

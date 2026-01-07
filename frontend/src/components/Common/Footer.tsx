@@ -19,7 +19,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t-2 border-dashed border-foreground py-4 px-6">
+    <footer className="border-t-2 border-dashed border-foreground/50 py-4 px-6">
       <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
         <p className="text-muted-foreground receipt-text text-sm">
           Troškomjer - {currentYear}
