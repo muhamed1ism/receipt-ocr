@@ -118,7 +118,7 @@ function Receipts() {
           <div className="p-4 space-y-4">
             {sortedDates.map((date) => (
               <div key={date}
-              className="mb-6 border-dashed border-b-2 border-foreground/50 pb-4 divide-y divide-foreground/50 lg:divide-y-0 ">
+              className="mb-6 border-dashed border-b-2 border-foreground/50 pb-4 divide-y divide-foreground/50 lg:divide-y-0 md:divide-y-0 ">
                 {/* Date Header */}
                 <h2 className="text-lg font-semibold mb-2">{date}</h2>
                 {/* viewMode*/}
