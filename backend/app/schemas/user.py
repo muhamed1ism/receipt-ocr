@@ -5,6 +5,7 @@ from pydantic import EmailStr
 from sqlmodel import Field, SQLModel
 
 from app.models import UserBase
+from app.schemas.profile import ProfilePublic
 
 
 class UserCreate(UserBase):
@@ -23,8 +24,20 @@ class UserPublic(UserBase):
     updated_at: datetime
 
 
+class UserPublicWithProfile(UserBase):
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+    profile: ProfilePublic | None = None
+
+
 class UsersPublic(SQLModel):
     data: list[UserPublic]
+    count: int
+
+
+class UsersPublicWithProfile(SQLModel):
+    data: list[UserPublicWithProfile]
     count: int
 
 

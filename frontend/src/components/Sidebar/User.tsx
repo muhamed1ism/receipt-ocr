@@ -68,7 +68,7 @@ export function User({ user }: { user: any }) {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg receipt-text font-semibold"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg font-semibold"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}

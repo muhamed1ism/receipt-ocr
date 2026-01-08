@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from sqlmodel import Field, SQLModel
 
 from app.models import BranchBase
+from app.schemas.store import StorePublic
 
 
 class BranchCreate(BranchBase):
@@ -21,6 +22,10 @@ class BranchPublic(BranchBase):
 class BranchesPublic(SQLModel):
     data: list[BranchPublic]
     count: int
+
+
+class BranchPublicWithStore(BranchPublic):
+    store: StorePublic
 
 
 class BranchUpdate(SQLModel):

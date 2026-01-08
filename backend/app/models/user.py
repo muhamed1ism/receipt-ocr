@@ -1,8 +1,15 @@
 import uuid
 from datetime import datetime, timezone
+from typing import TYPE_CHECKING
 
 from pydantic import EmailStr
-from sqlmodel import Field, SQLModel
+from sqlalchemy.orm import Mapped
+from sqlmodel import Field, Relationship, SQLModel
+
+if TYPE_CHECKING:
+    from .profile import Profile
+
+from .receipt import Receipt
 
 
 # Shared properties
@@ -17,3 +24,7 @@ class User(UserBase, table=True):
     hashed_password: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    receipt: Receipt | None = Relationship(back_populates="user")
+    profile: Mapped["Profile"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"lazy": "selectin"}
+    )

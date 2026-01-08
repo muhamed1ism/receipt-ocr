@@ -1,7 +1,9 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
+
+from .branch import Branch
 
 
 class StoreBase(SQLModel):
@@ -14,3 +16,4 @@ class Store(StoreBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    branch: Branch | None = Relationship(back_populates="store")

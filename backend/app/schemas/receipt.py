@@ -6,13 +6,14 @@ from sqlmodel import Field, SQLModel
 
 from app.enums import CurrencyEnum
 from app.models import ReceiptBase
-from app.schemas.branch import BranchReceiptIn
+from app.schemas.branch import BranchPublicWithStore, BranchReceiptIn
 from app.schemas.receipt_details import ReceiptDetailsReceiptIn
 from app.schemas.receipt_item import (
     ReceiptItemCreate,
     ReceiptItemPublic,
 )
 from app.schemas.store import StoreReceiptIn
+from app.schemas.user import UserPublic, UserPublicWithProfile
 
 
 class ReceiptCreate(ReceiptBase):
@@ -28,12 +29,24 @@ class ReceiptPublic(ReceiptBase):
     updated_at: datetime
 
 
-class ReceiptPublicWithItems(ReceiptPublic):
+class ReceiptPublicDetailed(ReceiptPublic):
     items: list[ReceiptItemPublic] = []
+    branch: BranchPublicWithStore
+    user: UserPublicWithProfile
 
 
-class ReceiptsPublicWithItems(SQLModel):
-    data: Sequence[ReceiptPublicWithItems]
+class ReceiptsPublicDetailed(SQLModel):
+    data: Sequence[ReceiptPublicDetailed]
+    count: int
+
+
+class ReceiptPublicDetailedMe(ReceiptPublic):
+    items: list[ReceiptItemPublic] = []
+    branch: BranchPublicWithStore
+
+
+class ReceiptsPublicDetailedMe(SQLModel):
+    data: Sequence[ReceiptPublicDetailedMe]
     count: int
 
 

@@ -2,13 +2,17 @@ import uuid
 from datetime import date, datetime, timezone
 
 from pydantic_extra_types.phone_numbers import PhoneNumber
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field, SQLModel
 
 from app.models import ProfileBase
 
 
 class ProfileCreate(ProfileBase):
     user_id: uuid.UUID
+
+
+class ProfileCreateMe(ProfileBase):
+    pass
 
 
 class ProfilePublic(ProfileBase):
