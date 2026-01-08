@@ -23,5 +23,4 @@ class ReceiptItem(ReceiptItemBase, table=True):
     )
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
     receipt: Receipt | None = Relationship(back_populates="items")

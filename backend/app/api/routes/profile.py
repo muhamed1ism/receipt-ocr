@@ -10,6 +10,7 @@ from app.schemas import (
     ProfilesPublic,
     ProfileUpdate,
 )
+from app.schemas.profile import ProfileCreateMe
 
 router = APIRouter(prefix="/profile", tags=["profile"])
 
@@ -72,7 +73,7 @@ def create_profile(
     response_model=ProfilePublic,
 )
 def create_profile_me(
-    *, session: SessionDep, profile_in: ProfileCreate, current_user: CurrentUser
+    *, session: SessionDep, profile_in: ProfileCreateMe, current_user: CurrentUser
 ) -> ProfilePublic:
     """
     Create my new profile.
@@ -83,8 +84,8 @@ def create_profile_me(
             status_code=400,
             detail="You already have profile in the system.",
         )
-    profile_data = profile_in.model_copy(update={"user_id": current_user.id})
 
+    profile_data = ProfileCreate(**profile_in.model_dump(), user_id=current_user.id)
     profile = crud.create_profile(session=session, profile_create=profile_data)
     return ProfilePublic.model_validate(profile)
 

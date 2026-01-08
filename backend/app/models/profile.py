@@ -2,9 +2,11 @@ import uuid
 from datetime import date, datetime, timezone
 
 from pydantic_extra_types.phone_numbers import PhoneNumber
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 from app.enums import CurrencyEnum
+
+from .user import User
 
 
 class ProfileBase(SQLModel):
@@ -25,3 +27,4 @@ class Profile(ProfileBase, table=True):
     )
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    user: User | None = Relationship(back_populates="profile")

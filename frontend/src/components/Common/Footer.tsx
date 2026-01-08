@@ -21,7 +21,7 @@ export function Footer() {
   return (
     <footer className="border-t-2 border-dashed border-foreground/50 py-4 px-6">
       <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-        <p className="text-muted-foreground receipt-text text-sm">
+        <p className="text-muted-foreground text-sm">
           Troškomjer - {currentYear}
         </p>
         <div className="flex items-center gap-4">

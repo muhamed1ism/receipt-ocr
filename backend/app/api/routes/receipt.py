@@ -20,10 +20,13 @@ from app.models.receipt import Receipt
 from app.schemas import (
     ReceiptCreate,
     ReceiptPublic,
-    ReceiptsPublic,
     ReceiptUpdate,
 )
-from app.schemas.receipt import ReceiptsPublicWithItems
+from app.schemas.receipt import (
+    ReceiptPublicDetailed,
+    ReceiptsPublicDetailed,
+    ReceiptsPublicDetailedMe,
+)
 
 router = APIRouter(prefix="/receipt", tags=["receipt"])
 
@@ -31,11 +34,11 @@ router = APIRouter(prefix="/receipt", tags=["receipt"])
 @router.get(
     "/",
     dependencies=[Depends(get_current_active_superuser)],
-    response_model=ReceiptPublic,
+    response_model=ReceiptsPublicDetailed,
 )
 def read_receipts(
     session: SessionDep, skip: int = 0, limit: int = 100
-) -> ReceiptsPublic | None:
+) -> ReceiptsPublicDetailed | None:
     """
     Retrieve all receipts.
     """
@@ -51,14 +54,14 @@ def read_receipts(
 
 @router.get(
     "/me",
-    response_model=ReceiptsPublicWithItems,
+    response_model=ReceiptsPublicDetailedMe,
 )
 def read_receipts_me(
     session: SessionDep,
     current_user: CurrentUser,
     skip: int = 0,
     limit: int = 100,
-) -> ReceiptsPublicWithItems | None:
+) -> ReceiptsPublicDetailedMe | None:
     """
     Retrieve current user receipts.
     """
@@ -94,6 +97,7 @@ def create_receipt(
         user_id=current_user.id,
         branch_id=branch.id,
     )
+    #  BUG: receipt details should be created for every new receipt
     get_or_create_receipt_details(
         session=session,
         receipt_details_data=receipt_in.details,

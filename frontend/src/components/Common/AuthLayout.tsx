@@ -8,7 +8,7 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="grid min-h-svh lg:grid-cols-2">
+    <div className="grid min-h-svh lg:grid-cols-2 font-receipt">
       <div className="bg-linear-to-t from-emerald-700 to-emerald-500 relative hidden lg:flex lg:items-center lg:justify-center">
         <Logo
           variant="full-light"
@@ -21,7 +21,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
           <Appearance />
         </div>
         <div className="flex flex-1 items-center justify-center border-t-2 border-dashed border-foreground/50">
-          <div className="w-full max-w-xs receipt-text">{children}</div>
+          <div className="w-full max-w-xs">{children}</div>
         </div>
         <Footer />
       </div>

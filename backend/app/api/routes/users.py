@@ -18,10 +18,10 @@ from app.schemas import (
     UserCreate,
     UserPublic,
     UserRegister,
-    UsersPublic,
     UserUpdate,
     UserUpdateMe,
 )
+from app.schemas.user import UserPublicWithProfile, UsersPublicWithProfile
 from app.utils import generate_new_account_email, send_email
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -30,7 +30,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 @router.get(
     "/",
     dependencies=[Depends(get_current_active_superuser)],
-    response_model=UsersPublic,
+    response_model=UsersPublicWithProfile,
 )
 def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     """
@@ -42,9 +42,9 @@ def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
 
     statement = select(User).offset(skip).limit(limit)
     users = session.exec(statement).all()
-    pub_users = [UserPublic.model_validate(u) for u in users]
+    pub_users = [UserPublicWithProfile.model_validate(u) for u in users]
 
-    return UsersPublic(data=pub_users, count=count)
+    return UsersPublicWithProfile(data=pub_users, count=count)
 
 
 @router.post(

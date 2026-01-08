@@ -62,7 +62,7 @@ function Login() {
 
   return (
     <AuthLayout>
-      <h1 className="block lg:hidden receipt-text uppercase text-4xl font-medium text-center mt-4 mb-20">
+      <h1 className="block lg:hidden uppercase text-4xl font-medium text-center mt-4 mb-20">
         Troškomjer
       </h1>
 

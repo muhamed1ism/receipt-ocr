@@ -7,11 +7,12 @@ from app.models import Receipt, User
 from app.schemas import (
     ReceiptCreate,
     ReceiptPublic,
-    ReceiptPublicWithItems,
+    ReceiptPublicDetailed,
     ReceiptsPublic,
+    ReceiptsPublicDetailed,
     ReceiptUpdate,
 )
-from app.schemas.receipt import ReceiptsPublicWithItems
+from app.schemas.receipt import ReceiptPublicDetailedMe, ReceiptsPublicDetailedMe
 
 
 def create_receipt(
@@ -64,15 +65,28 @@ def get_receipt_by_id(*, session: Session, receipt_id: uuid.UUID) -> Receipt | N
 
 def get_all_receipts(
     *, session: Session, skip: int = 0, limit: int = 0
-) -> ReceiptsPublic | None:
+) -> ReceiptsPublicDetailed | None:
     count_statement = select(func.count()).select_from(Receipt)
     count = session.exec(count_statement).one()
 
     statement = select(Receipt).offset(skip).limit(limit)
     receipts = session.exec(statement).all()
-    pub_receipts = [ReceiptPublic.model_validate(r) for r in receipts]
+    receipt_list: Sequence[ReceiptPublicDetailed] = [
+        ReceiptPublicDetailed.model_validate(r) for r in receipts
+    ]
 
-    return ReceiptsPublic(data=pub_receipts, count=count)
+    return ReceiptsPublicDetailed(data=receipt_list, count=count)
+
+
+# ) -> ReceiptsPublic | None:
+#     count_statement = select(func.count()).select_from(Receipt)
+#     count = session.exec(count_statement).one()
+#
+#     statement = select(Receipt).offset(skip).limit(limit)
+#     receipts = session.exec(statement).all()
+#     pub_receipts = [ReceiptPublic.model_validate(r) for r in receipts]
+#
+#     return ReceiptsPublic(data=pub_receipts, count=count)
 
 
 def get_my_receipts(
@@ -81,7 +95,7 @@ def get_my_receipts(
     skip: int = 0,
     limit: int = 0,
     my_user: User,
-) -> ReceiptsPublicWithItems | None:
+) -> ReceiptsPublicDetailedMe | None:
     count_statement = (
         select(func.count()).select_from(Receipt).where(Receipt.user_id == my_user.id)
     )
@@ -91,8 +105,8 @@ def get_my_receipts(
         select(Receipt).where(Receipt.user_id == my_user.id).offset(skip).limit(limit)
     )
     receipts = session.exec(statement).all()
-    receipt_list: Sequence[ReceiptPublicWithItems] = [
-        ReceiptPublicWithItems.model_validate(r) for r in receipts
+    receipt_list: Sequence[ReceiptPublicDetailedMe] = [
+        ReceiptPublicDetailedMe.model_validate(r) for r in receipts
     ]
 
-    return ReceiptsPublicWithItems(data=receipt_list, count=count)
+    return ReceiptsPublicDetailedMe(data=receipt_list, count=count)
