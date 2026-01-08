@@ -135,7 +135,7 @@ function Receipts() {
                       className={
                         viewMode === "grid"
                           ? "rounded-lg border-2 border-foreground/50 p-4 cursor-pointer hover:bg-muted transition-colors text-center"
-                          : "flex justify-between p-4 cursor-pointer hover:bg-muted hover:rounded transition-colors"
+                          : "flex justify-between p-4 cursor-pointer hover:bg-muted transition-colors first:rounded-t-lg last:rounded-b-lg"
                       }
                       onClick={() => setSelectedReceipt(receipt)}
                     >
