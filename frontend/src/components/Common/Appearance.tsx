@@ -39,14 +39,14 @@ export const SidebarAppearance = () => {
             data-testid="theme-button"
           >
             <Icon className="size-4 text-muted-foreground" />
-            <span>Appearance</span>
-            <span className="sr-only">Toggle theme</span>
+            <span className="font-semibold">Izgled</span>
+            <span className="sr-only">Promijeni temu</span>
           </SidebarMenuButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent
           side={isMobile ? "top" : "right"}
           align="end"
-          className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
+          className="font-receipt font-semibold w-(--radix-dropdown-menu-trigger-width) min-w-56"
         >
           <DropdownMenuItem
             data-testid="light-mode"
@@ -54,7 +54,7 @@ export const SidebarAppearance = () => {
             className={dashedBorder}
           >
             <Sun className="mr-2 h-4 w-4" />
-            Light
+            Svijetla
           </DropdownMenuItem>
           <DropdownMenuItem
             data-testid="dark-mode"
@@ -62,14 +62,14 @@ export const SidebarAppearance = () => {
             className={dashedBorder}
           >
             <Moon className="mr-2 h-4 w-4" />
-            Dark
+            Tamna
           </DropdownMenuItem>
           <DropdownMenuItem
             className={dashedBorder}
             onClick={() => setTheme("system")}
           >
             <Monitor className="mr-2 h-4 w-4" />
-            System
+            Sistem
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

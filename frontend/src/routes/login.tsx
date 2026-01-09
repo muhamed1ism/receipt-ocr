@@ -26,8 +26,8 @@ const formSchema = z.object({
   username: z.email(),
   password: z
     .string()
-    .min(1, { message: "Password is required" })
-    .min(8, { message: "Password must be at least 8 characters" }),
+    .min(1, { message: "Lozinka je obavezna" })
+    .min(8, { message: "Lozinka mora imati najmanje 8 karaktera" }),
 }) satisfies z.ZodType<AccessToken>;
 
 type FormData = z.infer<typeof formSchema>;
@@ -72,7 +72,7 @@ function Login() {
           className="flex flex-col gap-6"
         >
           <div className="flex flex-col items-center gap-2 text-center">
-            <h1 className="text-2xl font-bold">Login to your account</h1>
+            <h1 className="text-2xl font-bold">Prijavi se na svoj račun</h1>
           </div>
 
           <div className="grid gap-4">
@@ -102,7 +102,7 @@ function Login() {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center">
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Lozinka</FormLabel>
                   </div>
                   <FormControl>
                     <PasswordInput
@@ -116,7 +116,7 @@ function Login() {
                     to="/recover-password"
                     className="ml-auto text-sm underline-offset-4 hover:underline mt-2"
                   >
-                    Forgot your password?
+                    Zaboravili ste lozinku?
                   </RouterLink>
                 </FormItem>
               )}
@@ -124,20 +124,20 @@ function Login() {
 
             <LoadingButton
               type="submit"
-              className="w-full"
+              className="w-full font-semibold"
               loading={loginMutation.isPending}
             >
-              Log In
+              Prijavi se
             </LoadingButton>
           </div>
 
           <div className="text-center text-sm">
-            Don't have an account yet? <br />
+            Još nemate račun? <br />
             <RouterLink
               to="/signup"
               className="underline underline-offset-4 font-semibold"
             >
-              Sign up
+              Registrujte se
             </RouterLink>
           </div>
         </form>

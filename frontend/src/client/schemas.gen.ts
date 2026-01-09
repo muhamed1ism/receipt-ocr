@@ -55,6 +55,102 @@ export const Body_login_login_access_tokenSchema = {
     title: 'Body_login-login_access_token'
 } as const;
 
+export const Body_ocr_scanSchema = {
+    properties: {
+        img_file: {
+            type: 'string',
+            format: 'binary',
+            title: 'Img File'
+        }
+    },
+    type: 'object',
+    required: ['img_file'],
+    title: 'Body_ocr-scan'
+} as const;
+
+export const BranchPublicWithStoreSchema = {
+    properties: {
+        address: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Address'
+        },
+        city: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 100
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'City'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        store: {
+            '$ref': '#/components/schemas/StorePublic'
+        }
+    },
+    type: 'object',
+    required: ['id', 'store'],
+    title: 'BranchPublicWithStore'
+} as const;
+
+export const BranchReceiptInSchema = {
+    properties: {
+        address: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Address'
+        },
+        city: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 100
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'City'
+        },
+        store_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Store Id'
+        }
+    },
+    type: 'object',
+    required: ['store_id'],
+    title: 'BranchReceiptIn'
+} as const;
+
+export const CurrencyEnumSchema = {
+    type: 'string',
+    enum: ['USD', 'EUR', 'BAM', 'GBP'],
+    title: 'CurrencyEnum'
+} as const;
+
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {
@@ -67,119 +163,6 @@ export const HTTPValidationErrorSchema = {
     },
     type: 'object',
     title: 'HTTPValidationError'
-} as const;
-
-export const ItemCreateSchema = {
-    properties: {
-        title: {
-            type: 'string',
-            maxLength: 255,
-            minLength: 1,
-            title: 'Title'
-        },
-        description: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Description'
-        }
-    },
-    type: 'object',
-    required: ['title'],
-    title: 'ItemCreate'
-} as const;
-
-export const ItemPublicSchema = {
-    properties: {
-        title: {
-            type: 'string',
-            maxLength: 255,
-            minLength: 1,
-            title: 'Title'
-        },
-        description: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Description'
-        },
-        id: {
-            type: 'string',
-            format: 'uuid',
-            title: 'Id'
-        },
-        owner_id: {
-            type: 'string',
-            format: 'uuid',
-            title: 'Owner Id'
-        }
-    },
-    type: 'object',
-    required: ['title', 'id', 'owner_id'],
-    title: 'ItemPublic'
-} as const;
-
-export const ItemUpdateSchema = {
-    properties: {
-        title: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255,
-                    minLength: 1
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Title'
-        },
-        description: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Description'
-        }
-    },
-    type: 'object',
-    title: 'ItemUpdate'
-} as const;
-
-export const ItemsPublicSchema = {
-    properties: {
-        data: {
-            items: {
-                '$ref': '#/components/schemas/ItemPublic'
-            },
-            type: 'array',
-            title: 'Data'
-        },
-        count: {
-            type: 'integer',
-            title: 'Count'
-        }
-    },
-    type: 'object',
-    required: ['data', 'count'],
-    title: 'ItemsPublic'
 } as const;
 
 export const MessageSchema = {
@@ -237,6 +220,1013 @@ export const PrivateUserCreateSchema = {
     title: 'PrivateUserCreate'
 } as const;
 
+export const ProfileCreateSchema = {
+    properties: {
+        first_name: {
+            type: 'string',
+            maxLength: 100,
+            title: 'First Name'
+        },
+        last_name: {
+            type: 'string',
+            maxLength: 100,
+            title: 'Last Name'
+        },
+        phone_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'phone'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Phone Number'
+        },
+        date_of_birth: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Date Of Birth'
+        },
+        country: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 100
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Country'
+        },
+        address: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Address'
+        },
+        city: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 100
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'City'
+        },
+        currency_preference: {
+            '$ref': '#/components/schemas/CurrencyEnum',
+            default: 'BAM'
+        },
+        user_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'User Id'
+        }
+    },
+    type: 'object',
+    required: ['first_name', 'last_name', 'user_id'],
+    title: 'ProfileCreate'
+} as const;
+
+export const ProfileCreateMeSchema = {
+    properties: {
+        first_name: {
+            type: 'string',
+            maxLength: 100,
+            title: 'First Name'
+        },
+        last_name: {
+            type: 'string',
+            maxLength: 100,
+            title: 'Last Name'
+        },
+        phone_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'phone'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Phone Number'
+        },
+        date_of_birth: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Date Of Birth'
+        },
+        country: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 100
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Country'
+        },
+        address: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Address'
+        },
+        city: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 100
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'City'
+        },
+        currency_preference: {
+            '$ref': '#/components/schemas/CurrencyEnum',
+            default: 'BAM'
+        }
+    },
+    type: 'object',
+    required: ['first_name', 'last_name'],
+    title: 'ProfileCreateMe'
+} as const;
+
+export const ProfilePublicSchema = {
+    properties: {
+        first_name: {
+            type: 'string',
+            maxLength: 100,
+            title: 'First Name'
+        },
+        last_name: {
+            type: 'string',
+            maxLength: 100,
+            title: 'Last Name'
+        },
+        phone_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'phone'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Phone Number'
+        },
+        date_of_birth: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Date Of Birth'
+        },
+        country: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 100
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Country'
+        },
+        address: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Address'
+        },
+        city: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 100
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'City'
+        },
+        currency_preference: {
+            '$ref': '#/components/schemas/CurrencyEnum',
+            default: 'BAM'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        user_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'User Id'
+        }
+    },
+    type: 'object',
+    required: ['first_name', 'last_name', 'id', 'user_id'],
+    title: 'ProfilePublic'
+} as const;
+
+export const ProfileUpdateSchema = {
+    properties: {
+        first_name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 100
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'First Name'
+        },
+        last_name: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 100
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Name'
+        },
+        phone_number: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'phone'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Phone Number'
+        },
+        date_of_birth: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Date Of Birth'
+        },
+        country: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 100
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Country'
+        },
+        address: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Address'
+        },
+        city: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 100
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'City'
+        },
+        currency_preference: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Currency Preference'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        }
+    },
+    type: 'object',
+    title: 'ProfileUpdate'
+} as const;
+
+export const ProfilesPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/ProfilePublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'ProfilesPublic'
+} as const;
+
+export const ReceiptCreateSchema = {
+    properties: {
+        date_time: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Date Time'
+        },
+        tax_amount: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tax Amount'
+        },
+        total_amount: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Total Amount'
+        },
+        payment_method: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 50
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Payment Method'
+        },
+        currency: {
+            '$ref': '#/components/schemas/CurrencyEnum',
+            default: 'BAM'
+        },
+        store: {
+            '$ref': '#/components/schemas/StoreReceiptIn'
+        },
+        branch: {
+            '$ref': '#/components/schemas/BranchReceiptIn'
+        },
+        details: {
+            '$ref': '#/components/schemas/ReceiptDetailsReceiptIn'
+        },
+        items: {
+            items: {
+                '$ref': '#/components/schemas/ReceiptItemCreate'
+            },
+            type: 'array',
+            title: 'Items'
+        }
+    },
+    type: 'object',
+    required: ['store', 'branch', 'details', 'items'],
+    title: 'ReceiptCreate'
+} as const;
+
+export const ReceiptDetailsReceiptInSchema = {
+    properties: {
+        ibfm: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 50
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Ibfm'
+        },
+        bf: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Bf'
+        },
+        ibk: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Ibk'
+        },
+        digital_signature: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Digital Signature'
+        }
+    },
+    type: 'object',
+    title: 'ReceiptDetailsReceiptIn'
+} as const;
+
+export const ReceiptItemCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Name'
+        },
+        quantity: {
+            type: 'number',
+            minimum: 0,
+            title: 'Quantity',
+            default: 1
+        },
+        price: {
+            type: 'number',
+            minimum: 0,
+            title: 'Price'
+        },
+        total_price: {
+            type: 'number',
+            minimum: 0,
+            title: 'Total Price'
+        }
+    },
+    type: 'object',
+    required: ['name', 'price', 'total_price'],
+    title: 'ReceiptItemCreate'
+} as const;
+
+export const ReceiptItemPublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 255,
+            title: 'Name'
+        },
+        quantity: {
+            type: 'number',
+            minimum: 0,
+            title: 'Quantity',
+            default: 1
+        },
+        price: {
+            type: 'number',
+            minimum: 0,
+            title: 'Price'
+        },
+        total_price: {
+            type: 'number',
+            minimum: 0,
+            title: 'Total Price'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'price', 'total_price', 'id'],
+    title: 'ReceiptItemPublic'
+} as const;
+
+export const ReceiptPublicSchema = {
+    properties: {
+        date_time: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Date Time'
+        },
+        tax_amount: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tax Amount'
+        },
+        total_amount: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Total Amount'
+        },
+        payment_method: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 50
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Payment Method'
+        },
+        currency: {
+            '$ref': '#/components/schemas/CurrencyEnum',
+            default: 'BAM'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        }
+    },
+    type: 'object',
+    required: ['id', 'created_at', 'updated_at'],
+    title: 'ReceiptPublic'
+} as const;
+
+export const ReceiptPublicDetailedSchema = {
+    properties: {
+        date_time: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Date Time'
+        },
+        tax_amount: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tax Amount'
+        },
+        total_amount: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Total Amount'
+        },
+        payment_method: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 50
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Payment Method'
+        },
+        currency: {
+            '$ref': '#/components/schemas/CurrencyEnum',
+            default: 'BAM'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        },
+        items: {
+            items: {
+                '$ref': '#/components/schemas/ReceiptItemPublic'
+            },
+            type: 'array',
+            title: 'Items',
+            default: []
+        },
+        branch: {
+            '$ref': '#/components/schemas/BranchPublicWithStore'
+        },
+        user: {
+            '$ref': '#/components/schemas/UserPublicWithProfile'
+        }
+    },
+    type: 'object',
+    required: ['id', 'created_at', 'updated_at', 'branch', 'user'],
+    title: 'ReceiptPublicDetailed'
+} as const;
+
+export const ReceiptPublicDetailedMeSchema = {
+    properties: {
+        date_time: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Date Time'
+        },
+        tax_amount: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tax Amount'
+        },
+        total_amount: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Total Amount'
+        },
+        payment_method: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 50
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Payment Method'
+        },
+        currency: {
+            '$ref': '#/components/schemas/CurrencyEnum',
+            default: 'BAM'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        },
+        items: {
+            items: {
+                '$ref': '#/components/schemas/ReceiptItemPublic'
+            },
+            type: 'array',
+            title: 'Items',
+            default: []
+        },
+        branch: {
+            '$ref': '#/components/schemas/BranchPublicWithStore'
+        }
+    },
+    type: 'object',
+    required: ['id', 'created_at', 'updated_at', 'branch'],
+    title: 'ReceiptPublicDetailedMe'
+} as const;
+
+export const ReceiptUpdateSchema = {
+    properties: {
+        date_time: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Date Time'
+        },
+        tax: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tax'
+        },
+        total_price: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Total Price'
+        },
+        payment_method: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 50
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Payment Method'
+        },
+        currency: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/CurrencyEnum'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        }
+    },
+    type: 'object',
+    required: ['currency'],
+    title: 'ReceiptUpdate'
+} as const;
+
+export const ReceiptsPublicDetailedSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/ReceiptPublicDetailed'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'ReceiptsPublicDetailed'
+} as const;
+
+export const ReceiptsPublicDetailedMeSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/ReceiptPublicDetailedMe'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'ReceiptsPublicDetailedMe'
+} as const;
+
+export const StorePublicSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 100,
+            title: 'Name'
+        },
+        jib: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 50
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Jib'
+        },
+        pib: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 50
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Pib'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id'],
+    title: 'StorePublic'
+} as const;
+
+export const StoreReceiptInSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            maxLength: 100,
+            title: 'Name'
+        },
+        jib: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 50
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Jib'
+        },
+        pib: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 50
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Pib'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'StoreReceiptIn'
+} as const;
+
 export const TokenSchema = {
     properties: {
         access_token: {
@@ -292,18 +1282,6 @@ export const UserCreateSchema = {
             title: 'Is Superuser',
             default: false
         },
-        full_name: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Full Name'
-        },
         password: {
             type: 'string',
             maxLength: 128,
@@ -334,27 +1312,74 @@ export const UserPublicSchema = {
             title: 'Is Superuser',
             default: false
         },
-        full_name: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Full Name'
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        }
+    },
+    type: 'object',
+    required: ['email', 'id', 'created_at', 'updated_at'],
+    title: 'UserPublic'
+} as const;
+
+export const UserPublicWithProfileSchema = {
+    properties: {
+        email: {
+            type: 'string',
+            maxLength: 255,
+            format: 'email',
+            title: 'Email'
+        },
+        is_active: {
+            type: 'boolean',
+            title: 'Is Active',
+            default: true
+        },
+        is_superuser: {
+            type: 'boolean',
+            title: 'Is Superuser',
+            default: false
         },
         id: {
             type: 'string',
             format: 'uuid',
             title: 'Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        },
+        profile: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/ProfilePublic'
+                },
+                {
+                    type: 'null'
+                }
+            ]
         }
     },
     type: 'object',
-    required: ['email', 'id'],
-    title: 'UserPublic'
+    required: ['email', 'id', 'created_at', 'updated_at'],
+    title: 'UserPublicWithProfile'
 } as const;
 
 export const UserRegisterSchema = {
@@ -370,18 +1395,6 @@ export const UserRegisterSchema = {
             maxLength: 128,
             minLength: 8,
             title: 'Password'
-        },
-        full_name: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Full Name'
         }
     },
     type: 'object',
@@ -414,18 +1427,6 @@ export const UserUpdateSchema = {
             title: 'Is Superuser',
             default: false
         },
-        full_name: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Full Name'
-        },
         password: {
             anyOf: [
                 {
@@ -438,6 +1439,11 @@ export const UserUpdateSchema = {
                 }
             ],
             title: 'Password'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
         }
     },
     type: 'object',
@@ -446,18 +1452,6 @@ export const UserUpdateSchema = {
 
 export const UserUpdateMeSchema = {
     properties: {
-        full_name: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Full Name'
-        },
         email: {
             anyOf: [
                 {
@@ -470,17 +1464,22 @@ export const UserUpdateMeSchema = {
                 }
             ],
             title: 'Email'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
         }
     },
     type: 'object',
     title: 'UserUpdateMe'
 } as const;
 
-export const UsersPublicSchema = {
+export const UsersPublicWithProfileSchema = {
     properties: {
         data: {
             items: {
-                '$ref': '#/components/schemas/UserPublic'
+                '$ref': '#/components/schemas/UserPublicWithProfile'
             },
             type: 'array',
             title: 'Data'
@@ -492,7 +1491,7 @@ export const UsersPublicSchema = {
     },
     type: 'object',
     required: ['data', 'count'],
-    title: 'UsersPublic'
+    title: 'UsersPublicWithProfile'
 } as const;
 
 export const ValidationErrorSchema = {

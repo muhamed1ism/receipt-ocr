@@ -23,17 +23,16 @@ import useAuth, { isLoggedIn } from "@/hooks/useAuth";
 const formSchema = z
   .object({
     email: z.email(),
-    full_name: z.string().min(1, { message: "Full Name is required" }),
     password: z
       .string()
-      .min(1, { message: "Password is required" })
-      .min(8, { message: "Password must be at least 8 characters" }),
+      .min(1, { message: "Lozinka je obavezna" })
+      .min(8, { message: "Lozinka mora imati najmanje 8 karaktera" }),
     confirm_password: z
       .string()
-      .min(1, { message: "Password confirmation is required" }),
+      .min(1, { message: "Potvrda lozinke je obavezna" }),
   })
   .refine((data) => data.password === data.confirm_password, {
-    message: "The passwords don't match",
+    message: "Lozinke se ne podudaraju",
     path: ["confirm_password"],
   });
 
@@ -58,7 +57,6 @@ function SignUp() {
     criteriaMode: "all",
     defaultValues: {
       email: "",
-      full_name: "",
       password: "",
       confirm_password: "",
     },
@@ -80,29 +78,10 @@ function SignUp() {
           className="flex flex-col gap-6"
         >
           <div className="flex flex-col items-center gap-2 text-center">
-            <h1 className="text-2xl font-bold">Create an account</h1>
+            <h1 className="text-2xl font-bold">Kreirajte račun</h1>
           </div>
 
           <div className="grid gap-4">
-            <FormField
-              control={form.control}
-              name="full_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      data-testid="full-name-input"
-                      placeholder="User"
-                      type="text"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name="email"
@@ -127,11 +106,11 @@ function SignUp() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Lozinka</FormLabel>
                   <FormControl>
                     <PasswordInput
                       data-testid="password-input"
-                      placeholder="Password"
+                      placeholder="Lozinka"
                       {...field}
                     />
                   </FormControl>
@@ -145,11 +124,11 @@ function SignUp() {
               name="confirm_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel>Potvrdi lozinku</FormLabel>
                   <FormControl>
                     <PasswordInput
                       data-testid="confirm-password-input"
-                      placeholder="Confirm Password"
+                      placeholder="Potvrdi lozinku"
                       {...field}
                     />
                   </FormControl>
@@ -161,16 +140,19 @@ function SignUp() {
             <LoadingButton
               type="submit"
               loading={signUpMutation.isPending}
-              className="w-full mt-2"
+              className="w-full mt-2 font-semibold"
             >
-              Sign Up
+              Registrujte se
             </LoadingButton>
           </div>
 
           <div className="text-center text-sm">
-            Already have an account? <br />
-            <RouterLink to="/login" className="underline underline-offset-4">
-              Log in
+            Već imate račun? <br />
+            <RouterLink
+              to="/login"
+              className="underline underline-offset-4 font-bold"
+            >
+              Prijavi se
             </RouterLink>
           </div>
         </form>

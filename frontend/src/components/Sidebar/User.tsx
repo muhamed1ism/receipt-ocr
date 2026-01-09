@@ -20,27 +20,30 @@ import useAuth from "@/hooks/useAuth";
 import { getInitials } from "@/utils";
 
 interface UserInfoProps {
-  fullName?: string;
+  first_name?: string;
+  last_name?: string;
   email?: string;
 }
 
-function UserInfo({ fullName, email }: UserInfoProps) {
+function UserInfo({ first_name, last_name, email }: UserInfoProps) {
   return (
     <div className="flex items-center gap-2.5 w-full min-w-0">
       <Avatar className="size-8">
-        <AvatarFallback className="bg-zinc-600 text-white">
-          {getInitials(fullName || "User")}
+        <AvatarFallback className="bg-primary font-semibold text-white">
+          {getInitials(`${first_name} ${last_name}` || "Korisnik")}
         </AvatarFallback>
       </Avatar>
       <div className="flex flex-col items-start min-w-0">
-        <p className="text-sm font-medium truncate w-full">{fullName}</p>
+        <p className="text-sm font-semibold truncate w-full">
+          {first_name} {last_name}
+        </p>
         <p className="text-xs text-muted-foreground truncate w-full">{email}</p>
       </div>
     </div>
   );
 }
 
-export function User({ user }: { user: any }) {
+export function User({ user, profile }: { user: any; profile: any }) {
   const { logout } = useAuth();
   const { isMobile, setOpenMobile } = useSidebar();
   const borderDashed =
@@ -63,29 +66,37 @@ export function User({ user }: { user: any }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton size="lg" data-testid="user-menu">
-              <UserInfo fullName={user?.full_name} email={user?.email} />
+              <UserInfo
+                first_name={profile?.first_name}
+                last_name={profile?.last_name}
+                email={user?.email}
+              />
               <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg font-semibold"
+            className="font-receipt w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg font-semibold"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
-              <UserInfo fullName={user?.full_name} email={user?.email} />
+              <UserInfo
+                first_name={profile?.first_name}
+                last_name={profile?.last_name}
+                email={user?.email}
+              />
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="bg-transparent border-t-1 border-foreground/30 border-dashed" />
             <RouterLink to="/settings" onClick={handleMenuClick}>
               <DropdownMenuItem className={borderDashed}>
                 <Settings />
-                User Settings
+                Postavke korisnika
               </DropdownMenuItem>
             </RouterLink>
             <DropdownMenuItem className={borderDashed} onClick={handleLogout}>
               <LogOut />
-              Log Out
+              Odjavi se
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
