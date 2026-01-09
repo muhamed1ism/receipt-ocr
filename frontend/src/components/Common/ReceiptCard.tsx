@@ -3,7 +3,7 @@ import { type ReactNode, useState, useEffect, useRef } from "react";
 interface ReceiptCardProps {
   children: ReactNode;
   className?: string;
-  shadow?: boolean;
+  hoverShadow?: boolean;
   toothSize?: number;
   toothHeight?: number;
 }
@@ -11,9 +11,10 @@ interface ReceiptCardProps {
 export function ReceiptCard({
   children,
   className = "",
-  shadow = true,
-  toothSize = 18,
-  toothHeight = 5,
+  hoverShadow = false,
+  toothSize = 10,
+  toothHeight = 3,
+  ...props
 }: ReceiptCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -62,15 +63,19 @@ export function ReceiptCard({
 
   return (
     <div
-      ref={ref}
-      className={className}
-      style={{
-        filter: shadow ? "drop-shadow(0 4px 6px rgba(0,0,0,0.1))" : undefined,
-        maskImage: mask,
-        WebkitMaskImage: mask,
-      }}
+      className={`${className} ${hoverShadow ? "transition-all duration-300 hover:drop-shadow-xl hover:drop-shadow-black/10" : ""} drop-shadow-lg drop-shadow-black/10 h-full`}
+      {...props}
     >
-      {children}
+      <div
+        className="h-full"
+        ref={ref}
+        style={{
+          maskImage: mask,
+          WebkitMaskImage: mask,
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }
