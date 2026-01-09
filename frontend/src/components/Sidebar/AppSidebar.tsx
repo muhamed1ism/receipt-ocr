@@ -13,13 +13,12 @@ import { type Item, Main } from "./Main";
 import { User } from "./User";
 
 const baseItems: Item[] = [
-  { icon: Home, title: "Dashboard", path: "/" },
-  { icon: Briefcase, title: "Items", path: "/items" },
-  { icon: Receipt, title: "Receipts", path: "/receipts" },
+  { icon: Home, title: "Kontrolna ploča", path: "/" },
+  { icon: Receipt, title: "Računi", path: "/receipts" },
 ];
 
 export function AppSidebar() {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, profile: currentProfile } = useAuth();
 
   const items = currentUser?.is_superuser
     ? [...baseItems, { icon: Users, title: "Admin", path: "/admin" }]
@@ -35,7 +34,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <SidebarAppearance />
-        <User user={currentUser} />
+        <User user={currentUser} profile={currentProfile} />
       </SidebarFooter>
     </Sidebar>
   );

@@ -50,7 +50,7 @@ export function Main({ items }: MainProps) {
                 >
                   <RouterLink to={item.path} onClick={handleMenuClick}>
                     <item.icon />
-                    <span>{item.title}</span>
+                    <span className="font-semibold">{item.title}</span>
                   </RouterLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>

@@ -1,44 +1,56 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router";
 
-import ChangePassword from "@/components/UserSettings/ChangePassword"
-import DeleteAccount from "@/components/UserSettings/DeleteAccount"
-import UserInformation from "@/components/UserSettings/UserInformation"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import useAuth from "@/hooks/useAuth"
+import ChangePassword from "@/components/UserSettings/ChangePassword";
+import DeleteAccount from "@/components/UserSettings/DeleteAccount";
+import ChangeEmail from "@/components/UserSettings/ChangeEmail";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useAuth from "@/hooks/useAuth";
+import ProfileInformation from "@/components/UserSettings/ProfileInformation";
 
 const tabsConfig = [
-  { value: "my-profile", title: "My profile", component: UserInformation },
-  { value: "password", title: "Password", component: ChangePassword },
-  { value: "danger-zone", title: "Danger zone", component: DeleteAccount },
-]
+  { value: "my-profile", title: "Moj Profil", component: ProfileInformation },
+  { value: "email", title: "Email", component: ChangeEmail },
+  { value: "password", title: "Lozinka", component: ChangePassword },
+  {
+    value: "danger-zone",
+    title: "Obriši račun",
+    component: DeleteAccount,
+  },
+];
 
 export const Route = createFileRoute("/_layout/settings")({
   component: UserSettings,
-})
+});
 
 function UserSettings() {
-  const { user: currentUser } = useAuth()
+  const { user: currentUser } = useAuth();
   const finalTabs = currentUser?.is_superuser
-    ? tabsConfig.slice(0, 3)
-    : tabsConfig
+    ? tabsConfig.slice(0, 4)
+    : tabsConfig;
 
   if (!currentUser) {
-    return null
+    return null;
   }
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">User Settings</h1>
+        <h1 className="text-2xl font-bold tracking-tight">
+          Postavke korisnika
+        </h1>
         <p className="text-muted-foreground">
-          Manage your account settings and preferences
+          Upravljajte postavkama i preferencijama svog računa{" "}
         </p>
       </div>
 
       <Tabs defaultValue="my-profile">
         <TabsList>
           {finalTabs.map((tab) => (
-            <TabsTrigger key={tab.value} value={tab.value}>
+            <TabsTrigger
+              className="font-semibold"
+              key={tab.value}
+              value={tab.value}
+            >
               {tab.title}
             </TabsTrigger>
           ))}
@@ -50,5 +62,5 @@ function UserSettings() {
         ))}
       </Tabs>
     </div>
-  )
+  );
 }

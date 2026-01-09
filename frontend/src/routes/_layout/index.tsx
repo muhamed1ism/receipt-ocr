@@ -18,18 +18,18 @@ export const Route = createFileRoute("/_layout/")({
 });
 
 function Dashboard() {
-  const { user: currentUser } = useAuth();
+  const { profile: currentProfile } = useAuth();
   const progress = 75;
 
   return (
     <div className="grid grid-cols-4 gap-4">
       <div className="col-span-4">
         <h1 className="text-5xl wrap-normal">
-          Hi,{" "}
-          <span className="-ml-4 font-semibold text-primary">
-            Muhamed Spahić
+          Pozdrav,
+          <span className="ml-2 font-semibold text-primary">
+            {/* Muhamed Spahić */}
+            {currentProfile?.first_name} {currentProfile?.last_name}
           </span>
-          {/* {currentUser?.full_name} */}
         </h1>
       </div>
 

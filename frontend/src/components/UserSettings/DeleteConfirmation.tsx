@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useForm } from "react-hook-form"
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 
-import { UsersService } from "@/client"
-import { Button } from "@/components/ui/button"
+import { UsersService } from "@/client";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -12,71 +12,75 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { LoadingButton } from "@/components/ui/loading-button"
-import useAuth from "@/hooks/useAuth"
-import useCustomToast from "@/hooks/useCustomToast"
-import { handleError } from "@/utils"
+} from "@/components/ui/dialog";
+import { LoadingButton } from "@/components/ui/loading-button";
+import useAuth from "@/hooks/useAuth";
+import useCustomToast from "@/hooks/useCustomToast";
+import { handleError } from "@/utils";
 
 const DeleteConfirmation = () => {
-  const queryClient = useQueryClient()
-  const { showSuccessToast, showErrorToast } = useCustomToast()
-  const { handleSubmit } = useForm()
-  const { logout } = useAuth()
+  const queryClient = useQueryClient();
+  const { showSuccessToast, showErrorToast } = useCustomToast();
+  const { handleSubmit } = useForm();
+  const { logout } = useAuth();
 
   const mutation = useMutation({
     mutationFn: () => UsersService.deleteUserMe(),
     onSuccess: () => {
-      showSuccessToast("Your account has been successfully deleted")
-      logout()
+      showSuccessToast("Vaš račun je uspješno obrisan.");
+      logout();
     },
     onError: handleError.bind(showErrorToast),
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] })
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
-  })
+  });
 
   const onSubmit = async () => {
-    mutation.mutate()
-  }
+    mutation.mutate();
+  };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="destructive" className="mt-3">
-          Delete Account
+        <Button variant="destructive" className="mt-3 font-semibold">
+          Obriši račun
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="font-receipt">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Confirmation Required</DialogTitle>
+            <DialogTitle>Potvrda je potrebna</DialogTitle>
             <DialogDescription>
-              All your account data will be{" "}
-              <strong>permanently deleted.</strong> If you are sure, please
-              click <strong>"Confirm"</strong> to proceed. This action cannot be
-              undone.
+              Svi podaci vašeg računa će biti <strong>trajno obrisani.</strong>{" "}
+              Ako ste sigurni, kliknite <strong>"Potvrdi"</strong> da nastavite.
+              Ova akcija se ne može opozvati.
             </DialogDescription>
           </DialogHeader>
 
           <DialogFooter className="mt-4">
             <DialogClose asChild>
-              <Button variant="outline" disabled={mutation.isPending}>
-                Cancel
+              <Button
+                variant="outline"
+                disabled={mutation.isPending}
+                className="font-semibold"
+              >
+                Odustani
               </Button>
             </DialogClose>
             <LoadingButton
               variant="destructive"
               type="submit"
               loading={mutation.isPending}
+              className="font-semibold"
             >
-              Delete
+              Obriši
             </LoadingButton>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default DeleteConfirmation
+export default DeleteConfirmation;

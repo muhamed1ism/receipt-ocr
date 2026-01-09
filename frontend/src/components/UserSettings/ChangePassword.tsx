@@ -1,9 +1,9 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { type UpdatePassword, UsersService } from "@/client"
+import { type UpdatePassword, UsersService } from "@/client";
 import {
   Form,
   FormControl,
@@ -11,11 +11,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { LoadingButton } from "@/components/ui/loading-button"
-import { PasswordInput } from "@/components/ui/password-input"
-import useCustomToast from "@/hooks/useCustomToast"
-import { handleError } from "@/utils"
+} from "@/components/ui/form";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { PasswordInput } from "@/components/ui/password-input";
+import useCustomToast from "@/hooks/useCustomToast";
+import { handleError } from "@/utils";
 
 const formSchema = z
   .object({
@@ -34,12 +34,12 @@ const formSchema = z
   .refine((data) => data.new_password === data.confirm_password, {
     message: "The passwords don't match",
     path: ["confirm_password"],
-  })
+  });
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
 const ChangePassword = () => {
-  const { showSuccessToast, showErrorToast } = useCustomToast()
+  const { showSuccessToast, showErrorToast } = useCustomToast();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: "onSubmit",
@@ -49,25 +49,25 @@ const ChangePassword = () => {
       new_password: "",
       confirm_password: "",
     },
-  })
+  });
 
   const mutation = useMutation({
     mutationFn: (data: UpdatePassword) =>
       UsersService.updatePasswordMe({ requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("Password updated successfully")
-      form.reset()
+      showSuccessToast("Password updated successfully");
+      form.reset();
     },
     onError: handleError.bind(showErrorToast),
-  })
+  });
 
   const onSubmit = async (data: FormData) => {
-    mutation.mutate(data)
-  }
+    mutation.mutate(data);
+  };
 
   return (
     <div className="max-w-md">
-      <h3 className="text-lg font-semibold py-4">Change Password</h3>
+      <h3 className="text-xl font-semibold py-4">Promijeni lozinku</h3>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -78,7 +78,7 @@ const ChangePassword = () => {
             name="current_password"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel>Current Password</FormLabel>
+                <FormLabel>Trenutna lozinka</FormLabel>
                 <FormControl>
                   <PasswordInput
                     data-testid="current-password-input"
@@ -97,7 +97,7 @@ const ChangePassword = () => {
             name="new_password"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel>New Password</FormLabel>
+                <FormLabel>Nova lozinka</FormLabel>
                 <FormControl>
                   <PasswordInput
                     data-testid="new-password-input"
@@ -116,9 +116,10 @@ const ChangePassword = () => {
             name="confirm_password"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
+                <FormLabel>Potvrdi novu lozinku</FormLabel>
                 <FormControl>
                   <PasswordInput
+                    className="font-sans font-normal"
                     data-testid="confirm-password-input"
                     placeholder="••••••••"
                     aria-invalid={fieldState.invalid}
@@ -133,14 +134,14 @@ const ChangePassword = () => {
           <LoadingButton
             type="submit"
             loading={mutation.isPending}
-            className="self-start"
+            className="self-start font-semibold"
           >
-            Update Password
+            Ažuriraj lozinku
           </LoadingButton>
         </form>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default ChangePassword
+export default ChangePassword;

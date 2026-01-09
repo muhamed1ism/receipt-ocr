@@ -1,49 +1,81 @@
-import type { ColumnDef } from "@tanstack/react-table"
+import type { ColumnDef } from "@tanstack/react-table";
 
-import type { UserPublic } from "@/client"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { UserActionsMenu } from "./UserActionsMenu"
+import type { UserPublicWithProfile } from "@/client";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { UserActionsMenu } from "./UserActionsMenu";
 
-export type UserTableData = UserPublic & {
-  isCurrentUser: boolean
-}
+export type UserTableData = UserPublicWithProfile & {
+  isCurrentUser: boolean;
+};
 
 export const columns: ColumnDef<UserTableData>[] = [
   {
-    accessorKey: "full_name",
-    header: "Full Name",
+    accessorKey: "first_name",
+    header: "Ime",
     cell: ({ row }) => {
-      const fullName = row.original.full_name
+      const first_name = row.original.profile?.first_name;
       return (
         <div className="flex items-center gap-2">
           <span
-            className={cn("font-medium", !fullName && "text-muted-foreground")}
+            className={cn(
+              "font-semibold",
+              !first_name && "text-muted-foreground",
+            )}
           >
-            {fullName || "N/A"}
+            {first_name || "N/A"}
           </span>
           {row.original.isCurrentUser && (
-            <Badge variant="outline" className="text-xs">
-              You
+            <Badge variant="outline" className="text-xs font-semibold">
+              Ti
             </Badge>
           )}
         </div>
-      )
+      );
+    },
+  },
+  {
+    accessorKey: "last_name",
+    header: "Prezime",
+    cell: ({ row }) => {
+      const last_name = row.original.profile?.last_name;
+      return (
+        <div className="flex items-center gap-2">
+          <span
+            className={cn(
+              "font-semibold",
+              !last_name && "text-muted-foreground",
+            )}
+          >
+            {last_name || "N/A"}
+          </span>
+          {row.original.isCurrentUser && (
+            <Badge variant="outline" className="text-xs font-semibold">
+              Ti
+            </Badge>
+          )}
+        </div>
+      );
     },
   },
   {
     accessorKey: "email",
     header: "Email",
     cell: ({ row }) => (
-      <span className="text-muted-foreground">{row.original.email}</span>
+      <span className="text-muted-foreground font-semibold">
+        {row.original.email}
+      </span>
     ),
   },
   {
     accessorKey: "is_superuser",
-    header: "Role",
+    header: "Uloga",
     cell: ({ row }) => (
-      <Badge variant={row.original.is_superuser ? "default" : "secondary"}>
-        {row.original.is_superuser ? "Superuser" : "User"}
+      <Badge
+        className="font-semibold"
+        variant={row.original.is_superuser ? "default" : "secondary"}
+      >
+        {row.original.is_superuser ? "Superkorisnik" : "Korisnik"}
       </Badge>
     ),
   },
@@ -51,7 +83,7 @@ export const columns: ColumnDef<UserTableData>[] = [
     accessorKey: "is_active",
     header: "Status",
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 font-semibold">
         <span
           className={cn(
             "size-2 rounded-full",
@@ -59,18 +91,18 @@ export const columns: ColumnDef<UserTableData>[] = [
           )}
         />
         <span className={row.original.is_active ? "" : "text-muted-foreground"}>
-          {row.original.is_active ? "Active" : "Inactive"}
+          {row.original.is_active ? "Aktivan" : "Neaktivan"}
         </span>
       </div>
     ),
   },
   {
     id: "actions",
-    header: () => <span className="sr-only">Actions</span>,
+    header: () => <span className="sr-only">Akcije</span>,
     cell: ({ row }) => (
       <div className="flex justify-end">
         <UserActionsMenu user={row.original} />
       </div>
     ),
   },
-]
+];
