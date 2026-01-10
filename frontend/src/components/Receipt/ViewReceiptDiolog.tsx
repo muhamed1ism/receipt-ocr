@@ -1,11 +1,17 @@
 import { ReceiptPublicDetailedMe } from "@/client";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { ReceiptCard } from "@/components/Common/ReceiptCard";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Card,
+  CardContent,
+  CardFooter,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { XIcon } from "lucide-react";
+import { formatDate, formatTime } from "@/utils/formatDateTime";
 
 interface ViewReceiptDialogProps {
   receipt: ReceiptPublicDetailedMe | null;
@@ -18,32 +24,89 @@ export function ViewReceiptDialog({
 }: ViewReceiptDialogProps) {
   return (
     <Dialog open={receipt !== null} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Detalji računa {receipt?.branch.store.name}</DialogTitle>
-          <DialogDescription>Pregled detalja vašeg računa </DialogDescription>
-        </DialogHeader>
+      <DialogContent
+        className="font-receipt p-2 border-none bg-transparent shadow-none overflow-visible rounded-none"
+        showCloseButton={false}
+      >
         {receipt && (
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-2">
-              <div className="text-sm text-muted-foreground">Prodavnica:</div>
-              <div className="text-sm font-medium">
-                {receipt.branch.store.name}
-              </div>
+          <ReceiptCard className="relative lg:text-lg">
+            <Button
+              onClick={onClose}
+              variant="ghost"
+              size="icon-sm"
+              className="absolute top-6 right-6 z-10"
+            >
+              <XIcon />
+              <span className="sr-only">Close</span>
+            </Button>
+            <Card className="rounded-none border-y-0 relative">
+              <CardHeader className="pt-12">
+                <CardTitle className="font-semibold text-center text-xl lg:text-2xl">
+                  {receipt.branch.store.name}
+                </CardTitle>
+                <div className="mx-15 border-b-2 border-dashed border-muted-foreground mb-3" />
+                <CardDescription>
+                  <div className="flex justify-between w-full">
+                    <p className="">{receipt.branch.city}</p>
 
-              <div className="text-sm text-muted-foreground">Datum:</div>
-              <div className="text-sm font-medium">{receipt.date_time}</div>
+                    <p className="">
+                      {receipt.date_time
+                        ? formatTime(receipt.date_time)
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div className="flex justify-between w-full">
+                    <p className="">{receipt.branch.address}</p>
+                    <p className="">
+                      {receipt.date_time
+                        ? formatDate(receipt.date_time)
+                        : "N/A"}
+                    </p>
+                  </div>
+                </CardDescription>
+                <div className="mb-2 border-dashed border-b-2 border-foreground/50 pb-4" />
+                <p className="text-muted-foreground">STAVKE NA RAČUNU</p>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                {receipt.items?.map((item) => (
+                  <div key={item.id}>
+                    <div className="flex justify-between w-full text-lg lg:text-xl">
+                      <p className="font-medium">{item.name}</p>
+                      <p className="text-right font-semibold hidden md:block">
+                        {item.total_price.toFixed(2)} KM
+                      </p>
+                    </div>
+                    <div className="flex flex-row justify-between">
 
-              <div className="text-sm text-muted-foreground">Vrijeme:</div>
-              <div className="text-sm font-medium">{receipt.date_time}</div>
+                      <div className="flex gap-4 text-muted-foreground">
+                        <p>{item.quantity}</p>
+                        <p>x</p>
+                        <p>{item.price.toFixed(2)} KM</p>
+                      </div>
+                      <p className="text-right font-semibold md:hidden block">
+                        {item.total_price.toFixed(2)} KM
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
 
-              <div className="text-sm text-muted-foreground">Kategorija:</div>
-              <div className="text-sm font-medium">KATEGORIJA</div>
-
-              <div className="text-sm text-muted-foreground">Ukupno:</div>
-              <div className="text-lg font-bold">{receipt.total_amount} KM</div>
-            </div>
-          </div>
+              <CardFooter className="flex flex-col gap-0 items-stretch">
+                <div className="border-b-2 border-dashed border-muted-foreground mb-3" />
+                <div className="w-full flex justify-between mb-2 items-end">
+                  <p className=" text-muted-foreground">Ukupno:</p>
+                  <p className="text-2xl font-bold">
+                    {receipt.total_amount} KM
+                  </p>
+                </div>
+                <div className="mx-15 border-b-2 border-dashed border-muted-foreground my-3" />
+                <div className="text-muted-foreground text-center">
+                  <p>HVALA NA POSJEI!</p>
+                  <p>Thank you for your visit!</p>
+                </div>
+              </CardFooter>
+            </Card>
+          </ReceiptCard>
         )}
       </DialogContent>
     </Dialog>

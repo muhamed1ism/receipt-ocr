@@ -127,34 +127,7 @@
   .font-receipt {
     font-family: "Courier Prime", Courier, "Courier New", monospace;
   }
-}
-
-@layer utilities {
-  .mask-zigzag-top {
-    -webkit-mask-image: repeating-linear-gradient(
-      135deg,
-      #000 0 5px,
-      transparent 5px 10px,
-      #000 10px 15px,
-      transparent 15px 20px
-    );
-
-    -webkit-mask-size: 10px 5px;
-    -webkit-mask-repeat: repeat-x;
-    -webkit-mask-position: top;
-  }
-
-  .mask-zigzag-bottom {
-    -webkit-mask-image: repeating-linear-gradient(
-      45deg,
-      #000 0 5px,
-      transparent 5px 10px,
-      #000 10px 15px,
-      transparent 15px 20px
-    );
-
-    -webkit-mask-size: 10px 5px;
-    -webkit-mask-repeat: repeat-x;
-    -webkit-mask-position: bottom;
+  [data-radix-portal] {
+    @apply font-sans;
   }
 }

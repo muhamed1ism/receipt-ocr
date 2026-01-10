@@ -47,16 +47,16 @@ function Receipts() {
       groups[date].push(receipt);
       return groups;
     },
-    {} as Record<string, typeof receipts.data>,
+    {} as Record<string, typeof receipts.data>
   );
 
   const sortedDates = Object.keys(groupedReceipts).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime(),
+    (a, b) => new Date(b).getTime() - new Date(a).getTime()
   );
 
   sortedDates.forEach((date) => {
     groupedReceipts[date].sort((a, b) =>
-      b.date_time.localeCompare(a.date_time),
+      b.date_time.localeCompare(a.date_time)
     );
   });
 
@@ -66,9 +66,11 @@ function Receipts() {
 
   return (
     <section className="flex flex-col gap-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-4xl font-semibold">Svi Računi</h1>
-        <div className="flex items-center">
+      <div className="grid grid-cols-12 items-center">
+        <h1 className="text-4xl font-semibold col-span-12 lg:col-span-6">
+          Svi Računi
+        </h1>
+        <div className="flex items-center col-span-12 lg:col-span-6">
           <SearchBar
             className="mr-4 rounded-xl"
             placeholder="Pretraži račune..."
@@ -187,7 +189,7 @@ function Receipts() {
                         </CardContent>
                       </Card>
                     </ReceiptCard>
-                  ),
+                  )
                 )}
               </div>
             </div>
