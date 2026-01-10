@@ -4,9 +4,9 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   type Body_login_login_access_token as AccessToken,
   LoginService,
-  ProfilePublic,
+  ProfileCreateMe,
   ProfileService,
-  type UserPublic,
+  UserPublicWithProfile,
   type UserRegister,
   UsersService,
 } from "@/client";
@@ -22,15 +22,9 @@ const useAuth = () => {
   const queryClient = useQueryClient();
   const { showErrorToast } = useCustomToast();
 
-  const { data: user } = useQuery<UserPublic | null, Error>({
+  const { data: user } = useQuery<UserPublicWithProfile | null, Error>({
     queryKey: ["currentUser"],
     queryFn: UsersService.readUserMe,
-    enabled: isLoggedIn(),
-  });
-
-  const { data: profile } = useQuery<ProfilePublic | null, Error>({
-    queryKey: ["currentProfile"],
-    queryFn: ProfileService.readProfileMe,
     enabled: isLoggedIn(),
   });
 
@@ -43,6 +37,18 @@ const useAuth = () => {
     onError: handleError.bind(showErrorToast),
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+
+  const createProfileMutation = useMutation({
+    mutationFn: (data: ProfileCreateMe) =>
+      ProfileService.createProfileMe({ requestBody: data }),
+    onSuccess: () => {
+      navigate({ to: "/" });
+    },
+    onError: handleError.bind(showErrorToast),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
   });
 
@@ -68,10 +74,10 @@ const useAuth = () => {
 
   return {
     signUpMutation,
+    createProfileMutation,
     loginMutation,
     logout,
     user,
-    profile,
   };
 };
 

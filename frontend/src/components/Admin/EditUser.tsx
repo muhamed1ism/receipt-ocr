@@ -34,7 +34,6 @@ import { handleError } from "@/utils";
 const formSchema = z
   .object({
     email: z.email({ message: "Neispravna email adresa" }),
-    full_name: z.string().optional(),
     password: z
       .string()
       .min(8, { message: "Lozinka mora imati najmanje 8 karaktera" })
