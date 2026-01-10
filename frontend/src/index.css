@@ -127,4 +127,7 @@
   .font-receipt {
     font-family: "Courier Prime", Courier, "Courier New", monospace;
   }
+  [data-radix-portal] {
+    @apply font-sans;
+  }
 }
