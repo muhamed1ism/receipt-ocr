@@ -1,4 +1,4 @@
-import { Briefcase, Home, Users, Receipt } from "lucide-react";
+import { Home, Receipt, Users } from "lucide-react";
 
 import { SidebarAppearance } from "@/components/Common/Appearance";
 import { Logo } from "@/components/Common/Logo";
@@ -18,7 +18,7 @@ const baseItems: Item[] = [
 ];
 
 export function AppSidebar() {
-  const { user: currentUser, profile: currentProfile } = useAuth();
+  const { user: currentUser } = useAuth();
 
   const items = currentUser?.is_superuser
     ? [...baseItems, { icon: Users, title: "Admin", path: "/admin" }]
@@ -34,7 +34,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <SidebarAppearance />
-        <User user={currentUser} profile={currentProfile} />
+        <User user={currentUser} profile={currentUser?.profile} />
       </SidebarFooter>
     </Sidebar>
   );

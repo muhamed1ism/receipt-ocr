@@ -1,24 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import useAuth from "@/hooks/useAuth";
+import { ReceiptCard } from "@/components/Common/ReceiptCard";
 import MonthlyBudget from "@/components/Dashboard/MonthlyBudget";
+import WeeklyChart from "@/components/Dashboard/WeeklyChart";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import WeeklyChart from "@/components/Dashboard/WeeklyChart";
-import { ReceiptCard } from "@/components/Common/ReceiptCard";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ChartColumn, CoffeeIcon, TrendingDown } from "lucide-react";
+import useAuth from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/_layout/")({
   component: Dashboard,
 });
 
 function Dashboard() {
-  const { profile: currentProfile } = useAuth();
+  const { user: currentUser } = useAuth();
   const progress = 75;
 
   return (
@@ -28,7 +28,7 @@ function Dashboard() {
           Pozdrav,
           <span className="ml-2 font-semibold text-primary">
             {/* Muhamed Spahić */}
-            {currentProfile?.first_name} {currentProfile?.last_name}
+            {currentUser?.profile?.first_name} {currentUser?.profile?.last_name}
           </span>
         </h1>
       </div>

@@ -16,14 +16,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { LoadingButton } from "@/components/ui/loading-button";
-import useAuth from "@/hooks/useAuth";
 import useCustomToast from "@/hooks/useCustomToast";
 import { cn } from "@/lib/utils";
 import { handleError } from "@/utils";
+import useAuth from "@/hooks/useAuth";
 
 const formSchema = z.object({
-  first_name: z.string().max(30).optional(),
-  last_name: z.string().max(30).optional(),
+  first_name: z.string().max(30),
+  last_name: z.string().max(30),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -32,15 +32,15 @@ const ProfileInformation = () => {
   const queryClient = useQueryClient();
   const { showSuccessToast, showErrorToast } = useCustomToast();
   const [editMode, setEditMode] = useState(false);
-  const { profile: currentProfile } = useAuth();
+  const { user: currentUser } = useAuth();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      first_name: currentProfile?.first_name,
-      last_name: currentProfile?.last_name,
+      first_name: currentUser?.profile?.first_name,
+      last_name: currentUser?.profile?.last_name,
     },
   });
 
@@ -64,10 +64,10 @@ const ProfileInformation = () => {
   const onSubmit = (data: FormData) => {
     const updateData: ProfileUpdate = {};
 
-    if (data.first_name !== currentProfile?.first_name) {
+    if (data.first_name !== currentUser?.profile?.first_name) {
       updateData.first_name = data.first_name;
     }
-    if (data.last_name !== currentProfile?.last_name) {
+    if (data.last_name !== currentUser?.profile?.last_name) {
       updateData.last_name = data.last_name;
     }
 
@@ -80,18 +80,18 @@ const ProfileInformation = () => {
   };
 
   useEffect(() => {
-    if (!currentProfile) return;
+    if (!currentUser) return;
 
     form.reset({
-      first_name: currentProfile.first_name ?? "",
-      last_name: currentProfile.last_name ?? "",
+      first_name: currentUser.profile?.first_name ?? "",
+      last_name: currentUser.profile?.last_name ?? "",
     });
-  }, [currentProfile]);
+  }, [currentUser]);
 
   const onCancel = () => {
     form.reset({
-      first_name: currentProfile?.first_name,
-      last_name: currentProfile?.last_name,
+      first_name: currentUser?.profile?.first_name,
+      last_name: currentUser?.profile?.last_name,
     });
     toggleEditMode();
   };

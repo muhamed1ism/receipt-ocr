@@ -1,5 +1,4 @@
 import uuid
-
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app import crud
@@ -51,13 +50,11 @@ def read_profile_me(
     dependencies=[Depends(get_current_active_superuser)],
     response_model=ProfilePublic,
 )
-def create_profile(
-    *, session: SessionDep, profile_in: ProfileCreate, user_id: uuid.UUID
-) -> ProfilePublic:
+def create_profile(*, session: SessionDep, profile_in: ProfileCreate) -> ProfilePublic:
     """
     Create new profile.
     """
-    profile = crud.get_profile_by_user_id(session=session, user_id=user_id)
+    profile = crud.get_profile_by_user_id(session=session, user_id=profile_in.user_id)
     if profile:
         raise HTTPException(
             status_code=400,
@@ -96,21 +93,21 @@ def create_profile_me(
     response_model=ProfilePublic,
 )
 def update_profile(
-    *, session: SessionDep, profile_in: ProfileUpdate, user_id: uuid.UUID
+    *, session: SessionDep, user_id: uuid.UUID, profile_in: ProfileUpdate
 ) -> ProfilePublic:
     """
     Update user profile.
     """
 
-    current_profile = crud.get_profile_by_user_id(session=session, user_id=user_id)
-    if not current_profile:
+    profile_db = crud.get_profile_by_user_id(session=session, user_id=user_id)
+    if not profile_db:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Profile not found",
         )
 
     new_profile = crud.update_profile(
-        session=session, db_profile=current_profile, profile_update=profile_in
+        session=session, db_profile=profile_db, profile_update=profile_in
     )
     return ProfilePublic.model_validate(new_profile)
 
