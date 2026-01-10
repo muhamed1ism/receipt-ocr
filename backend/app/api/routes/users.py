@@ -115,7 +115,7 @@ def update_password_me(
     )
 
 
-@router.get("/me", response_model=UserPublic)
+@router.get("/me", response_model=UserPublicWithProfile)
 def read_user_me(current_user: CurrentUser) -> Any:
     """
     Get current user.
@@ -187,8 +187,8 @@ def update_user(
     Update a user.
     """
 
-    db_user = session.get(User, user_id)
-    if not db_user:
+    user_db = session.get(User, user_id)
+    if not user_db:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="The user with this id does not exist in the system",
@@ -200,7 +200,7 @@ def update_user(
                 status_code=409, detail="User with this email already exists"
             )
 
-    return crud.update_user(session=session, db_user=db_user, user_in=user_in)
+    return crud.update_user(session=session, db_user=user_db, user_in=user_in)
 
 
 @router.delete("/{user_id}", dependencies=[Depends(get_current_active_superuser)])

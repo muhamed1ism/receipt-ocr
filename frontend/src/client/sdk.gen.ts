@@ -173,7 +173,6 @@ export class ProfileService {
      * Create Profile
      * Create new profile.
      * @param data The data for the request.
-     * @param data.userId
      * @param data.requestBody
      * @returns ProfilePublic Successful Response
      * @throws ApiError
@@ -182,9 +181,6 @@ export class ProfileService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/v1/profile/',
-            query: {
-                user_id: data.userId
-            },
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {
@@ -430,7 +426,7 @@ export class UsersService {
     /**
      * Read User Me
      * Get current user.
-     * @returns UserPublic Successful Response
+     * @returns UserPublicWithProfile Successful Response
      * @throws ApiError
      */
     public static readUserMe(): CancelablePromise<UsersReadUserMeResponse> {
