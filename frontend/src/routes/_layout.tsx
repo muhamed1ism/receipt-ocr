@@ -28,8 +28,8 @@ function Layout() {
         <header className="sticky top-0 z-10 bg-background flex h-16 shrink-0 items-center gap-2 border-b-2 border-dashed border-foreground/50 px-4">
           <SidebarTrigger className="-ml-1 text-muted-foreground" />
         </header>
-        <main className="flex-1 p-6 md:p-8">
-          <div className="mx-auto max-w-7xl">
+        <main className="flex-1 p-2 sm:p-4 md:p-8">
+          <div className="mx-auto h-full max-w-7xl">
             <Outlet />
           </div>
         </main>

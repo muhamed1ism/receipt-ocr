@@ -29,8 +29,8 @@ export default function WeeklyChart({ className }: WeeklyChartType) {
         <h4 className="font-semibold text-2xl">Troškovi ove sedmice</h4>
         <div className="border-b-2 border-dashed border-muted-foreground" />
       </CardHeader>
-      <CardContent className="">
-        <ChartContainer config={chartConfig} className="min-h-fit">
+      <CardContent className="h-full flex items-center">
+        <ChartContainer config={chartConfig} className="w-full">
           <BarChart accessibilityLayer data={chartData}>
             <Bar dataKey="spending" fill="var(--primary)" radius={16}>
               <LabelList

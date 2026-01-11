@@ -1,21 +1,24 @@
-import { Search } from "lucide-react"
-import type { Dispatch, SetStateAction } from "react"
-import { Input } from "../ui/input"
+import { Search } from "lucide-react";
+import type { Dispatch, SetStateAction } from "react";
+import { Input } from "../ui/input";
 
 interface SearchBarType {
-  className?: string
-  placeholder?: string
-  searchQuery: string
-  setSearchQuery: Dispatch<SetStateAction<string>>
+  className?: string;
+  inputClassName?: string;
+  placeholder?: string;
+  searchQuery: string;
+  setSearchQuery: Dispatch<SetStateAction<string>>;
 }
 
 export default function SearchBar({
   className,
+  inputClassName,
   placeholder = "Pretraži...",
   searchQuery,
   setSearchQuery,
 }: SearchBarType) {
-  const searchClass = `relative w-full flex-1 ${className}`
+  const searchClass = "relative w-full flex-1 " + className;
+  const inputClass = "h-9 pl-10 bg-card " + inputClassName;
 
   return (
     <div className={searchClass}>
@@ -24,8 +27,8 @@ export default function SearchBar({
         placeholder={placeholder}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="bg-card h-9 pl-10"
+        className={inputClass}
       />
     </div>
-  )
+  );
 }

@@ -1,22 +1,23 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { UserPen } from "lucide-react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import z from "zod"
-import { type ProfilePublic, ProfileService } from "@/client"
-import useCustomToast from "@/hooks/useCustomToast"
-import { handleError } from "@/utils"
-import { Button } from "../ui/button"
-import { DialogFooter, DialogHeader } from "../ui/dialog"
+import { ProfileCreate, ProfileService } from "@/client";
+import useCustomToast from "@/hooks/useCustomToast";
+import { handleError } from "@/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UserPlus } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
   DialogTitle,
-} from "../ui/dialog.tsx"
-import { DropdownMenuItem } from "../ui/dropdown-menu"
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -24,91 +25,88 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form"
-import { Input } from "../ui/input"
-import { LoadingButton } from "../ui/loading-button"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 const formSchema = z.object({
-  first_name: z.string().optional(),
-  last_name: z.string().optional(),
+  first_name: z.string(),
+  last_name: z.string(),
   phone_number: z.string().optional(),
   date_of_birth: z.string().optional(),
   country: z.string().optional(),
   address: z.string().optional(),
   city: z.string().optional(),
   currency_preference: z.enum(["USD", "EUR", "BAM", "GBP"]).optional(),
-})
+});
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
-interface EditProfileProps {
-  userId: string
-  profile: ProfilePublic
-  onSuccess: () => void
-}
-
-const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const queryClient = useQueryClient()
-  const { showSuccessToast, showErrorToast } = useCustomToast()
+const AddProfile = ({ userId }: { userId: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const { showSuccessToast, showErrorToast } = useCustomToast();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      first_name: profile?.first_name || "",
-      last_name: profile?.last_name || "",
-      phone_number: profile?.phone_number || "",
-      date_of_birth: profile?.date_of_birth || new Date().toISOString(),
-      country: profile?.country || "",
-      address: profile?.address || "",
-      city: profile?.city || "",
-      currency_preference: profile?.currency_preference || "BAM",
+      first_name: "",
+      last_name: "",
+      phone_number: "",
+      date_of_birth: "",
+      country: "",
+      address: "",
+      city: "",
+      currency_preference: "BAM",
     },
-  })
+  });
 
   const mutation = useMutation({
-    mutationFn: (data: FormData) =>
-      ProfileService.updateProfile({
-        userId,
-        requestBody: data,
-      }),
+    mutationFn: (data: ProfileCreate) =>
+      ProfileService.createProfile({ requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("Profil je uspješno ažuriran")
-      setIsOpen(false)
-      onSuccess()
+      showSuccessToast("Profil je uspješno kreiran");
+      form.reset();
+      setIsOpen(false);
     },
     onError: handleError.bind(showErrorToast),
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] })
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
-  })
+  });
 
   const onSubmit = (data: FormData) => {
-    mutation.mutate(data)
-  }
+    mutation.mutate({
+      ...data,
+      user_id: userId,
+    });
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuItem
-        onSelect={(e) => e.preventDefault()}
-        onClick={() => setIsOpen(true)}
-        className="font-receipt font-semibold"
-      >
-        <UserPen />
-        Uredi profil
-      </DropdownMenuItem>
-
-      <DialogContent className="sm:max-w-md font-receipt">
-        <DialogHeader>
-          <DialogTitle>Uredi profil korisnika</DialogTitle>
-          <DialogDescription>
-            Ažuriraj korisnički profil ispod.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogTrigger asChild>
+        <DropdownMenuItem
+          onSelect={(e) => e.preventDefault()}
+          onClick={() => setIsOpen(true)}
+          className="font-receipt font-semibold"
+        >
+          <UserPlus />
+          Kreiraj profil
+        </DropdownMenuItem>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md font-receipt overflow-y-auto max-h-[calc(100dvh-2rem)] h-fit">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
+            <DialogHeader>
+              <DialogTitle>Kreiraj korisnika</DialogTitle>
+              <DialogDescription>
+                Ispunite obrazac ispod da biste kreirali profil korisnika u
+                sistem.
+              </DialogDescription>
+            </DialogHeader>
             <div className="grid gap-4 py-4">
               <FormField
                 control={form.control}
@@ -157,16 +155,9 @@ const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
                 name="country"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Država <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Država </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Država"
-                        type="text"
-                        {...field}
-                        required
-                      />
+                      <Input placeholder="Država" type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -178,16 +169,9 @@ const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
                 name="city"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Grad <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Grad </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Grad"
-                        type="text"
-                        {...field}
-                        required
-                      />
+                      <Input placeholder="Grad" type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -199,16 +183,9 @@ const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Adresa <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Adresa </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Adresa"
-                        type="text"
-                        {...field}
-                        required
-                      />
+                      <Input placeholder="Adresa" type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -220,15 +197,12 @@ const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
                 name="phone_number"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Broj telefona <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Broj telefona </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Broj telefona"
                         type="text"
                         {...field}
-                        required
                       />
                     </FormControl>
                     <FormMessage />
@@ -241,15 +215,12 @@ const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
                 name="date_of_birth"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Datum rođenja <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Datum rođenja </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Datum rođenja"
                         type="date"
                         {...field}
-                        required
                       />
                     </FormControl>
                     <FormMessage />
@@ -262,15 +233,12 @@ const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
                 name="currency_preference"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Novčana valuta <span className="text-destructive">*</span>
-                    </FormLabel>
+                    <FormLabel>Novčana valuta</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Novčana valuta"
                         type="text"
                         {...field}
-                        required
                       />
                     </FormControl>
                     <FormMessage />
@@ -301,7 +269,7 @@ const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
         </Form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default EditProfile
+export default AddProfile;

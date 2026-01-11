@@ -30,12 +30,12 @@ function Dashboard() {
       <ReceiptCard className="col-span-4">
         <MonthlyBudget
           progress={progress}
-          className="rounded-none h-full col-span-1 gap-2 border-y-0"
+          className="rounded-none h-full gap-2 border-y-0"
         />
       </ReceiptCard>
 
       {/* Amount of receipts this month */}
-      <ReceiptCard className="col-span-1">
+      <ReceiptCard className="col-span-4 sm:col-span-2 md:col-span-1">
         <Card className="rounded-none h-full gap-2 border-y-0">
           <CardHeader className="font-semibold text-xl">Broj računa</CardHeader>
           <div className="mx-2 mt-7 border-b-2 border-dashed border-muted-foreground" />
@@ -47,7 +47,7 @@ function Dashboard() {
       </ReceiptCard>
 
       {/* Average receipts price */}
-      <ReceiptCard className="col-span-1">
+      <ReceiptCard className="col-span-4 sm:col-span-2 md:col-span-1">
         <Card className="rounded-none h-full gap-2 border-y-0">
           <CardHeader className="font-semibold text-xl">
             Prosjek po računu
@@ -61,7 +61,7 @@ function Dashboard() {
       </ReceiptCard>
 
       {/* Average receipts price */}
-      <ReceiptCard className="col-span-1">
+      <ReceiptCard className="col-span-4 sm:col-span-2 md:col-span-1">
         <Card className="rounded-none h-full gap-2 border-y-0">
           <CardHeader className="font-semibold text-xl">
             Najčešće kupljen proizvod
@@ -78,7 +78,7 @@ function Dashboard() {
       </ReceiptCard>
 
       {/* Average receipts price */}
-      <ReceiptCard className="col-span-1">
+      <ReceiptCard className="col-span-4 sm:col-span-2 md:col-span-1">
         <Card className="rounded-none h-full gap-2 border-y-0">
           <CardHeader className="font-semibold text-xl">
             Najrijeđe kupljen proizvod
@@ -95,12 +95,12 @@ function Dashboard() {
       </ReceiptCard>
 
       {/* Average receipts price */}
-      <ReceiptCard className="col-span-2">
+      <ReceiptCard className="col-span-4 md:col-span-2">
         <WeeklyChart className="rounded-none h-full gap-2 border-y-0" />
       </ReceiptCard>
 
       {/* Average receipts price */}
-      <ReceiptCard className="col-span-2">
+      <ReceiptCard className="col-span-4 md:col-span-2">
         <Card className="rounded-none h-full gap-2 border-y-0">
           <CardHeader className="font-semibold text-2xl">
             Brzi uvid
