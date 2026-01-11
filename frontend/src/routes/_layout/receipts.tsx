@@ -47,16 +47,16 @@ function Receipts() {
       groups[date].push(receipt);
       return groups;
     },
-    {} as Record<string, typeof receipts.data>
+    {} as Record<string, typeof receipts.data>,
   );
 
   const sortedDates = Object.keys(groupedReceipts).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime()
+    (a, b) => new Date(b).getTime() - new Date(a).getTime(),
   );
 
   sortedDates.forEach((date) => {
     groupedReceipts[date].sort((a, b) =>
-      b.date_time.localeCompare(a.date_time)
+      b.date_time.localeCompare(a.date_time),
     );
   });
 
@@ -77,20 +77,20 @@ function Receipts() {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
           />
-          <Button variant="secondary" className="mr-4">
+          <Button variant="secondary" className="mr-4 rounded-sm">
             <ArrowDownWideNarrow />
           </Button>
           <Button
             onClick={() => setViewMode("list")}
             variant={viewMode === "list" ? "default" : "secondary"}
-            className="rounded-r-none"
+            className="rounded-r-none rounded-l-sm"
           >
             <List />
           </Button>
           <Button
             onClick={() => setViewMode("grid")}
             variant={viewMode === "grid" ? "default" : "secondary"}
-            className="rounded-l-none"
+            className="rounded-l-none rounded-r-sm"
           >
             <Grid2x2 />
           </Button>
@@ -189,7 +189,7 @@ function Receipts() {
                         </CardContent>
                       </Card>
                     </ReceiptCard>
-                  )
+                  ),
                 )}
               </div>
             </div>

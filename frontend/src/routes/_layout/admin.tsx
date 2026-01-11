@@ -1,60 +1,49 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Suspense } from "react";
 
-import { type UserPublic, UserPublicWithProfile, UsersService } from "@/client";
-import AddUser from "@/components/Admin/AddUser";
-import { columns, type UserTableData } from "@/components/Admin/columns";
-import { DataTable } from "@/components/Common/DataTable";
-import PendingUsers from "@/components/Pending/PendingUsers";
-import useAuth from "@/hooks/useAuth";
-
-function getUsersQueryOptions() {
-  return {
-    queryFn: () => UsersService.readUsers({ skip: 0, limit: 100 }),
-    queryKey: ["users"],
-  };
-}
+import Receipts from "@/components/Admin/Receipts";
+import Users from "@/components/Admin/Users";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ReceiptCard } from "@/components/Common/ReceiptCard";
 
 export const Route = createFileRoute("/_layout/admin")({
   component: Admin,
 });
 
-function UsersTableContent() {
-  const { user: currentUser } = useAuth();
-  const { data: users } = useSuspenseQuery(getUsersQueryOptions());
-
-  const tableData: UserTableData[] = users.data.map(
-    (user: UserPublicWithProfile) => ({
-      ...user,
-      isCurrentUser: currentUser?.id === user.id,
-    }),
-  );
-
-  return <DataTable columns={columns} data={tableData} />;
-}
-
-function UsersTable() {
-  return (
-    <Suspense fallback={<PendingUsers />}>
-      <UsersTableContent />
-    </Suspense>
-  );
-}
+const tabsConfig = [
+  { value: "users", title: "Korisnici", component: Users },
+  { value: "receipts", title: "Računi", component: Receipts },
+];
 
 function Admin() {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <ReceiptCard>
+      <div className="flex flex-col min-h-[540px] md:min-h-full gap-6 bg-card p-4 lg:p-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Korisnici</h1>
+          <h1 className="text-4xl font-bold tracking-tight">Admin</h1>
           <p className="text-muted-foreground">
-            Upravljajte korisničkim računima i dozvolama
-          </p>
+            Upravljanje sistemom, korisničkim računima i administrativnim
+            postavkama{" "}
+          </p>{" "}
         </div>
-        <AddUser />
+        <Tabs defaultValue="users">
+          <TabsList className="bg-background">
+            {tabsConfig.map((tab) => (
+              <TabsTrigger
+                className="font-semibold data-[state=active]:bg-card"
+                key={tab.value}
+                value={tab.value}
+              >
+                {tab.title}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {tabsConfig.map((tab) => (
+            <TabsContent key={tab.value} value={tab.value} className="mt-4">
+              <tab.component />
+            </TabsContent>
+          ))}
+        </Tabs>
       </div>
-      <UsersTable />
-    </div>
+    </ReceiptCard>
   );
 }

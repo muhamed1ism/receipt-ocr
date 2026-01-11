@@ -13,6 +13,7 @@ import DeleteUser from "./DeleteUser";
 import EditUser from "./EditUser";
 import EditProfile from "./EditProfile";
 import AddProfile from "./AddProfile";
+import ViewReceipts from "./ViewReceipts";
 
 interface UserActionsMenuProps {
   user: UserPublicWithProfile;
@@ -34,6 +35,7 @@ export const UserActionsMenu = ({ user }: UserActionsMenuProps) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <ViewReceipts />
         {user.profile ? (
           <EditProfile
             userId={user.id}

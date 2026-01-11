@@ -26,7 +26,7 @@ export const columns: ColumnDef<UserTableData>[] = [
             {first_name || "N/A"}
           </span>
           {row.original.isCurrentUser && (
-            <Badge variant="outline" className="text-xs font-semibold">
+            <Badge variant="secondary" className="text-xs font-semibold">
               Ti
             </Badge>
           )}
@@ -50,7 +50,7 @@ export const columns: ColumnDef<UserTableData>[] = [
             {last_name || "N/A"}
           </span>
           {row.original.isCurrentUser && (
-            <Badge variant="outline" className="text-xs font-semibold">
+            <Badge variant="secondary" className="text-xs font-semibold">
               Ti
             </Badge>
           )}

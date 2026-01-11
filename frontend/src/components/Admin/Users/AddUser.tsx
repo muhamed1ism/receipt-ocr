@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Pencil } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { type UserPublic, UsersService } from "@/client";
+import { type UserCreate, UsersService } from "@/client";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -16,8 +16,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import {
   Form,
   FormControl,
@@ -36,26 +36,22 @@ const formSchema = z
     email: z.email({ message: "Neispravna email adresa" }),
     password: z
       .string()
-      .min(8, { message: "Lozinka mora imati najmanje 8 karaktera" })
-      .optional()
-      .or(z.literal("")),
-    confirm_password: z.string().optional(),
-    is_superuser: z.boolean().optional(),
-    is_active: z.boolean().optional(),
+      .min(1, { message: "Lozinka je obavezna" })
+      .min(8, { message: "Lozinka mora imati najmanje 8 karaktera" }),
+    confirm_password: z
+      .string()
+      .min(1, { message: "Molimo potvrdite svoju lozinku" }),
+    is_superuser: z.boolean(),
+    is_active: z.boolean(),
   })
-  .refine((data) => !data.password || data.password === data.confirm_password, {
+  .refine((data) => data.password === data.confirm_password, {
     message: "Lozinke se ne podudaraju",
     path: ["confirm_password"],
   });
 
 type FormData = z.infer<typeof formSchema>;
 
-interface EditUserProps {
-  user: UserPublic;
-  onSuccess: () => void;
-}
-
-const EditUser = ({ user, onSuccess }: EditUserProps) => {
+const AddUser = () => {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
   const { showSuccessToast, showErrorToast } = useCustomToast();
@@ -65,19 +61,21 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      email: user.email,
-      is_superuser: user.is_superuser,
-      is_active: user.is_active,
+      email: "",
+      password: "",
+      confirm_password: "",
+      is_superuser: false,
+      is_active: false,
     },
   });
 
   const mutation = useMutation({
-    mutationFn: (data: FormData) =>
-      UsersService.updateUser({ userId: user.id, requestBody: data }),
+    mutationFn: (data: UserCreate) =>
+      UsersService.createUser({ requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("Korisnik je uspješno ažuriran");
+      showSuccessToast("Korisnik je uspješno kreiran");
+      form.reset();
       setIsOpen(false);
-      onSuccess();
     },
     onError: handleError.bind(showErrorToast),
     onSettled: () => {
@@ -86,33 +84,26 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
   });
 
   const onSubmit = (data: FormData) => {
-    // exclude confirm_password from submission data and remove password if empty
-    const { confirm_password: _, ...submitData } = data;
-    if (!submitData.password) {
-      delete submitData.password;
-    }
-    mutation.mutate(submitData);
+    mutation.mutate(data);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuItem
-        onSelect={(e) => e.preventDefault()}
-        onClick={() => setIsOpen(true)}
-        className="font-receipt font-semibold"
-      >
-        <Pencil />
-        Uredi korisnika
-      </DropdownMenuItem>
-      <DialogContent className="sm:max-w-md font-receipt">
+      <DialogTrigger asChild>
+        <Button className="self-end my-4 font-semibold">
+          <Plus className="mr-2" />
+          Dodaj korisnika
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md font-receipt overflow-y-auto max-h-[calc(100dvh-2rem)] h-fit">
+        <DialogHeader>
+          <DialogTitle>Dodaj korisnika</DialogTitle>
+          <DialogDescription>
+            Ispunite obrazac ispod da biste dodali novog korisnika u sistem.
+          </DialogDescription>
+        </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <DialogHeader>
-              <DialogTitle>Uredi korisnika</DialogTitle>
-              <DialogDescription>
-                Ažuriraj detalje korisnika ispod.
-              </DialogDescription>
-            </DialogHeader>
             <div className="grid gap-4 py-4">
               <FormField
                 control={form.control}
@@ -140,12 +131,16 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Postavi lozinku</FormLabel>
+                    <FormLabel>
+                      Postavi lozinku{" "}
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Password"
                         type="password"
                         {...field}
+                        required
                       />
                     </FormControl>
                     <FormMessage />
@@ -158,12 +153,16 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
                 name="confirm_password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Potvrdi lozinku</FormLabel>
+                    <FormLabel>
+                      Potvrdi lozinku{" "}
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Password"
                         type="password"
                         {...field}
+                        required
                       />
                     </FormControl>
                     <FormMessage />
@@ -233,4 +232,4 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
   );
 };
 
-export default EditUser;
+export default AddUser;
