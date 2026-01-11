@@ -1,11 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-import ChangePassword from "@/components/UserSettings/ChangePassword";
-import DeleteAccount from "@/components/UserSettings/DeleteAccount";
-import ChangeEmail from "@/components/UserSettings/ChangeEmail";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import useAuth from "@/hooks/useAuth";
-import ProfileInformation from "@/components/UserSettings/ProfileInformation";
+import { createFileRoute } from "@tanstack/react-router"
+import ChangeEmail from "@/components/UserSettings/ChangeEmail"
+import ChangePassword from "@/components/UserSettings/ChangePassword"
+import DeleteAccount from "@/components/UserSettings/DeleteAccount"
+import ProfileInformation from "@/components/UserSettings/ProfileInformation"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import useAuth from "@/hooks/useAuth"
 
 const tabsConfig = [
   { value: "my-profile", title: "Moj Profil", component: ProfileInformation },
@@ -16,20 +15,20 @@ const tabsConfig = [
     title: "Obriši račun",
     component: DeleteAccount,
   },
-];
+]
 
 export const Route = createFileRoute("/_layout/settings")({
   component: UserSettings,
-});
+})
 
 function UserSettings() {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser } = useAuth()
   const finalTabs = currentUser?.is_superuser
     ? tabsConfig.slice(0, 4)
-    : tabsConfig;
+    : tabsConfig
 
   if (!currentUser) {
-    return null;
+    return null
   }
 
   return (
@@ -62,5 +61,5 @@ function UserSettings() {
         ))}
       </Tabs>
     </div>
-  );
+  )
 }

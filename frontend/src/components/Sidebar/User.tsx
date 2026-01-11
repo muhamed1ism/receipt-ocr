@@ -1,7 +1,7 @@
-import { Link as RouterLink } from "@tanstack/react-router";
-import { ChevronsUpDown, LogOut, Settings } from "lucide-react";
+import { Link as RouterLink } from "@tanstack/react-router"
+import { ChevronsUpDown, LogOut, Settings } from "lucide-react"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,20 +9,20 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu"
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import useAuth from "@/hooks/useAuth";
-import { getInitials } from "@/utils";
+} from "@/components/ui/sidebar"
+import useAuth from "@/hooks/useAuth"
+import { getInitials } from "@/utils"
 
 interface UserInfoProps {
-  first_name?: string;
-  last_name?: string;
-  email?: string;
+  first_name?: string
+  last_name?: string
+  email?: string
 }
 
 function UserInfo({ first_name, last_name, email }: UserInfoProps) {
@@ -40,25 +40,25 @@ function UserInfo({ first_name, last_name, email }: UserInfoProps) {
         <p className="text-xs text-muted-foreground truncate w-full">{email}</p>
       </div>
     </div>
-  );
+  )
 }
 
 export function User({ user, profile }: { user: any; profile: any }) {
-  const { logout } = useAuth();
-  const { isMobile, setOpenMobile } = useSidebar();
+  const { logout } = useAuth()
+  const { isMobile, setOpenMobile } = useSidebar()
   const borderDashed =
-    "border-2 border-foreground/0 data-[state=open]:bg-sidebar-accent data-[state=open]:border-2 data-[state=open]:border-dashed data-[state=open]:border-foreground/30 hover:border-dashed hover:border-2 hover:border-foreground/10 data-[state=open]:text-sidebar-accent-foreground";
+    "border-2 border-foreground/0 data-[state=open]:bg-sidebar-accent data-[state=open]:border-2 data-[state=open]:border-dashed data-[state=open]:border-foreground/30 hover:border-dashed hover:border-2 hover:border-foreground/10 data-[state=open]:text-sidebar-accent-foreground"
 
-  if (!user) return null;
+  if (!user) return null
 
   const handleMenuClick = () => {
     if (isMobile) {
-      setOpenMobile(false);
+      setOpenMobile(false)
     }
-  };
+  }
   const handleLogout = async () => {
-    logout();
-  };
+    logout()
+  }
 
   return (
     <SidebarMenu>
@@ -102,5 +102,5 @@ export function User({ user, profile }: { user: any; profile: any }) {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  );
+  )
 }

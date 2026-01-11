@@ -49,6 +49,29 @@ build-backend = "hatchling.build"
 strict = true
 exclude = ["venv", ".venv", "alembic"]
 
+[tool.pyright]
+typeCheckingMode = "basic"  # "basic", "standard", or "strict"
+pythonVersion = "3.10"
+exclude = [
+    "venv",
+    ".venv",
+    "alembic",
+]
+# Disable overly strict checks that don't work well with FastAPI
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+reportUnknownArgumentType = false
+reportUnknownVariableType = false
+reportGeneralTypeIssues = false
+reportOptionalMemberAccess = false
+reportOptionalSubscript = false
+reportPrivateImportUsage = false
+reportIncompatibleMethodOverride = false
+# Keep these enabled for catching real errors
+reportUndefinedVariable = true
+reportUnusedImport = true
+reportUnusedVariable = "warning"
+
 [tool.ruff]
 target-version = "py310"
 exclude = ["alembic"]

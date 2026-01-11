@@ -1,9 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { ViewReceiptDialog } from "@/components/Receipt/ViewReceiptDiolog";
-import { ArrowDownWideNarrow, Grid2x2, List } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ReceiptCard } from "@/components/Common/ReceiptCard";
+import { createFileRoute } from "@tanstack/react-router"
+import { ArrowDownWideNarrow, Grid2x2, List } from "lucide-react"
+import { useState } from "react"
+import type { ReceiptPublicDetailedMe } from "@/client"
+import { ReceiptCard } from "@/components/Common/ReceiptCard"
+import SearchBar from "@/components/Common/SearchBar"
+import { ViewReceiptDialog } from "@/components/Receipt/ViewReceiptDiolog"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -11,58 +13,54 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import SearchBar from "@/components/Common/SearchBar";
-import { MOCK_RECEIPTS } from "@/mock/receipts";
-import { ReceiptPublicDetailedMe } from "@/client";
-import { formatDate, formatTime } from "@/utils/formatDateTime";
+} from "@/components/ui/card"
+import { MOCK_RECEIPTS } from "@/mock/receipts"
+import { formatDate, formatTime } from "@/utils/formatDateTime"
 
 export const Route = createFileRoute("/_layout/receipts")({
   component: Receipts,
-});
+})
 
 interface modalType {
-  isOpen: boolean;
-  receipt: ReceiptPublicDetailedMe | null;
+  isOpen: boolean
+  receipt: ReceiptPublicDetailedMe | null
 }
 
-type ViewMode = "grid" | "list";
+type ViewMode = "grid" | "list"
 
 function Receipts() {
-  const [viewMode, setViewMode] = useState<ViewMode>("list");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState<ViewMode>("list")
+  const [searchQuery, setSearchQuery] = useState("")
   const [modal, setModal] = useState<modalType>({
     isOpen: false,
     receipt: null,
-  });
+  })
 
-  const receipts = MOCK_RECEIPTS;
+  const receipts = MOCK_RECEIPTS
 
   const groupedReceipts = receipts.data.reduce(
     (groups, receipt) => {
-      const date = formatDate(receipt.date_time);
+      const date = formatDate(receipt.date_time)
       if (!groups[date]) {
-        groups[date] = [];
+        groups[date] = []
       }
-      groups[date].push(receipt);
-      return groups;
+      groups[date].push(receipt)
+      return groups
     },
-    {} as Record<string, typeof receipts.data>
-  );
+    {} as Record<string, typeof receipts.data>,
+  )
 
   const sortedDates = Object.keys(groupedReceipts).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime()
-  );
+    (a, b) => new Date(b).getTime() - new Date(a).getTime(),
+  )
 
   sortedDates.forEach((date) => {
-    groupedReceipts[date].sort((a, b) =>
-      b.date_time.localeCompare(a.date_time)
-    );
-  });
+    groupedReceipts[date].sort((a, b) => b.date_time.localeCompare(a.date_time))
+  })
 
   const handleOpenReceipt = (receipt: ReceiptPublicDetailedMe) => {
-    setModal({ isOpen: true, receipt });
-  };
+    setModal({ isOpen: true, receipt })
+  }
 
   return (
     <section className="flex flex-col gap-6">
@@ -189,7 +187,7 @@ function Receipts() {
                         </CardContent>
                       </Card>
                     </ReceiptCard>
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -201,5 +199,5 @@ function Receipts() {
         onClose={() => setModal({ isOpen: false, receipt: null })}
       />
     </section>
-  );
+  )
 }

@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useForm } from "react-hook-form"
 
-import { UsersService } from "@/client";
-import { Button } from "@/components/ui/button";
+import { UsersService } from "@/client"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogClose,
@@ -12,33 +12,33 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { LoadingButton } from "@/components/ui/loading-button";
-import useAuth from "@/hooks/useAuth";
-import useCustomToast from "@/hooks/useCustomToast";
-import { handleError } from "@/utils";
+} from "@/components/ui/dialog"
+import { LoadingButton } from "@/components/ui/loading-button"
+import useAuth from "@/hooks/useAuth"
+import useCustomToast from "@/hooks/useCustomToast"
+import { handleError } from "@/utils"
 
 const DeleteConfirmation = () => {
-  const queryClient = useQueryClient();
-  const { showSuccessToast, showErrorToast } = useCustomToast();
-  const { handleSubmit } = useForm();
-  const { logout } = useAuth();
+  const queryClient = useQueryClient()
+  const { showSuccessToast, showErrorToast } = useCustomToast()
+  const { handleSubmit } = useForm()
+  const { logout } = useAuth()
 
   const mutation = useMutation({
     mutationFn: () => UsersService.deleteUserMe(),
     onSuccess: () => {
-      showSuccessToast("Vaš račun je uspješno obrisan.");
-      logout();
+      showSuccessToast("Vaš račun je uspješno obrisan.")
+      logout()
     },
     onError: handleError.bind(showErrorToast),
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] })
     },
-  });
+  })
 
   const onSubmit = async () => {
-    mutation.mutate();
-  };
+    mutation.mutate()
+  }
 
   return (
     <Dialog>
@@ -80,7 +80,7 @@ const DeleteConfirmation = () => {
         </form>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default DeleteConfirmation;
+export default DeleteConfirmation

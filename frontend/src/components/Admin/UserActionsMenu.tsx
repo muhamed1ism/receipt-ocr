@@ -1,29 +1,29 @@
-import { EllipsisVertical } from "lucide-react";
-import { useState } from "react";
+import { EllipsisVertical } from "lucide-react"
+import { useState } from "react"
 
-import type { UserPublicWithProfile } from "@/client";
-import { Button } from "@/components/ui/button";
+import type { UserPublicWithProfile } from "@/client"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import useAuth from "@/hooks/useAuth";
-import DeleteUser from "./DeleteUser";
-import EditUser from "./EditUser";
-import EditProfile from "./EditProfile";
-import AddProfile from "./AddProfile";
+} from "@/components/ui/dropdown-menu"
+import useAuth from "@/hooks/useAuth"
+import AddProfile from "./AddProfile"
+import DeleteUser from "./DeleteUser"
+import EditProfile from "./EditProfile"
+import EditUser from "./EditUser"
 
 interface UserActionsMenuProps {
-  user: UserPublicWithProfile;
+  user: UserPublicWithProfile
 }
 
 export const UserActionsMenu = ({ user }: UserActionsMenuProps) => {
-  const [open, setOpen] = useState(false);
-  const { user: currentUser } = useAuth();
+  const [open, setOpen] = useState(false)
+  const { user: currentUser } = useAuth()
 
   if (user.id === currentUser?.id) {
-    return null;
+    return null
   }
 
   return (
@@ -47,5 +47,5 @@ export const UserActionsMenu = ({ user }: UserActionsMenuProps) => {
         <DeleteUser id={user.id} onSuccess={() => setOpen(false)} />
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-};
+  )
+}

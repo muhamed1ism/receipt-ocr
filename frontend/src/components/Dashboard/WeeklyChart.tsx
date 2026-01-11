@@ -1,9 +1,9 @@
-import { Bar, BarChart, XAxis, LabelList } from "recharts";
-import { Card, CardHeader, CardContent } from "../ui/card";
-import { type ChartConfig, ChartContainer } from "../ui/chart";
+import { Bar, BarChart, LabelList, XAxis } from "recharts"
+import { Card, CardContent, CardHeader } from "../ui/card"
+import { type ChartConfig, ChartContainer } from "../ui/chart"
 
 interface WeeklyChartType {
-  className?: string;
+  className?: string
 }
 
 export default function WeeklyChart({ className }: WeeklyChartType) {
@@ -15,13 +15,13 @@ export default function WeeklyChart({ className }: WeeklyChartType) {
     { day: "Petak", spending: 209 },
     { day: "Subota", spending: 214 },
     { day: "Nedjelja", spending: 214 },
-  ];
+  ]
 
   const chartConfig = {
     spending: {
       label: "Potrošnja",
     },
-  } satisfies ChartConfig;
+  } satisfies ChartConfig
 
   return (
     <Card className={className}>
@@ -53,5 +53,5 @@ export default function WeeklyChart({ className }: WeeklyChartType) {
         </ChartContainer>
       </CardContent>
     </Card>
-  );
+  )
 }

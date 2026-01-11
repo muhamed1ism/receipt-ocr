@@ -1,4 +1,4 @@
-import DeleteConfirmation from "./DeleteConfirmation";
+import DeleteConfirmation from "./DeleteConfirmation"
 
 const DeleteAccount = () => {
   return (
@@ -9,7 +9,7 @@ const DeleteAccount = () => {
       </p>
       <DeleteConfirmation />
     </div>
-  );
-};
+  )
+}
 
-export default DeleteAccount;
+export default DeleteAccount

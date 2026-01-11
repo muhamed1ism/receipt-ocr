@@ -1,12 +1,12 @@
-import { Search } from "lucide-react";
-import { Input } from "../ui/input";
-import { Dispatch, SetStateAction } from "react";
+import { Search } from "lucide-react"
+import type { Dispatch, SetStateAction } from "react"
+import { Input } from "../ui/input"
 
 interface SearchBarType {
-  className?: string;
-  placeholder?: string;
-  searchQuery: string;
-  setSearchQuery: Dispatch<SetStateAction<string>>;
+  className?: string
+  placeholder?: string
+  searchQuery: string
+  setSearchQuery: Dispatch<SetStateAction<string>>
 }
 
 export default function SearchBar({
@@ -15,7 +15,7 @@ export default function SearchBar({
   searchQuery,
   setSearchQuery,
 }: SearchBarType) {
-  const searchClass = "relative w-full flex-1 " + className;
+  const searchClass = `relative w-full flex-1 ${className}`
 
   return (
     <div className={searchClass}>
@@ -27,5 +27,5 @@ export default function SearchBar({
         className="bg-card h-9 pl-10"
       />
     </div>
-  );
+  )
 }
