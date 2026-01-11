@@ -1,13 +1,10 @@
-import { ProfilePublic, ProfileService } from "@/client";
-import useCustomToast from "@/hooks/useCustomToast";
-import { handleError } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
   DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
 } from "@/components/ui/dialog.tsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserPen } from "lucide-react";
@@ -18,15 +15,18 @@ import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogFooter } from "@/components/ui/dialog";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { ProfilePublic, ProfileService } from "@/client";
+import useCustomToast from "@/hooks/useCustomToast";
+import { handleError } from "@/utils";
 
 const formSchema = z.object({
   first_name: z.string().optional(),

@@ -1,20 +1,20 @@
-import type { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table"
 
-import type { UserPublicWithProfile } from "@/client";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { UserActionsMenu } from "./UserActionsMenu";
+import type { UserPublicWithProfile } from "@/client"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
+import { UserActionsMenu } from "./UserActionsMenu"
 
 export type UserTableData = UserPublicWithProfile & {
-  isCurrentUser: boolean;
-};
+  isCurrentUser: boolean
+}
 
 export const columns: ColumnDef<UserTableData>[] = [
   {
     accessorKey: "first_name",
     header: "Ime",
     cell: ({ row }) => {
-      const first_name = row.original.profile?.first_name;
+      const first_name = row.original.profile?.first_name
       return (
         <div className="flex items-center gap-2">
           <span
@@ -31,14 +31,14 @@ export const columns: ColumnDef<UserTableData>[] = [
             </Badge>
           )}
         </div>
-      );
+      )
     },
   },
   {
     accessorKey: "last_name",
     header: "Prezime",
     cell: ({ row }) => {
-      const last_name = row.original.profile?.last_name;
+      const last_name = row.original.profile?.last_name
       return (
         <div className="flex items-center gap-2">
           <span
@@ -55,7 +55,7 @@ export const columns: ColumnDef<UserTableData>[] = [
             </Badge>
           )}
         </div>
-      );
+      )
     },
   },
   {
@@ -105,4 +105,4 @@ export const columns: ColumnDef<UserTableData>[] = [
       </div>
     ),
   },
-];
+]

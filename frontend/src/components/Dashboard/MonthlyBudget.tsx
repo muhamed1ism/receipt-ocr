@@ -1,9 +1,9 @@
-import { Card, CardHeader, CardContent } from "../ui/card";
-import { Progress } from "../ui/progress";
+import { Card, CardContent, CardHeader } from "../ui/card"
+import { Progress } from "../ui/progress"
 
 interface MonthlyBudgetType {
-  progress: number;
-  className?: string;
+  progress: number
+  className?: string
 }
 
 export default function MonthlyBudget({
@@ -11,7 +11,7 @@ export default function MonthlyBudget({
   className,
 }: MonthlyBudgetType) {
   const adjustedProgress =
-    progress < 100 ? (progress === 0 ? 0 : progress - 1) : progress - 4;
+    progress < 100 ? (progress === 0 ? 0 : progress - 1) : progress - 4
 
   return (
     <Card className={className}>
@@ -41,5 +41,5 @@ export default function MonthlyBudget({
         </p>
       </CardContent>
     </Card>
-  );
+  )
 }

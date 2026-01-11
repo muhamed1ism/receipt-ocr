@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
+import type { Dispatch, SetStateAction } from "react";
 import { Input } from "../ui/input";
-import { Dispatch, SetStateAction } from "react";
 
 interface SearchBarType {
   className?: string;

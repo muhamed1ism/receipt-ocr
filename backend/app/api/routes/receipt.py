@@ -17,13 +17,8 @@ from app.crud import (
     get_or_create_store,
 )
 from app.models.receipt import Receipt
-from app.schemas import (
-    ReceiptCreate,
-    ReceiptPublic,
-    ReceiptUpdate,
-)
+from app.schemas import ReceiptCreate, ReceiptPublic, ReceiptUpdate
 from app.schemas.receipt import (
-    ReceiptPublicDetailed,
     ReceiptsPublicDetailed,
     ReceiptsPublicDetailedMe,
 )
@@ -37,12 +32,36 @@ router = APIRouter(prefix="/receipt", tags=["receipt"])
     response_model=ReceiptsPublicDetailed,
 )
 def read_receipts(
-    session: SessionDep, skip: int = 0, limit: int = 100
+    session: SessionDep,
+    skip: int = 0,
+    limit: int = 20,
+    q: str | None = None,
+    date_from: str | None = None,
+    date_to: str | None = None,
 ) -> ReceiptsPublicDetailed | None:
+    # Capping maximum results
+    if limit > 100:
+        limit = 100
+
+    # Capping search query lenght
+    if q and len(q) > 50:
+        raise HTTPException(
+            status_code=400, detail="Seach query too long (max 50 characters)"
+        )
+
     """
-    Retrieve all receipts.
+    Retrieve all receipts with optional search and filtering.
+
     """
-    receipts = crud.get_all_receipts(session=session, skip=skip, limit=limit)
+
+    receipts = crud.get_all_receipts(
+        session=session,
+        skip=skip,
+        limit=limit,
+        query=q,
+        date_from=date_from,
+        date_to=date_to,
+    )
     if not receipts:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

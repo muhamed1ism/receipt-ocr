@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { ViewReceiptDialog } from "@/components/Receipt/ViewReceiptDiolog";
 import { ArrowDownWideNarrow, Grid2x2, List } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import type { ReceiptPublicDetailedMe } from "@/client";
 import { ReceiptCard } from "@/components/Common/ReceiptCard";
+import SearchBar from "@/components/Common/SearchBar";
+import { ViewReceiptDialog } from "@/components/Receipt/ViewReceiptDiolog";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,9 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import SearchBar from "@/components/Common/SearchBar";
 import { MOCK_RECEIPTS } from "@/mock/receipts";
-import { ReceiptPublicDetailedMe } from "@/client";
 import { formatDate, formatTime } from "@/utils/formatDateTime";
 
 export const Route = createFileRoute("/_layout/receipts")({

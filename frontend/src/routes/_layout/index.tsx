@@ -1,25 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-import { ReceiptCard } from "@/components/Common/ReceiptCard";
-import MonthlyBudget from "@/components/Dashboard/MonthlyBudget";
-import WeeklyChart from "@/components/Dashboard/WeeklyChart";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import { ChartColumn, CoffeeIcon, TrendingDown } from "lucide-react";
-import useAuth from "@/hooks/useAuth";
+import { createFileRoute } from "@tanstack/react-router"
+import { ChartColumn, CoffeeIcon, TrendingDown } from "lucide-react"
+import { ReceiptCard } from "@/components/Common/ReceiptCard"
+import MonthlyBudget from "@/components/Dashboard/MonthlyBudget"
+import WeeklyChart from "@/components/Dashboard/WeeklyChart"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import useAuth from "@/hooks/useAuth"
 
 export const Route = createFileRoute("/_layout/")({
   component: Dashboard,
-});
+})
 
 function Dashboard() {
-  const { user: currentUser } = useAuth();
-  const progress = 75;
+  const { user: currentUser } = useAuth()
+  const progress = 75
 
   return (
     <div className="grid grid-cols-4 gap-4">
@@ -145,5 +139,5 @@ function Dashboard() {
         </Card>
       </ReceiptCard>
     </div>
-  );
+  )
 }

@@ -1,9 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
-
 import Receipts from "@/components/Admin/Receipts";
 import Users from "@/components/Admin/Users";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ReceiptCard } from "@/components/Common/ReceiptCard";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout/admin")({
   component: Admin,
