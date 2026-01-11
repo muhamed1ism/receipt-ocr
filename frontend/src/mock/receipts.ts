@@ -1,4 +1,4 @@
-import { CurrencyEnum } from "@/client";
+import type { CurrencyEnum } from "@/client"
 
 export const MOCK_RECEIPTS = {
   data: [
@@ -315,4 +315,4 @@ export const MOCK_RECEIPTS = {
     },
   ],
   count: 5,
-};
+}

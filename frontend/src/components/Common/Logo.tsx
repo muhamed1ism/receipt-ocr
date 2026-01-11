@@ -1,13 +1,13 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router"
 
-import { useTheme } from "@/components/theme-provider";
-import { cn } from "@/lib/utils";
-import icon from "/assets/images/icon.svg";
-import iconLight from "/assets/images/icon-light.svg";
-import logo from "/assets/images/logo.svg";
-import logoLight from "/assets/images/logo-light.svg";
-import logoHorizontal from "/assets/images/logo-horizontal.svg";
-import logoHorizontalLight from "/assets/images/logo-horizontal-light.svg";
+import { useTheme } from "@/components/theme-provider"
+import { cn } from "@/lib/utils"
+import icon from "/assets/images/icon.svg"
+import iconLight from "/assets/images/icon-light.svg"
+import logo from "/assets/images/logo.svg"
+import logoHorizontal from "/assets/images/logo-horizontal.svg"
+import logoHorizontalLight from "/assets/images/logo-horizontal-light.svg"
+import logoLight from "/assets/images/logo-light.svg"
 
 interface LogoProps {
   variant?:
@@ -15,9 +15,9 @@ interface LogoProps {
     | "full-light"
     | "icon"
     | "responsive"
-    | "horizontal-responsive";
-  className?: string;
-  asLink?: boolean;
+    | "horizontal-responsive"
+  className?: string
+  asLink?: boolean
 }
 
 export function Logo({
@@ -25,12 +25,12 @@ export function Logo({
   className,
   asLink = true,
 }: LogoProps) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
 
-  const fullLogo = isDark ? logoLight : logo;
-  const iconLogo = isDark ? iconLight : icon;
-  const horizontalLogo = isDark ? logoHorizontalLight : logoHorizontal;
+  const fullLogo = isDark ? logoLight : logo
+  const iconLogo = isDark ? iconLight : icon
+  const horizontalLogo = isDark ? logoHorizontalLight : logoHorizontal
 
   const content =
     variant === "responsive" ? (
@@ -88,11 +88,11 @@ export function Logo({
           className,
         )}
       />
-    );
+    )
 
   if (!asLink) {
-    return content;
+    return content
   }
 
-  return <Link to="/">{content}</Link>;
+  return <Link to="/">{content}</Link>
 }

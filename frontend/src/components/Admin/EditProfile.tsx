@@ -1,32 +1,32 @@
-import { ProfilePublic, ProfileService } from "@/client";
-import useCustomToast from "@/hooks/useCustomToast";
-import { handleError } from "@/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { UserPen } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import z from "zod"
+import { type ProfilePublic, ProfileService } from "@/client"
+import useCustomToast from "@/hooks/useCustomToast"
+import { handleError } from "@/utils"
+import { Button } from "../ui/button"
+import { DialogFooter, DialogHeader } from "../ui/dialog"
 import {
   Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
   DialogClose,
-} from "../ui/dialog.tsx";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { UserPen } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import z from "zod";
-import { Button } from "../ui/button";
-import { DialogHeader, DialogFooter } from "../ui/dialog";
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "../ui/dialog.tsx"
+import { DropdownMenuItem } from "../ui/dropdown-menu"
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { LoadingButton } from "../ui/loading-button";
-import { DropdownMenuItem } from "../ui/dropdown-menu";
+} from "../ui/form"
+import { Input } from "../ui/input"
+import { LoadingButton } from "../ui/loading-button"
 
 const formSchema = z.object({
   first_name: z.string().optional(),
@@ -37,20 +37,20 @@ const formSchema = z.object({
   address: z.string().optional(),
   city: z.string().optional(),
   currency_preference: z.enum(["USD", "EUR", "BAM", "GBP"]).optional(),
-});
+})
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<typeof formSchema>
 
 interface EditProfileProps {
-  userId: string;
-  profile: ProfilePublic;
-  onSuccess: () => void;
+  userId: string
+  profile: ProfilePublic
+  onSuccess: () => void
 }
 
 const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const queryClient = useQueryClient();
-  const { showSuccessToast, showErrorToast } = useCustomToast();
+  const [isOpen, setIsOpen] = useState(false)
+  const queryClient = useQueryClient()
+  const { showSuccessToast, showErrorToast } = useCustomToast()
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -66,7 +66,7 @@ const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
       city: profile?.city || "",
       currency_preference: profile?.currency_preference || "BAM",
     },
-  });
+  })
 
   const mutation = useMutation({
     mutationFn: (data: FormData) =>
@@ -75,19 +75,19 @@ const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
         requestBody: data,
       }),
     onSuccess: () => {
-      showSuccessToast("Profil je uspješno ažuriran");
-      setIsOpen(false);
-      onSuccess();
+      showSuccessToast("Profil je uspješno ažuriran")
+      setIsOpen(false)
+      onSuccess()
     },
     onError: handleError.bind(showErrorToast),
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] })
     },
-  });
+  })
 
   const onSubmit = (data: FormData) => {
-    mutation.mutate(data);
-  };
+    mutation.mutate(data)
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -301,7 +301,7 @@ const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
         </Form>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default EditProfile;
+export default EditProfile

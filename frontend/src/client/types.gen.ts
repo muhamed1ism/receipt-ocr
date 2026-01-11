@@ -343,7 +343,10 @@ export type ProfileUpdateProfileMeData = {
 export type ProfileUpdateProfileMeResponse = (ProfilePublic);
 
 export type ReceiptReadReceiptsData = {
+    dateFrom?: (string | null);
+    dateTo?: (string | null);
     limit?: number;
+    q?: (string | null);
     skip?: number;
 };
 

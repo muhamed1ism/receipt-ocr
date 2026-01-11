@@ -270,10 +270,12 @@ export class ProfileService {
 export class ReceiptService {
     /**
      * Read Receipts
-     * Retrieve all receipts.
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
+     * @param data.q
+     * @param data.dateFrom
+     * @param data.dateTo
      * @returns ReceiptsPublicDetailed Successful Response
      * @throws ApiError
      */
@@ -283,7 +285,10 @@ export class ReceiptService {
             url: '/api/v1/receipt/',
             query: {
                 skip: data.skip,
-                limit: data.limit
+                limit: data.limit,
+                q: data.q,
+                date_from: data.dateFrom,
+                date_to: data.dateTo
             },
             errors: {
                 422: 'Validation Error'

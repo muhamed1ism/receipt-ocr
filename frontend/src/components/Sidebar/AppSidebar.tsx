@@ -1,28 +1,28 @@
-import { Home, Receipt, Users } from "lucide-react";
+import { Home, Receipt, Users } from "lucide-react"
 
-import { SidebarAppearance } from "@/components/Common/Appearance";
-import { Logo } from "@/components/Common/Logo";
+import { SidebarAppearance } from "@/components/Common/Appearance"
+import { Logo } from "@/components/Common/Logo"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-} from "@/components/ui/sidebar";
-import useAuth from "@/hooks/useAuth";
-import { type Item, Main } from "./Main";
-import { User } from "./User";
+} from "@/components/ui/sidebar"
+import useAuth from "@/hooks/useAuth"
+import { type Item, Main } from "./Main"
+import { User } from "./User"
 
 const baseItems: Item[] = [
   { icon: Home, title: "Kontrolna ploča", path: "/" },
   { icon: Receipt, title: "Računi", path: "/receipts" },
-];
+]
 
 export function AppSidebar() {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser } = useAuth()
 
   const items = currentUser?.is_superuser
     ? [...baseItems, { icon: Users, title: "Admin", path: "/admin" }]
-    : baseItems;
+    : baseItems
 
   return (
     <Sidebar collapsible="icon">
@@ -37,7 +37,7 @@ export function AppSidebar() {
         <User user={currentUser} profile={currentUser?.profile} />
       </SidebarFooter>
     </Sidebar>
-  );
+  )
 }
 
-export default AppSidebar;
+export default AppSidebar

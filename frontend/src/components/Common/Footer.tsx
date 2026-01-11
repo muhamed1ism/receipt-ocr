@@ -1,5 +1,5 @@
-import { FaGithub, FaLinkedinIn } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
+import { FaGithub, FaLinkedinIn } from "react-icons/fa"
+import { FaXTwitter } from "react-icons/fa6"
 
 const socialLinks = [
   {
@@ -13,10 +13,10 @@ const socialLinks = [
     href: "https://linkedin.com/company/fastapi",
     label: "LinkedIn",
   },
-];
+]
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear()
 
   return (
     <footer className="border-t-2 border-dashed border-foreground/50 py-4 px-6">
@@ -40,5 +40,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

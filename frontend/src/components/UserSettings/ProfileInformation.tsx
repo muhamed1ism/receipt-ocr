@@ -1,11 +1,11 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
-import { ProfileService, ProfileUpdate } from "@/client";
-import { Button } from "@/components/ui/button";
+import { ProfileService, type ProfileUpdate } from "@/client"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -13,26 +13,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { LoadingButton } from "@/components/ui/loading-button";
-import useCustomToast from "@/hooks/useCustomToast";
-import { cn } from "@/lib/utils";
-import { handleError } from "@/utils";
-import useAuth from "@/hooks/useAuth";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { LoadingButton } from "@/components/ui/loading-button"
+import useAuth from "@/hooks/useAuth"
+import useCustomToast from "@/hooks/useCustomToast"
+import { cn } from "@/lib/utils"
+import { handleError } from "@/utils"
 
 const formSchema = z.object({
   first_name: z.string().max(30),
   last_name: z.string().max(30),
-});
+})
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<typeof formSchema>
 
 const ProfileInformation = () => {
-  const queryClient = useQueryClient();
-  const { showSuccessToast, showErrorToast } = useCustomToast();
-  const [editMode, setEditMode] = useState(false);
-  const { user: currentUser } = useAuth();
+  const queryClient = useQueryClient()
+  const { showSuccessToast, showErrorToast } = useCustomToast()
+  const [editMode, setEditMode] = useState(false)
+  const { user: currentUser } = useAuth()
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -42,59 +42,59 @@ const ProfileInformation = () => {
       first_name: currentUser?.profile?.first_name,
       last_name: currentUser?.profile?.last_name,
     },
-  });
+  })
 
   const toggleEditMode = () => {
-    setEditMode(!editMode);
-  };
+    setEditMode(!editMode)
+  }
 
   const mutation = useMutation({
     mutationFn: (data: ProfileUpdate) =>
       ProfileService.updateProfileMe({ requestBody: data }),
     onSuccess: () => {
-      showSuccessToast("Profil je uspješno ažuriran");
-      toggleEditMode();
+      showSuccessToast("Profil je uspješno ažuriran")
+      toggleEditMode()
     },
     onError: handleError.bind(showErrorToast),
     onSettled: () => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries()
     },
-  });
+  })
 
   const onSubmit = (data: FormData) => {
-    const updateData: ProfileUpdate = {};
+    const updateData: ProfileUpdate = {}
 
     if (data.first_name !== currentUser?.profile?.first_name) {
-      updateData.first_name = data.first_name;
+      updateData.first_name = data.first_name
     }
     if (data.last_name !== currentUser?.profile?.last_name) {
-      updateData.last_name = data.last_name;
+      updateData.last_name = data.last_name
     }
 
     if (!Object.keys(updateData).length) {
-      toggleEditMode();
-      return;
+      toggleEditMode()
+      return
     }
 
-    mutation.mutate(updateData);
-  };
+    mutation.mutate(updateData)
+  }
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser) return
 
     form.reset({
       first_name: currentUser.profile?.first_name ?? "",
       last_name: currentUser.profile?.last_name ?? "",
-    });
-  }, [currentUser]);
+    })
+  }, [currentUser, form.reset])
 
   const onCancel = () => {
     form.reset({
       first_name: currentUser?.profile?.first_name,
       last_name: currentUser?.profile?.last_name,
-    });
-    toggleEditMode();
-  };
+    })
+    toggleEditMode()
+  }
 
   return (
     <div className="max-w-md">
@@ -200,7 +200,7 @@ const ProfileInformation = () => {
         </form>
       </Form>
     </div>
-  );
-};
+  )
+}
 
-export default ProfileInformation;
+export default ProfileInformation

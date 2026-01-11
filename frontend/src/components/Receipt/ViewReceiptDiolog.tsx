@@ -1,21 +1,21 @@
-import { ReceiptPublicDetailedMe } from "@/client";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { ReceiptCard } from "@/components/Common/ReceiptCard";
+import { XIcon } from "lucide-react"
+import type { ReceiptPublicDetailedMe } from "@/client"
+import { ReceiptCard } from "@/components/Common/ReceiptCard"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardFooter,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { XIcon } from "lucide-react";
-import { formatDate, formatTime } from "@/utils/formatDateTime";
+} from "@/components/ui/card"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { formatDate, formatTime } from "@/utils/formatDateTime"
 
 interface ViewReceiptDialogProps {
-  receipt: ReceiptPublicDetailedMe | null;
-  onClose: () => void;
+  receipt: ReceiptPublicDetailedMe | null
+  onClose: () => void
 }
 
 export function ViewReceiptDialog({
@@ -77,7 +77,6 @@ export function ViewReceiptDialog({
                       </p>
                     </div>
                     <div className="flex flex-row justify-between">
-
                       <div className="flex gap-4 text-muted-foreground">
                         <p>{item.quantity}</p>
                         <p>x</p>
@@ -110,5 +109,5 @@ export function ViewReceiptDialog({
         )}
       </DialogContent>
     </Dialog>
-  );
+  )
 }
