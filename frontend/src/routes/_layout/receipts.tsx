@@ -77,20 +77,20 @@ function Receipts() {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
           />
-          <Button variant="secondary" className="mr-4 rounded-sm">
+          <Button variant="secondary" className="bg-card mr-4 rounded-sm">
             <ArrowDownWideNarrow />
           </Button>
           <Button
             onClick={() => setViewMode("list")}
             variant={viewMode === "list" ? "default" : "secondary"}
-            className="rounded-r-none rounded-l-sm"
+            className={`rounded-r-none rounded-l-sm ${viewMode === "list" ? "" : "bg-card"}`}
           >
             <List />
           </Button>
           <Button
             onClick={() => setViewMode("grid")}
             variant={viewMode === "grid" ? "default" : "secondary"}
-            className="rounded-l-none rounded-r-sm"
+            className={`rounded-l-none rounded-r-sm ${viewMode === "grid" ? "" : "bg-card"}`}
           >
             <Grid2x2 />
           </Button>
