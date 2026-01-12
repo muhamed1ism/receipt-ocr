@@ -2,9 +2,11 @@ import uuid
 from collections.abc import Sequence
 from datetime import datetime
 
-from sqlmodel import Session, and_, distinct, func, or_, select
+from sqlmodel import Session, String, cast, col, desc, func, or_, select
 
 from app.models import Profile, Receipt, ReceiptItem, User
+from app.models.branch import Branch
+from app.models.store import Store
 from app.schemas import (
     ReceiptCreate,
     ReceiptPublicDetailed,
@@ -66,71 +68,69 @@ def get_all_receipts(
     *,
     session: Session,
     skip: int = 0,
-    limit: int = 0,
+    limit: int = 40,
     query: str | None = None,
     date_from: str | None = None,
     date_to: str | None = None,
 ) -> ReceiptsPublicDetailed | None:
-    count_statement = select(func.count()).select_from(Receipt)
-    count = session.exec(count_statement).one()
+    statement = select(Receipt)
 
-    statement = (
-        select(Receipt)
-        .join(User, Receipt.user_id == User.id)
-        .outerjoin(Profile, User.id == Profile.user_id)
-        # we aready using this in a different way
-    )
-
-    filters = []
-
-    # Search trough user's name, email or receipt items
-    if query:
-        # joining receipt items to search product names
-        statement = statement.outerjoin(
-            ReceiptItem, Receipt.id == ReceiptItem.receipt_id
+    if query is not None:
+        statement = (
+            statement.join(Receipt.user)
+            .join(User.profile)
+            .join(Receipt.items)
+            .join(Receipt.branch)
+            .join(Branch.store)
+            .where(
+                or_(
+                    func.to_char(Receipt.date_time, "DD. MM. YYYY. HH24:MI:SS").ilike(
+                        f"%{query}%"
+                    ),
+                    cast(Receipt.tax_amount, String).ilike(f"%{query}%"),
+                    cast(Receipt.total_amount, String).ilike(f"%{query}%"),
+                    col(Receipt.payment_method).ilike(f"%{query}%"),
+                    col(User.email).ilike(f"%{query}%"),
+                    col(Profile.first_name).ilike(f"%{query}%"),
+                    col(Profile.last_name).ilike(f"%{query}%"),
+                    col(Profile.country).ilike(f"%{query}%"),
+                    col(Profile.city).ilike(f"%{query}%"),
+                    col(Profile.address).ilike(f"%{query}%"),
+                    col(Profile.phone_number).ilike(f"%{query}%"),
+                    func.to_char(Profile.date_of_birth, "DD. MM. YYYY.").ilike(
+                        f"%{query}%"
+                    ),
+                    col(ReceiptItem.name).ilike(f"%{query}%"),
+                    cast(ReceiptItem.quantity, String).ilike(f"%{query}%"),
+                    cast(ReceiptItem.price, String).ilike(f"%{query}%"),
+                    cast(ReceiptItem.total_price, String).ilike(f"%{query}%"),
+                    col(Branch.address).ilike(f"%{query}%"),
+                    col(Branch.city).ilike(f"%{query}%"),
+                    col(Store.name).ilike(f"%{query}%"),
+                    cast(Store.jib, String).ilike(f"%{query}%"),
+                    cast(Store.pib, String).ilike(f"%{query}%"),
+                )
+            )
+            .distinct()
         )
 
-        # create search filter for user info and items
-        search_filter = or_(
-            User.email.ilike(f"%{query}%"),
-            Profile.first_name.ilike(f"%{query}%"),
-            Profile.last_name.ilike(f"%{query}%"),
-            ReceiptItem.name.ilike(f"%{query}%"),
+    if date_from is not None:
+        statement = statement.where(
+            col(Receipt.date_time) >= datetime.fromisoformat(date_from)
         )
-        filters.append(search_filter)
 
-    # date range filters
-    if date_from:
-        try:
-            from_date = datetime.fromisoformat(date_from)
-            filters.append(Receipt.date_time >= from_date)
-        except ValueError:
-            pass
+    if date_to is not None:
+        statement = statement.where(
+            col(Receipt.date_time) <= datetime.fromisoformat(date_to)
+        )
 
-    if date_to:
-        try:
-            to_date = datetime.fromisoformat(date_to)
-            filters.append(Receipt.date_time <= to_date)
-        except ValueError:
-            pass
-
-    # Apply all filters
-    if filters:
-        statement = statement.where(and_(*filters))
-
-    # Use distinct to  avoid duplication from joins
-    statement = statement.distinct()
-
-    # Count query
-    count_statement = select(func.count(distinct(Receipt.id))).select_from(
-        statement.subquery()
+    count_statement = (
+        select(func.count()).select_from(statement.subquery()).order_by(None)
     )
     count = session.exec(count_statement).one()
 
-    # Get results orderd by most recent
-    statement = statement.order_by(Receipt.date_time.desc()).offset(skip).limit(limit)
+    statement = statement.order_by(desc(Receipt.date_time)).limit(limit).offset(skip)
     receipts = session.exec(statement).all()
-
     receipt_list: Sequence[ReceiptPublicDetailed] = [
         ReceiptPublicDetailed.model_validate(r) for r in receipts
     ]
@@ -138,32 +138,66 @@ def get_all_receipts(
     return ReceiptsPublicDetailed(data=receipt_list, count=count)
 
 
-# ) -> ReceiptsPublic | None:
-#     count_statement = select(func.count()).select_from(Receipt)
-#     count = session.exec(count_statement).one()
-#
-#     statement = select(Receipt).offset(skip).limit(limit)
-#     receipts = session.exec(statement).all()
-#     pub_receipts = [ReceiptPublic.model_validate(r) for r in receipts]
-#
-#     return ReceiptsPublic(data=pub_receipts, count=count)
-
-
 def get_my_receipts(
     *,
     session: Session,
     skip: int = 0,
-    limit: int = 0,
+    limit: int = 40,
     my_user: User,
+    query: str | None = None,
+    date_from: str | None = None,
+    date_to: str | None = None,
 ) -> ReceiptsPublicDetailedMe | None:
+    statement = select(Receipt)
+
+    if query is not None:
+        statement = (
+            select(Receipt)
+            .join(Receipt.items)
+            .join(Receipt.branch)
+            .join(Branch.store)
+            .where(
+                or_(
+                    func.to_char(Receipt.date_time, "DD. MM. YYYY. HH24:MI:SS").ilike(
+                        f"%{query}%"
+                    ),
+                    cast(Receipt.tax_amount, String).ilike(f"%{query}%"),
+                    cast(Receipt.total_amount, String).ilike(f"%{query}%"),
+                    col(Receipt.payment_method).ilike(f"%{query}%"),
+                    func.to_char(Profile.date_of_birth, "DD. MM. YYYY.").ilike(
+                        f"%{query}%"
+                    ),
+                    col(ReceiptItem.name).ilike(f"%{query}%"),
+                    cast(ReceiptItem.quantity, String).ilike(f"%{query}%"),
+                    cast(ReceiptItem.price, String).ilike(f"%{query}%"),
+                    cast(ReceiptItem.total_price, String).ilike(f"%{query}%"),
+                    col(Branch.address).ilike(f"%{query}%"),
+                    col(Branch.city).ilike(f"%{query}%"),
+                    col(Store.name).ilike(f"%{query}%"),
+                    cast(Store.jib, String).ilike(f"%{query}%"),
+                    cast(Store.pib, String).ilike(f"%{query}%"),
+                )
+            )
+            .where(Receipt.user_id == my_user.id)
+            .distinct()
+        )
+
+    if date_from is not None:
+        statement = statement.where(
+            col(Receipt.date_time) >= datetime.fromisoformat(date_from)
+        )
+
+    if date_to is not None:
+        statement = statement.where(
+            col(Receipt.date_time) <= datetime.fromisoformat(date_to)
+        )
+
     count_statement = (
-        select(func.count()).select_from(Receipt).where(Receipt.user_id == my_user.id)
+        select(func.count()).select_from(statement.subquery()).order_by(None)
     )
     count = session.exec(count_statement).one()
 
-    statement = (
-        select(Receipt).where(Receipt.user_id == my_user.id).offset(skip).limit(limit)
-    )
+    statement = statement.order_by(desc(Receipt.date_time)).limit(limit).offset(skip)
     receipts = session.exec(statement).all()
     receipt_list: Sequence[ReceiptPublicDetailedMe] = [
         ReceiptPublicDetailedMe.model_validate(r) for r in receipts

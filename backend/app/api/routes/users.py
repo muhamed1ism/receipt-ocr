@@ -2,7 +2,7 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import func, select
+from sqlmodel import String, cast, col, func, or_, select
 
 from app import crud
 from app.api.deps import (
@@ -13,6 +13,7 @@ from app.api.deps import (
 from app.core.config import settings
 from app.core.security import verify_password
 from app.models import Message, User
+from app.models.profile import Profile
 from app.schemas import (
     UpdatePassword,
     UserCreate,
@@ -32,15 +33,40 @@ router = APIRouter(prefix="/users", tags=["users"])
     dependencies=[Depends(get_current_active_superuser)],
     response_model=UsersPublicWithProfile,
 )
-def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
+def read_users(
+    session: SessionDep, skip: int = 0, limit: int = 40, q: str | None = None
+) -> Any:
     """
     Retrieve users.
     """
 
-    count_statement = select(func.count()).select_from(User)
+    statement = select(User)
+
+    if q:
+        statement = (
+            statement.join(User.profile)
+            .where(
+                or_(
+                    col(User.email).ilike(f"%{q}%"),
+                    col(Profile.first_name).ilike(f"%{q}%"),
+                    col(Profile.last_name).ilike(f"%{q}%"),
+                    col(Profile.country).ilike(f"%{q}%"),
+                    col(Profile.city).ilike(f"%{q}%"),
+                    col(Profile.address).ilike(f"%{q}%"),
+                    col(Profile.phone_number).ilike(f"%{q}%"),
+                    cast(Profile.date_of_birth, String).ilike(f"%{q}%"),
+                )
+            )
+            .distinct()
+        )
+
+    count_statement = (
+        select(func.count()).select_from(statement.subquery()).order_by(None)
+    )
     count = session.exec(count_statement).one()
 
-    statement = select(User).offset(skip).limit(limit)
+    statement = statement.offset(skip).limit(limit)
+
     users = session.exec(statement).all()
     pub_users = [UserPublicWithProfile.model_validate(u) for u in users]
 

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class ReceiptBase(SQLModel):
-    date_time: datetime | None = Field(default=None)
+    date_time: datetime = Field(default=None)
     tax_amount: float | None = Field(default=None)
     total_amount: float | None = Field(default=None)
     payment_method: str | None = Field(default=None, max_length=50)
