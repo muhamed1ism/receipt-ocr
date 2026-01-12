@@ -270,6 +270,7 @@ export class ProfileService {
 export class ReceiptService {
     /**
      * Read Receipts
+     * Retrieve all receipts with optional search and filtering.
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
@@ -322,10 +323,13 @@ export class ReceiptService {
     
     /**
      * Read Receipts Me
-     * Retrieve current user receipts.
+     * Retrieve current user receipts with optional search and filtering.
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
+     * @param data.q
+     * @param data.dateFrom
+     * @param data.dateTo
      * @returns ReceiptsPublicDetailedMe Successful Response
      * @throws ApiError
      */
@@ -335,7 +339,10 @@ export class ReceiptService {
             url: '/api/v1/receipt/me',
             query: {
                 skip: data.skip,
-                limit: data.limit
+                limit: data.limit,
+                q: data.q,
+                date_from: data.dateFrom,
+                date_to: data.dateTo
             },
             errors: {
                 422: 'Validation Error'
@@ -391,6 +398,7 @@ export class UsersService {
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
+     * @param data.q
      * @returns UsersPublicWithProfile Successful Response
      * @throws ApiError
      */
@@ -400,7 +408,8 @@ export class UsersService {
             url: '/api/v1/users/',
             query: {
                 skip: data.skip,
-                limit: data.limit
+                limit: data.limit,
+                q: data.q
             },
             errors: {
                 422: 'Validation Error'

@@ -1,43 +1,44 @@
 import { ReceiptService } from "@/client";
 import { DataTable } from "@/components/Common/DataTable";
 import SearchBar from "@/components/Common/SearchBar";
-import PendingUsers from "@/components/Pending/PendingUsers";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense, useState } from "react";
-import { receiptColumns } from "../receiptColumns";
+import { columns } from "./columns";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
+import PendingReceiptsTable from "@/components/Pending/PendingReceiptsTable";
 
-function getReceiptsSearchQueryOptions(searchQuery: string) {
+function getReceiptsWithQuery(query: string) {
   return {
-    queryKey: ["receipts-search", searchQuery],
+    queryKey: ["receipts-search", query],
     queryFn: () =>
       ReceiptService.readReceipts({
         skip: 0,
-        limit: 100,
-        q: searchQuery || undefined,
+        limit: 30,
+        q: query || undefined,
       }),
   };
 }
 
-function ReceiptsTableContent() {
-  const [searchQuery, setSearchQuery] = useState(""); // What we actually search for
-
-  const { data: receipts } = useSuspenseQuery(
-    getReceiptsSearchQueryOptions(searchQuery),
-  );
+function ReceiptsTableContent({ searchQuery }: { searchQuery: string }) {
+  const {
+    data: receipts,
+    isError,
+    error,
+  } = useSuspenseQuery(getReceiptsWithQuery(searchQuery));
 
   return (
     <div className="flex flex-col gap-4">
-      <SearchBar
-        placeholder="Pretraži račune..."
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
-      {receipts.data.length > 0 ? (
+      {isError ? (
+        <p className="text-center text-muted-foreground py-8">
+          {error.message}
+        </p>
+      ) : receipts.count > 0 ? (
         <>
           <p className="text-sm text-muted-foreground">
             Pronađeno {receipts.count} računa
           </p>
-          <DataTable columns={receiptColumns} data={receipts.data} />
+          <DataTable columns={columns} data={receipts.data} />
         </>
       ) : (
         <p className="text-center text-muted-foreground py-8">
@@ -48,24 +49,47 @@ function ReceiptsTableContent() {
   );
 }
 
-function ReceiptsTable() {
+function ReceiptsTable({ query }: { query: string }) {
   return (
-    <Suspense fallback={<PendingUsers />}>
-      <ReceiptsTableContent />
+    <Suspense fallback={<PendingReceiptsTable />}>
+      <ReceiptsTableContent searchQuery={query} />
     </Suspense>
   );
 }
 
 function Receipts() {
+  const [query, setQuery] = useState(""); // What we actually search for
+  const [inputValue, setInputValue] = useState("");
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setQuery(inputValue);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight">Računi</h2>
-        <p className="text-muted-foreground">
-          Pretražite račune po korisniku, artiklu ili datumu
-        </p>
+      <div className="flex flex-col lg:flex-row items-end justify-between gap-2 lg:gap-6">
+        <div className="self-start">
+          <h2 className="text-2xl font-bold tracking-tight">Računi</h2>
+          <p className="text-muted-foreground">
+            Pretražite račune po korisniku, artiklu ili datumu
+          </p>
+        </div>
+        <div className="flex flex-row items-center grow w-full lg:w-fit gap-4">
+          <SearchBar
+            inputClassName="bg-background"
+            placeholder="Pretraži račune..."
+            searchQuery={inputValue}
+            setSearchQuery={setInputValue}
+            onKeyDown={handleKeyDown}
+          />
+          <Button className="rounded-sm" onClick={() => setQuery(inputValue)}>
+            <Search />
+          </Button>
+        </div>
       </div>
-      <ReceiptsTable />
+      <ReceiptsTable query={query} />
     </div>
   );
 }

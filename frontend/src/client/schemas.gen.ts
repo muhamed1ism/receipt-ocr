@@ -610,15 +610,8 @@ export const ProfilesPublicSchema = {
 export const ReceiptCreateSchema = {
     properties: {
         date_time: {
-            anyOf: [
-                {
-                    type: 'string',
-                    format: 'date-time'
-                },
-                {
-                    type: 'null'
-                }
-            ],
+            type: 'string',
+            format: 'date-time',
             title: 'Date Time'
         },
         tax_amount: {
@@ -800,15 +793,8 @@ export const ReceiptItemPublicSchema = {
 export const ReceiptPublicSchema = {
     properties: {
         date_time: {
-            anyOf: [
-                {
-                    type: 'string',
-                    format: 'date-time'
-                },
-                {
-                    type: 'null'
-                }
-            ],
+            type: 'string',
+            format: 'date-time',
             title: 'Date Time'
         },
         tax_amount: {
@@ -873,15 +859,8 @@ export const ReceiptPublicSchema = {
 export const ReceiptPublicDetailedSchema = {
     properties: {
         date_time: {
-            anyOf: [
-                {
-                    type: 'string',
-                    format: 'date-time'
-                },
-                {
-                    type: 'null'
-                }
-            ],
+            type: 'string',
+            format: 'date-time',
             title: 'Date Time'
         },
         tax_amount: {
@@ -960,15 +939,8 @@ export const ReceiptPublicDetailedSchema = {
 export const ReceiptPublicDetailedMeSchema = {
     properties: {
         date_time: {
-            anyOf: [
-                {
-                    type: 'string',
-                    format: 'date-time'
-                },
-                {
-                    type: 'null'
-                }
-            ],
+            type: 'string',
+            format: 'date-time',
             title: 'Date Time'
         },
         tax_amount: {

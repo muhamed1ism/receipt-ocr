@@ -13,7 +13,7 @@ from app.schemas.receipt_item import (
     ReceiptItemPublic,
 )
 from app.schemas.store import StoreReceiptIn
-from app.schemas.user import UserPublic, UserPublicWithProfile
+from app.schemas.user import UserPublicWithProfile
 
 
 class ReceiptCreate(ReceiptBase):

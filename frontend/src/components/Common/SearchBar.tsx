@@ -8,6 +8,7 @@ interface SearchBarType {
   placeholder?: string;
   searchQuery: string;
   setSearchQuery: Dispatch<SetStateAction<string>>;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export default function SearchBar({
@@ -16,6 +17,7 @@ export default function SearchBar({
   placeholder = "Pretraži...",
   searchQuery,
   setSearchQuery,
+  onKeyDown,
 }: SearchBarType) {
   const searchClass = "relative w-full flex-1 " + className;
   const inputClass = "h-9 pl-10 bg-card " + inputClassName;
@@ -28,6 +30,7 @@ export default function SearchBar({
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         className={inputClass}
+        onKeyDown={onKeyDown}
       />
     </div>
   );

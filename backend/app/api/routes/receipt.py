@@ -34,25 +34,21 @@ router = APIRouter(prefix="/receipt", tags=["receipt"])
 def read_receipts(
     session: SessionDep,
     skip: int = 0,
-    limit: int = 20,
+    limit: int = 40,
     q: str | None = None,
     date_from: str | None = None,
     date_to: str | None = None,
 ) -> ReceiptsPublicDetailed | None:
-    # Capping maximum results
+    """
+    Retrieve all receipts with optional search and filtering.
+    """
     if limit > 100:
         limit = 100
 
-    # Capping search query lenght
     if q and len(q) > 50:
         raise HTTPException(
             status_code=400, detail="Seach query too long (max 50 characters)"
         )
-
-    """
-    Retrieve all receipts with optional search and filtering.
-
-    """
 
     receipts = crud.get_all_receipts(
         session=session,
@@ -79,13 +75,30 @@ def read_receipts_me(
     session: SessionDep,
     current_user: CurrentUser,
     skip: int = 0,
-    limit: int = 100,
+    limit: int = 40,
+    q: str | None = None,
+    date_from: str | None = None,
+    date_to: str | None = None,
 ) -> ReceiptsPublicDetailedMe | None:
     """
-    Retrieve current user receipts.
+    Retrieve current user receipts with optional search and filtering.
     """
+    if limit > 100:
+        limit = 100
+
+    if q and len(q) > 50:
+        raise HTTPException(
+            status_code=400, detail="Seach query too long (max 50 characters)"
+        )
+
     receipts = crud.get_my_receipts(
-        session=session, skip=skip, limit=limit, my_user=current_user
+        session=session,
+        skip=skip,
+        limit=limit,
+        my_user=current_user,
+        query=q,
+        date_from=date_from,
+        date_to=date_to,
     )
     if not receipts:
         raise HTTPException(
