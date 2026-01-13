@@ -1,13 +1,10 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Pencil } from "lucide-react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
-import { type UserPublic, UsersService } from "@/client"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogClose,
@@ -16,8 +13,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -25,94 +22,57 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { LoadingButton } from "@/components/ui/loading-button"
-import useCustomToast from "@/hooks/useCustomToast"
-import { handleError } from "@/utils"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { LoadingButton } from "@/components/ui/loading-button";
+import userSchema, {
+  AddUserFormData,
+} from "@/features/admin/schemas/userSchemas";
+import useAddUser from "@/features/admin/hooks/useAddUser";
 
-const formSchema = z
-  .object({
-    email: z.email({ message: "Neispravna email adresa" }),
-    password: z
-      .string()
-      .min(8, { message: "Lozinka mora imati najmanje 8 karaktera" })
-      .optional()
-      .or(z.literal("")),
-    confirm_password: z.string().optional(),
-    is_superuser: z.boolean().optional(),
-    is_active: z.boolean().optional(),
-  })
-  .refine((data) => !data.password || data.password === data.confirm_password, {
-    message: "Lozinke se ne podudaraju",
-    path: ["confirm_password"],
-  })
+export default function AddUser() {
+  const [isOpen, setIsOpen] = useState(false);
+  const mutation = useAddUser();
 
-type FormData = z.infer<typeof formSchema>
-
-interface EditUserProps {
-  user: UserPublic
-  onSuccess: () => void
-}
-
-const EditUser = ({ user, onSuccess }: EditUserProps) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const queryClient = useQueryClient()
-  const { showSuccessToast, showErrorToast } = useCustomToast()
-
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<AddUserFormData>({
+    resolver: zodResolver(userSchema.addUser),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      email: user.email,
-      is_superuser: user.is_superuser,
-      is_active: user.is_active,
+      email: "",
+      password: "",
+      confirm_password: "",
+      is_superuser: false,
+      is_active: false,
     },
-  })
+  });
 
-  const mutation = useMutation({
-    mutationFn: (data: FormData) =>
-      UsersService.updateUser({ userId: user.id, requestBody: data }),
-    onSuccess: () => {
-      showSuccessToast("Korisnik je uspješno ažuriran")
-      setIsOpen(false)
-      onSuccess()
-    },
-    onError: handleError.bind(showErrorToast),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] })
-    },
-  })
-
-  const onSubmit = (data: FormData) => {
-    // exclude confirm_password from submission data and remove password if empty
-    const { confirm_password: _, ...submitData } = data
-    if (!submitData.password) {
-      delete submitData.password
-    }
-    mutation.mutate(submitData)
-  }
+  const onSubmit = (data: AddUserFormData) => {
+    mutation.mutate(data, {
+      onSuccess: () => {
+        form.reset();
+        setIsOpen(false);
+      },
+    });
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuItem
-        onSelect={(e) => e.preventDefault()}
-        onClick={() => setIsOpen(true)}
-        className="font-receipt font-semibold"
-      >
-        <Pencil />
-        Uredi korisnika
-      </DropdownMenuItem>
+      <DialogTrigger asChild>
+        <Button className="self-end my-4 font-semibold">
+          <Plus className="mr-2" />
+          Dodaj korisnika
+        </Button>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-md font-receipt overflow-y-auto max-h-[calc(100dvh-2rem)] h-fit">
+        <DialogHeader>
+          <DialogTitle>Dodaj korisnika</DialogTitle>
+          <DialogDescription>
+            Ispunite obrazac ispod da biste dodali novog korisnika u sistem.
+          </DialogDescription>
+        </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <DialogHeader>
-              <DialogTitle>Uredi korisnika</DialogTitle>
-              <DialogDescription>
-                Ažuriraj detalje korisnika ispod.
-              </DialogDescription>
-            </DialogHeader>
             <div className="grid gap-4 py-4">
               <FormField
                 control={form.control}
@@ -140,12 +100,16 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Postavi lozinku</FormLabel>
+                    <FormLabel>
+                      Postavi lozinku{" "}
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Password"
                         type="password"
                         {...field}
+                        required
                       />
                     </FormControl>
                     <FormMessage />
@@ -158,12 +122,16 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
                 name="confirm_password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Potvrdi lozinku</FormLabel>
+                    <FormLabel>
+                      Potvrdi lozinku{" "}
+                      <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Password"
                         type="password"
                         {...field}
+                        required
                       />
                     </FormControl>
                     <FormMessage />
@@ -230,7 +198,5 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-
-export default EditUser

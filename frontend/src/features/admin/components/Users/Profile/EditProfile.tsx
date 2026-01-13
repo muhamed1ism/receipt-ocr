@@ -6,11 +6,9 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog.tsx";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserPen } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -24,22 +22,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { ProfilePublic, ProfileService } from "@/client";
-import useCustomToast from "@/hooks/useCustomToast";
-import { handleError } from "@/utils";
-
-const formSchema = z.object({
-  first_name: z.string().optional(),
-  last_name: z.string().optional(),
-  phone_number: z.string().optional(),
-  date_of_birth: z.string().optional(),
-  country: z.string().optional(),
-  address: z.string().optional(),
-  city: z.string().optional(),
-  currency_preference: z.enum(["USD", "EUR", "BAM", "GBP"]).optional(),
-});
-
-type FormData = z.infer<typeof formSchema>;
+import { ProfilePublic } from "@/client";
+import profileSchema, {
+  EditProfileFormData,
+} from "@/features/admin/schemas/profileSchema";
+import useEditProfile from "@/features/admin/hooks/useEditProfile";
 
 interface EditProfileProps {
   userId: string;
@@ -49,11 +36,10 @@ interface EditProfileProps {
 
 const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const queryClient = useQueryClient();
-  const { showSuccessToast, showErrorToast } = useCustomToast();
+  const mutation = useEditProfile(userId);
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<EditProfileFormData>({
+    resolver: zodResolver(profileSchema.editProfile),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
@@ -68,25 +54,13 @@ const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
     },
   });
 
-  const mutation = useMutation({
-    mutationFn: (data: FormData) =>
-      ProfileService.updateProfile({
-        userId,
-        requestBody: data,
-      }),
-    onSuccess: () => {
-      showSuccessToast("Profil je uspješno ažuriran");
-      setIsOpen(false);
-      onSuccess();
-    },
-    onError: handleError.bind(showErrorToast),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-    },
-  });
-
-  const onSubmit = (data: FormData) => {
-    mutation.mutate(data);
+  const onSubmit = (data: EditProfileFormData) => {
+    mutation.mutate(data, {
+      onSuccess: () => {
+        setIsOpen(false);
+        onSuccess();
+      },
+    });
   };
 
   return (

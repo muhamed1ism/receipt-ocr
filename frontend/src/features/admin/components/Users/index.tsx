@@ -4,7 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense, useState } from "react";
 import { DataTable } from "@/components/Common/DataTable";
 import PendingUsersTable from "@/components/Pending/PendingUsersTable";
-import AddUser from "./AddUser";
+import AddUser from "./User/AddUser";
 import { columns, UserTableData } from "./columns";
 import SearchBar from "@/components/Common/SearchBar";
 import { Button } from "@/components/ui/button";

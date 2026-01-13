@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, OcrScanData, OcrScanResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProfileReadProfilesData, ProfileReadProfilesResponse, ProfileCreateProfileData, ProfileCreateProfileResponse, ProfileUpdateProfileData, ProfileUpdateProfileResponse, ProfileReadProfileMeResponse, ProfileCreateProfileMeData, ProfileCreateProfileMeResponse, ProfileUpdateProfileMeData, ProfileUpdateProfileMeResponse, ReceiptReadReceiptsData, ReceiptReadReceiptsResponse, ReceiptUpdateReceiptData, ReceiptUpdateReceiptResponse, ReceiptReadReceiptsMeData, ReceiptReadReceiptsMeResponse, ReceiptCreateReceiptData, ReceiptCreateReceiptResponse, ReceiptDeleteReceiptData, ReceiptDeleteReceiptResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, OcrScanData, OcrScanResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProfileReadProfilesData, ProfileReadProfilesResponse, ProfileReadProfileMeResponse, ProfileCreateProfileMeData, ProfileCreateProfileMeResponse, ProfileUpdateProfileMeData, ProfileUpdateProfileMeResponse, ProfileCreateProfileData, ProfileCreateProfileResponse, ProfileUpdateProfileData, ProfileUpdateProfileResponse, ReceiptReadReceiptsData, ReceiptReadReceiptsResponse, ReceiptUpdateReceiptData, ReceiptUpdateReceiptResponse, ReceiptReadReceiptsMeData, ReceiptReadReceiptsMeResponse, ReceiptCreateReceiptData, ReceiptCreateReceiptResponse, ReceiptDeleteReceiptData, ReceiptDeleteReceiptResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class LoginService {
     /**
@@ -170,50 +170,6 @@ export class ProfileService {
     }
     
     /**
-     * Create Profile
-     * Create new profile.
-     * @param data The data for the request.
-     * @param data.requestBody
-     * @returns ProfilePublic Successful Response
-     * @throws ApiError
-     */
-    public static createProfile(data: ProfileCreateProfileData): CancelablePromise<ProfileCreateProfileResponse> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/v1/profile/',
-            body: data.requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
-    
-    /**
-     * Update Profile
-     * Update user profile.
-     * @param data The data for the request.
-     * @param data.userId
-     * @param data.requestBody
-     * @returns ProfilePublic Successful Response
-     * @throws ApiError
-     */
-    public static updateProfile(data: ProfileUpdateProfileData): CancelablePromise<ProfileUpdateProfileResponse> {
-        return __request(OpenAPI, {
-            method: 'PATCH',
-            url: '/api/v1/profile/',
-            query: {
-                user_id: data.userId
-            },
-            body: data.requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
-    
-    /**
      * Read Profile Me
      * Retrieve profiles.
      * @returns ProfilePublic Successful Response
@@ -258,6 +214,54 @@ export class ProfileService {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/v1/profile/me',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Profile
+     * Create new profile.
+     * @param data The data for the request.
+     * @param data.userId
+     * @param data.requestBody
+     * @returns ProfilePublic Successful Response
+     * @throws ApiError
+     */
+    public static createProfile(data: ProfileCreateProfileData): CancelablePromise<ProfileCreateProfileResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/profile/{user_id}',
+            path: {
+                user_id: data.userId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Profile
+     * Update user profile.
+     * @param data The data for the request.
+     * @param data.userId
+     * @param data.requestBody
+     * @returns ProfilePublic Successful Response
+     * @throws ApiError
+     */
+    public static updateProfile(data: ProfileUpdateProfileData): CancelablePromise<ProfileUpdateProfileResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/profile/{user_id}',
+            path: {
+                user_id: data.userId
+            },
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {

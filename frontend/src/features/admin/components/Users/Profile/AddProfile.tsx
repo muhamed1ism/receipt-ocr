@@ -1,12 +1,7 @@
-import { ProfileCreate, ProfileService } from "@/client";
-import useCustomToast from "@/hooks/useCustomToast";
-import { handleError } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserPlus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,27 +24,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import profileSchema, {
+  AddProfileFormData,
+} from "@/features/admin/schemas/profileSchema";
+import useAddProfile from "@/features/admin/hooks/useAddProfile";
 
-const formSchema = z.object({
-  first_name: z.string(),
-  last_name: z.string(),
-  phone_number: z.string().optional(),
-  date_of_birth: z.string().optional(),
-  country: z.string().optional(),
-  address: z.string().optional(),
-  city: z.string().optional(),
-  currency_preference: z.enum(["USD", "EUR", "BAM", "GBP"]).optional(),
-});
-
-type FormData = z.infer<typeof formSchema>;
-
-const AddProfile = ({ userId }: { userId: string }) => {
+export default function AddProfile({ userId }: { userId: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const queryClient = useQueryClient();
-  const { showSuccessToast, showErrorToast } = useCustomToast();
+  const mutation = useAddProfile(userId);
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<AddProfileFormData>({
+    resolver: zodResolver(profileSchema.addProfile),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
@@ -64,24 +49,12 @@ const AddProfile = ({ userId }: { userId: string }) => {
     },
   });
 
-  const mutation = useMutation({
-    mutationFn: (data: ProfileCreate) =>
-      ProfileService.createProfile({ requestBody: data }),
-    onSuccess: () => {
-      showSuccessToast("Profil je uspješno kreiran");
-      form.reset();
-      setIsOpen(false);
-    },
-    onError: handleError.bind(showErrorToast),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-    },
-  });
-
-  const onSubmit = (data: FormData) => {
-    mutation.mutate({
-      ...data,
-      user_id: userId,
+  const onSubmit = (data: AddProfileFormData) => {
+    mutation.mutate(data, {
+      onSuccess: () => {
+        form.reset();
+        setIsOpen(false);
+      },
     });
   };
 
@@ -270,6 +243,4 @@ const AddProfile = ({ userId }: { userId: string }) => {
       </DialogContent>
     </Dialog>
   );
-};
-
-export default AddProfile;
+}

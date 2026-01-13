@@ -47,22 +47,26 @@ def read_profile_me(
 
 
 @router.post(
-    "/",
+    "/{user_id}",
     dependencies=[Depends(get_current_active_superuser)],
     response_model=ProfilePublic,
 )
-def create_profile(*, session: SessionDep, profile_in: ProfileCreate) -> ProfilePublic:
+def create_profile(
+    *, session: SessionDep, user_id: uuid.UUID, profile_in: ProfileCreate
+) -> ProfilePublic:
     """
     Create new profile.
     """
-    profile = crud.get_profile_by_user_id(session=session, user_id=profile_in.user_id)
+    profile = crud.get_profile_by_user_id(session=session, user_id=user_id)
     if profile:
         raise HTTPException(
             status_code=400,
             detail="User already has profile in the system.",
         )
 
-    profile = crud.create_profile(session=session, profile_create=profile_in)
+    profile = crud.create_profile(
+        session=session, profile_create=profile_in, user_id=user_id
+    )
     return ProfilePublic.model_validate(profile)
 
 
@@ -83,13 +87,14 @@ def create_profile_me(
             detail="You already have profile in the system.",
         )
 
-    profile_data = ProfileCreate(**profile_in.model_dump(), user_id=current_user.id)
-    profile = crud.create_profile(session=session, profile_create=profile_data)
+    profile = crud.create_profile(
+        session=session, profile_create=profile_in, user_id=current_user.id
+    )
     return ProfilePublic.model_validate(profile)
 
 
 @router.patch(
-    "/",
+    "/{user_id}",
     dependencies=[Depends(get_current_active_superuser)],
     response_model=ProfilePublic,
 )

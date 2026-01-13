@@ -9,11 +9,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useAuth from "@/hooks/useAuth";
-import DeleteUser from "./DeleteUser";
-import EditUser from "./EditUser";
-import EditProfile from "./EditProfile";
-import AddProfile from "./AddProfile";
 import ViewReceipts from "./ViewReceipts";
+import EditProfile from "./Profile/EditProfile";
+import AddProfile from "./Profile/AddProfile";
+import EditUser from "./User/EditUser";
+import DeleteUser from "./User/DeleteUser";
 
 interface UserActionsMenuProps {
   user: UserPublicWithProfile;
