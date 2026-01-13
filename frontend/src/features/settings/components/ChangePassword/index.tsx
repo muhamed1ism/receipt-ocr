@@ -1,9 +1,6 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
-import { type UpdatePassword, UsersService } from "@/client"
 import {
   Form,
   FormControl,
@@ -11,37 +8,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { LoadingButton } from "@/components/ui/loading-button"
-import { PasswordInput } from "@/components/ui/password-input"
-import useCustomToast from "@/hooks/useCustomToast"
-import { handleError } from "@/utils"
-
-const formSchema = z
-  .object({
-    current_password: z
-      .string()
-      .min(1, { message: "Password is required" })
-      .min(8, { message: "Password must be at least 8 characters" }),
-    new_password: z
-      .string()
-      .min(1, { message: "Password is required" })
-      .min(8, { message: "Password must be at least 8 characters" }),
-    confirm_password: z
-      .string()
-      .min(1, { message: "Password confirmation is required" }),
-  })
-  .refine((data) => data.new_password === data.confirm_password, {
-    message: "The passwords don't match",
-    path: ["confirm_password"],
-  })
-
-type FormData = z.infer<typeof formSchema>
+} from "@/components/ui/form";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { PasswordInput } from "@/components/ui/password-input";
+import settingsSchema, {
+  ChangePasswordFormData,
+} from "../../schemas/settingsSchema";
+import useChangePassword from "@/features/receipts/hooks/useChangePassword";
 
 const ChangePassword = () => {
-  const { showSuccessToast, showErrorToast } = useCustomToast()
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const mutation = useChangePassword();
+
+  const form = useForm<ChangePasswordFormData>({
+    resolver: zodResolver(settingsSchema.changePassword),
     mode: "onSubmit",
     criteriaMode: "all",
     defaultValues: {
@@ -49,21 +28,15 @@ const ChangePassword = () => {
       new_password: "",
       confirm_password: "",
     },
-  })
+  });
 
-  const mutation = useMutation({
-    mutationFn: (data: UpdatePassword) =>
-      UsersService.updatePasswordMe({ requestBody: data }),
-    onSuccess: () => {
-      showSuccessToast("Password updated successfully")
-      form.reset()
-    },
-    onError: handleError.bind(showErrorToast),
-  })
-
-  const onSubmit = async (data: FormData) => {
-    mutation.mutate(data)
-  }
+  const onSubmit = async (data: ChangePasswordFormData) => {
+    mutation.mutate(data, {
+      onSuccess: () => {
+        form.reset();
+      },
+    });
+  };
 
   return (
     <div className="max-w-md">
@@ -141,7 +114,7 @@ const ChangePassword = () => {
         </form>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default ChangePassword
+export default ChangePassword;

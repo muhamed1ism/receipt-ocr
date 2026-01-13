@@ -1,4 +1,4 @@
-import PendingReceiptsTable from "@/components/Pending/PendingReceiptsTable";
+import PendingReceiptsTable from "./PendingReceiptsTable";
 import { Suspense } from "react";
 import ReceiptsTableContent from "./ReceiptsTableContent";
 

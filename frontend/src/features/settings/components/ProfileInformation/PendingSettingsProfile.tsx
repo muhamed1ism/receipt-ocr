@@ -1,4 +1,4 @@
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const PendingSettingsProfile = () => (
   <div className="grid grid-cols-2 gap-8">

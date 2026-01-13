@@ -1,10 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
-import { ProfileService, type ProfileUpdate } from "@/client";
+import { type ProfileUpdate } from "@/client";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,43 +15,31 @@ import {
 import { Input } from "@/components/ui/input";
 import { LoadingButton } from "@/components/ui/loading-button";
 import useAuth from "@/hooks/useAuth";
-import useCustomToast from "@/hooks/useCustomToast";
 import { cn } from "@/lib/utils";
-import { handleError } from "@/utils";
-import PendingSettingsProfile from "../Pending/PendingSettingsProfile";
+import PendingSettingsProfile from "./PendingSettingsProfile";
 import { formatDate } from "@/utils/formatDateTime";
-import { DatePicker } from "../ui/date-picker";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
   SelectTrigger,
-} from "../ui/select";
+} from "@/components/ui/select";
 import { SelectValue } from "@radix-ui/react-select";
 import { currencyPreference } from "@/constants/currency-preference";
-
-const formSchema = z.object({
-  first_name: z.string().max(30),
-  last_name: z.string().max(30),
-  phone_number: z.string().max(30).optional(),
-  date_of_birth: z.date().optional(),
-  country: z.string().max(30).optional(),
-  address: z.string().max(30).optional(),
-  city: z.string().max(30).optional(),
-  currency_preference: z.enum(["USD", "EUR", "BAM", "GBP"]).optional(),
-});
-
-type FormData = z.infer<typeof formSchema>;
+import settingsSchema, {
+  UpdateProfileFormData,
+} from "../../schemas/settingsSchema";
+import useUpdateProfile from "@/features/receipts/hooks/useUpdateProfile";
 
 const ProfileInformation = () => {
-  const queryClient = useQueryClient();
-  const { showSuccessToast, showErrorToast } = useCustomToast();
   const [editMode, setEditMode] = useState(false);
   const { user: currentUser } = useAuth();
+  const mutation = useUpdateProfile();
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<UpdateProfileFormData>({
+    resolver: zodResolver(settingsSchema.updateProfile),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
@@ -72,23 +58,10 @@ const ProfileInformation = () => {
     setEditMode(!editMode);
   };
 
-  const mutation = useMutation({
-    mutationFn: (data: ProfileUpdate) =>
-      ProfileService.updateProfileMe({ requestBody: data }),
-    onSuccess: () => {
-      showSuccessToast("Profil je uspješno ažuriran");
-      toggleEditMode();
-    },
-    onError: handleError.bind(showErrorToast),
-    onSettled: () => {
-      queryClient.invalidateQueries();
-    },
-  });
-
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: UpdateProfileFormData) => {
     const updateData: Partial<ProfileUpdate> = {};
 
-    (Object.keys(data) as (keyof FormData)[]).forEach((key) => {
+    (Object.keys(data) as (keyof UpdateProfileFormData)[]).forEach((key) => {
       if (data[key] !== currentUser?.profile?.[key]) {
         if (data[key] instanceof Date) {
           updateData[key] = data[key].toLocaleDateString("en-CA");
@@ -105,7 +78,11 @@ const ProfileInformation = () => {
 
     console.log(updateData);
 
-    mutation.mutate(updateData);
+    mutation.mutate(updateData, {
+      onSuccess: () => {
+        toggleEditMode();
+      },
+    });
   };
 
   useEffect(() => {

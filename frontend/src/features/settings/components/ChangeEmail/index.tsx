@@ -1,11 +1,8 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
-import { UsersService, type UserUpdateMe } from "@/client"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,72 +10,61 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { LoadingButton } from "@/components/ui/loading-button"
-import useAuth from "@/hooks/useAuth"
-import useCustomToast from "@/hooks/useCustomToast"
-import { handleError } from "@/utils"
-
-const formSchema = z.object({
-  email: z.email({ message: "Nevažeća email adresa" }),
-})
-
-type FormData = z.infer<typeof formSchema>
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { LoadingButton } from "@/components/ui/loading-button";
+import useAuth from "@/hooks/useAuth";
+import settingsSchema, {
+  ChangeEmailFormData,
+} from "../../schemas/settingsSchema";
+import useChangeEmail from "../../hooks/useChangeEmail";
 
 const ChangeEmail = () => {
-  const queryClient = useQueryClient()
-  const { showSuccessToast, showErrorToast } = useCustomToast()
-  const [editMode, setEditMode] = useState(false)
-  const { user: currentUser } = useAuth()
+  const [editMode, setEditMode] = useState(false);
+  const { user: currentUser } = useAuth();
+  const mutation = useChangeEmail();
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<ChangeEmailFormData>({
+    resolver: zodResolver(settingsSchema.changeEmail),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
       email: currentUser?.email,
     },
-  })
+  });
 
   const toggleEditMode = () => {
-    setEditMode(!editMode)
-  }
+    setEditMode(!editMode);
+  };
 
-  const mutation = useMutation({
-    mutationFn: (data: UserUpdateMe) =>
-      UsersService.updateUserMe({ requestBody: data }),
-    onSuccess: () => {
-      showSuccessToast("Korisnik je uspješno ažuriran")
-      toggleEditMode()
-    },
-    onError: handleError.bind(showErrorToast),
-    onSettled: () => {
-      queryClient.invalidateQueries()
-    },
-  })
-
-  const onSubmit = (data: FormData) => {
-    const emailChanged = data.email !== currentUser?.email
+  const onSubmit = (data: ChangeEmailFormData) => {
+    const emailChanged = data.email !== currentUser?.email;
 
     if (!emailChanged) {
-      toggleEditMode()
-      return
+      toggleEditMode();
+      return;
     }
 
-    mutation.mutate({ email: data.email })
-  }
+    mutation.mutate(
+      { email: data.email },
+      {
+        onSuccess: () => {
+          toggleEditMode();
+        },
+      },
+    );
+  };
 
   useEffect(() => {
     if (currentUser?.email) {
-      form.reset({ email: currentUser.email })
+      form.reset({ email: currentUser.email });
     }
-  }, [currentUser?.email, form.reset])
+  }, [currentUser?.email, form.reset]);
 
   const onCancel = () => {
-    form.reset({ email: currentUser?.email })
-    toggleEditMode()
-  }
+    form.reset({ email: currentUser?.email });
+    toggleEditMode();
+  };
 
   return (
     <div className="max-w-md">
@@ -149,7 +135,7 @@ const ChangeEmail = () => {
         </form>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default ChangeEmail
+export default ChangeEmail;

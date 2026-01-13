@@ -1,10 +1,10 @@
-import ChangePassword from "@/components/UserSettings/ChangePassword";
-import DeleteAccount from "@/components/UserSettings/DeleteAccount";
-import ChangeEmail from "@/components/UserSettings/ChangeEmail";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useAuth from "@/hooks/useAuth";
-import ProfileInformation from "@/components/UserSettings/ProfileInformation";
 import { ReceiptCard } from "@/components/Common/ReceiptCard";
+import ChangeEmail from "./components/ChangeEmail";
+import ChangePassword from "./components/ChangePassword";
+import DeleteAccount from "./components/DeleteAccount";
+import ProfileInformation from "./components/ProfileInformation";
 
 const tabsConfig = [
   { value: "my-profile", title: "Moj Profil", component: ProfileInformation },

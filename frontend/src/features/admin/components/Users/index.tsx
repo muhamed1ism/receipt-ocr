@@ -1,73 +1,11 @@
-import { UserPublicWithProfile, UsersService } from "@/client";
-import useAuth from "@/hooks/useAuth";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Suspense, useState } from "react";
-import { DataTable } from "@/components/Common/DataTable";
-import PendingUsersTable from "@/components/Pending/PendingUsersTable";
+import { useState } from "react";
 import AddUser from "./User/AddUser";
-import { columns, UserTableData } from "./columns";
 import SearchBar from "@/components/Common/SearchBar";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import UsersTable from "./UserTable";
 
-function getUsersQueryOptions(query: string) {
-  return {
-    queryKey: ["users", query],
-    queryFn: () =>
-      UsersService.readUsers({
-        skip: 0,
-        limit: 30,
-        q: query || undefined,
-      }),
-  };
-}
-
-function UsersTableContent({ searchQuery }: { searchQuery: string }) {
-  const { user: currentUser } = useAuth();
-  const {
-    data: users,
-    isError,
-    error,
-  } = useSuspenseQuery(getUsersQueryOptions(searchQuery));
-
-  const tableData: UserTableData[] = users.data.map(
-    (user: UserPublicWithProfile) => ({
-      ...user,
-      isCurrentUser: currentUser?.id === user.id,
-    }),
-  );
-
-  return (
-    <div className="flex flex-col gap-4">
-      {isError ? (
-        <p className="text-center text-muted-foreground py-8">
-          {error.message}
-        </p>
-      ) : users.count > 0 ? (
-        <>
-          <p className="text-sm text-muted-foreground">
-            Pronađeno {users.count} računa
-          </p>
-          <DataTable columns={columns} data={tableData} />
-        </>
-      ) : (
-        <p className="text-center text-muted-foreground py-8">
-          Nema rezultata. Pokušajte drugu pretragu.
-        </p>
-      )}
-    </div>
-  );
-}
-
-function UsersTable({ query }: { query: string }) {
-  return (
-    <Suspense fallback={<PendingUsersTable />}>
-      <UsersTableContent searchQuery={query} />
-    </Suspense>
-  );
-}
-
-function Users() {
+export default function Users() {
   const [query, setQuery] = useState("");
   const [inputValue, setInputValue] = useState("");
 
@@ -105,5 +43,3 @@ function Users() {
     </div>
   );
 }
-
-export default Users;

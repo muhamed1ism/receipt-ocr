@@ -1,9 +1,8 @@
 import { ArrowDownWideNarrow, Grid2x2, List, Search } from "lucide-react";
 import { Suspense, useState } from "react";
-import { ReceiptService, type ReceiptPublicDetailedMe } from "@/client";
+import { type ReceiptPublicDetailedMe } from "@/client";
 import { ReceiptCard } from "@/components/Common/ReceiptCard";
 import SearchBar from "@/components/Common/SearchBar";
-import { ViewReceiptDialog } from "@/components/Receipt/ViewReceiptDiolog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,7 +14,9 @@ import {
 } from "@/components/ui/card";
 import { formatDate, formatTime } from "@/utils/formatDateTime";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import PendingReceipts from "@/components/Pending/PendingReceipts";
+import PendingReceipts from "./components/PendingReceipts";
+import { ViewReceiptDialog } from "./components/ViewReceiptDiolog";
+import useGetReceipts from "./hooks/useGetReceipts";
 
 interface modalType {
   isOpen: boolean;
@@ -23,18 +24,6 @@ interface modalType {
 }
 
 type ViewMode = "grid" | "list";
-
-function getReceiptsWithQuery(query: string) {
-  return {
-    queryKey: ["receipts-me-search", query],
-    queryFn: () =>
-      ReceiptService.readReceiptsMe({
-        skip: 0,
-        limit: 30,
-        q: query || undefined,
-      }),
-  };
-}
 
 export default function Receipts() {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
@@ -45,7 +34,7 @@ export default function Receipts() {
     receipt: null,
   });
 
-  const { data: receipts } = useSuspenseQuery(getReceiptsWithQuery(query));
+  const { data: receipts } = useSuspenseQuery(useGetReceipts(query));
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -56,7 +45,7 @@ export default function Receipts() {
   const groupedByDate = receipts.data.reduce<
     Record<string, ReceiptPublicDetailedMe[]>
   >((acc, receipt) => {
-    const dateKey = receipt.date_time.split("T")[0]; // YYYY-MM-DD
+    const dateKey = receipt.date_time?.split("T")[0] ?? "Unknown Date";
     (acc[dateKey] ??= []).push(receipt);
     return acc;
   }, {});
@@ -148,7 +137,11 @@ export default function Receipts() {
                               </CardTitle>
                               <CardDescription className="text-center text-sm text-muted-foreground space-y-1">
                                 <p>KATEGORIJA</p>
-                                <p>{formatTime(receipt.date_time)}</p>
+                                <p>
+                                  {receipt.date_time
+                                    ? formatTime(receipt.date_time)
+                                    : "N/A"}
+                                </p>
                               </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -183,7 +176,11 @@ export default function Receipts() {
                             <CardDescription>
                               <div className="text-sm text-muted-foreground">
                                 <span>KATEGORIJA</span>
-                                <p>{formatTime(receipt.date_time)}</p>
+                                <p>
+                                  {receipt.date_time
+                                    ? formatTime(receipt.date_time)
+                                    : "N/A"}
+                                </p>
                               </div>
                             </CardDescription>
                           </CardHeader>

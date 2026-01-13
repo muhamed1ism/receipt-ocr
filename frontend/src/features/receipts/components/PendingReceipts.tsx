@@ -1,6 +1,11 @@
-import { ReceiptCard } from "../Common/ReceiptCard";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
-import { Skeleton } from "../ui/skeleton";
+import { ReceiptCard } from "@/components/Common/ReceiptCard";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface PendingReceiptsProps {
   viewMode: string;

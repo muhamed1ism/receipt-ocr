@@ -1,7 +1,5 @@
 import { ChartColumn, CoffeeIcon, TrendingDown } from "lucide-react";
 import { ReceiptCard } from "@/components/Common/ReceiptCard";
-import MonthlyBudget from "@/components/Dashboard/MonthlyBudget";
-import WeeklyChart from "@/components/Dashboard/WeeklyChart";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Card,
@@ -10,6 +8,8 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import useAuth from "@/hooks/useAuth";
+import MonthlyBudget from "./components/MonthlyBudget";
+import WeeklyChart from "./components/WeeklyChart";
 
 export default function Dashboard() {
   const { user: currentUser } = useAuth();
