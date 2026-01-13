@@ -1,10 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { Link as RouterLink, useNavigate } from "@tanstack/react-router";
+import { Link as RouterLink } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
-import { LoginService } from "@/client";
 import { AuthLayout } from "@/components/Common/AuthLayout";
 import {
   Form,
@@ -16,37 +13,16 @@ import {
 } from "@/components/ui/form";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { PasswordInput } from "@/components/ui/password-input";
-import useCustomToast from "@/hooks/useCustomToast";
-import { handleError } from "@/utils";
-
-const searchSchema = z.object({
-  token: z.string().catch(""),
-});
-
-const formSchema = z
-  .object({
-    new_password: z
-      .string()
-      .min(1, { message: "Password is required" })
-      .min(8, { message: "Password must be at least 8 characters" }),
-    confirm_password: z
-      .string()
-      .min(1, { message: "Password confirmation is required" }),
-  })
-  .refine((data) => data.new_password === data.confirm_password, {
-    message: "The passwords don't match",
-    path: ["confirm_password"],
-  });
-
-type FormData = z.infer<typeof formSchema>;
+import { Route } from "@/routes/reset-password";
+import authSchema, { ResetPasswordFormData } from "./schemas/authSchema";
+import useResetPassword from "./hooks/useResetPassword";
 
 export default function ResetPassword() {
   const { token } = Route.useSearch();
-  const { showSuccessToast, showErrorToast } = useCustomToast();
-  const navigate = useNavigate();
+  const mutation = useResetPassword();
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<ResetPasswordFormData>({
+    resolver: zodResolver(authSchema.resetPassword),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
@@ -55,19 +31,15 @@ export default function ResetPassword() {
     },
   });
 
-  const mutation = useMutation({
-    mutationFn: (data: { new_password: string; token: string }) =>
-      LoginService.resetPassword({ requestBody: data }),
-    onSuccess: () => {
-      showSuccessToast("Password updated successfully");
-      form.reset();
-      navigate({ to: "/login" });
-    },
-    onError: handleError.bind(showErrorToast),
-  });
-
-  const onSubmit = (data: FormData) => {
-    mutation.mutate({ new_password: data.new_password, token });
+  const onSubmit = (data: ResetPasswordFormData) => {
+    mutation.mutate(
+      { new_password: data.new_password, token },
+      {
+        onSuccess: () => {
+          form.reset();
+        },
+      },
+    );
   };
 
   return (

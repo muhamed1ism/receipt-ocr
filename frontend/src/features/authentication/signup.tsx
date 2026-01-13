@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link as RouterLink } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { AuthLayout } from "@/components/Common/AuthLayout";
 import {
   Form,
@@ -15,29 +14,12 @@ import { Input } from "@/components/ui/input";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { PasswordInput } from "@/components/ui/password-input";
 import useAuth from "@/hooks/useAuth";
-
-const formSchema = z
-  .object({
-    email: z.email(),
-    password: z
-      .string()
-      .min(1, { message: "Lozinka je obavezna" })
-      .min(8, { message: "Lozinka mora imati najmanje 8 karaktera" }),
-    confirm_password: z
-      .string()
-      .min(1, { message: "Potvrda lozinke je obavezna" }),
-  })
-  .refine((data) => data.password === data.confirm_password, {
-    message: "Lozinke se ne podudaraju",
-    path: ["confirm_password"],
-  });
-
-type FormData = z.infer<typeof formSchema>;
+import authSchema, { SignUpFormData } from "./schemas/authSchema";
 
 export default function SignUp() {
   const { signUpMutation } = useAuth();
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<SignUpFormData>({
+    resolver: zodResolver(authSchema.signUp),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
@@ -47,7 +29,7 @@ export default function SignUp() {
     },
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: SignUpFormData) => {
     if (signUpMutation.isPending) return;
 
     // exclude confirm_password from submission data

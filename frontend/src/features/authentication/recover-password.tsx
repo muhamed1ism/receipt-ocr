@@ -1,10 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
-import { LoginService } from "@/client";
 import { AuthLayout } from "@/components/Common/AuthLayout";
 import {
   Form,
@@ -16,42 +13,26 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { LoadingButton } from "@/components/ui/loading-button";
-import useCustomToast from "@/hooks/useCustomToast";
-import { handleError } from "@/utils";
-
-const formSchema = z.object({
-  email: z.email(),
-});
-
-type FormData = z.infer<typeof formSchema>;
+import authSchema, { RecoverPasswordFormData } from "./schemas/authSchema";
+import useRecoverPassword from "./hooks/useRecoverPassword";
 
 export default function RecoverPassword() {
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const mutation = useRecoverPassword();
+
+  const form = useForm<RecoverPasswordFormData>({
+    resolver: zodResolver(authSchema.recoverPassword),
     defaultValues: {
       email: "",
     },
   });
-  const { showSuccessToast, showErrorToast } = useCustomToast();
 
-  const recoverPassword = async (data: FormData) => {
-    await LoginService.recoverPassword({
-      email: data.email,
-    });
-  };
-
-  const mutation = useMutation({
-    mutationFn: recoverPassword,
-    onSuccess: () => {
-      showSuccessToast("Password recovery email sent successfully");
-      form.reset();
-    },
-    onError: handleError.bind(showErrorToast),
-  });
-
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: RecoverPasswordFormData) => {
     if (mutation.isPending) return;
-    mutation.mutate(data);
+    mutation.mutate(data, {
+      onSuccess: () => {
+        form.reset();
+      },
+    });
   };
 
   return (

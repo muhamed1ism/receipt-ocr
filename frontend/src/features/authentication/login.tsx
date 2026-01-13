@@ -1,9 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link as RouterLink } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
-import type { Body_login_login_access_token as AccessToken } from "@/client";
 import { AuthLayout } from "@/components/Common/AuthLayout";
 import {
   Form,
@@ -17,21 +15,12 @@ import { Input } from "@/components/ui/input";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { PasswordInput } from "@/components/ui/password-input";
 import useAuth from "@/hooks/useAuth";
-
-const formSchema = z.object({
-  username: z.email(),
-  password: z
-    .string()
-    .min(1, { message: "Lozinka je obavezna" })
-    .min(8, { message: "Lozinka mora imati najmanje 8 karaktera" }),
-}) satisfies z.ZodType<AccessToken>;
-
-type FormData = z.infer<typeof formSchema>;
+import authSchema, { LoginFormData } from "./schemas/authSchema";
 
 export default function Login() {
   const { loginMutation } = useAuth();
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(authSchema.login),
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
@@ -40,7 +29,7 @@ export default function Login() {
     },
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: LoginFormData) => {
     if (loginMutation.isPending) return;
     loginMutation.mutate(data);
   };
