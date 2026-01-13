@@ -14,7 +14,7 @@ const PendingReceipts = ({ viewMode }: PendingReceiptsProps) => (
 
     {viewMode === "grid"
       ? [...Array(8)].map((_, index) => (
-          <ReceiptCard>
+          <ReceiptCard key={index}>
             <Card className="rounded-none border-y-0 h-full">
               <CardHeader className="flex flex-col items-center mb-1">
                 <Skeleton className="h-6 w-40 mb-2" />
@@ -32,7 +32,7 @@ const PendingReceipts = ({ viewMode }: PendingReceiptsProps) => (
           </ReceiptCard>
         ))
       : [...Array(8)].map((_, index) => (
-          <ReceiptCard>
+          <ReceiptCard key={index}>
             <Card className="rounded-none bg-card border-0 h-full flex flex-row justify-between items-start">
               <CardHeader className="min-w-[40%]">
                 <Skeleton className="h-6 mb-3" />

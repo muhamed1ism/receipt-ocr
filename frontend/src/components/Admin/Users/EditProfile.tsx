@@ -57,8 +57,8 @@ const EditProfile = ({ userId, profile, onSuccess }: EditProfileProps) => {
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      first_name: profile?.first_name || "",
-      last_name: profile?.last_name || "",
+      first_name: profile?.first_name,
+      last_name: profile?.last_name,
       phone_number: profile?.phone_number || "",
       date_of_birth: profile?.date_of_birth || new Date().toISOString(),
       country: profile?.country || "",
