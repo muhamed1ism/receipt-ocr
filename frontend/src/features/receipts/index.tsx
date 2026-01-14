@@ -46,7 +46,8 @@ export default function Receipts() {
     Record<string, ReceiptPublicDetailedMe[]>
   >((acc, receipt) => {
     const dateKey = receipt.date_time?.split("T")[0] ?? "Unknown Date";
-    (acc[dateKey] ??= []).push(receipt);
+    acc[dateKey] ??= [];
+    acc[dateKey].push(receipt);
     return acc;
   }, {});
 

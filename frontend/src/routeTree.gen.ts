@@ -17,7 +17,9 @@ import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutReceiptsRouteImport } from './routes/_layout/receipts'
+import { Route as LayoutPostRegisterRouteImport } from './routes/_layout/post-register'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
+import { Route as LayoutAddReceiptRouteImport } from './routes/_layout/add-receipt'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -58,9 +60,19 @@ const LayoutReceiptsRoute = LayoutReceiptsRouteImport.update({
   path: '/receipts',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutPostRegisterRoute = LayoutPostRegisterRouteImport.update({
+  id: '/post-register',
+  path: '/post-register',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutAdminRoute = LayoutAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutAddReceiptRoute = LayoutAddReceiptRouteImport.update({
+  id: '/add-receipt',
+  path: '/add-receipt',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -69,7 +81,9 @@ export interface FileRoutesByFullPath {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/add-receipt': typeof LayoutAddReceiptRoute
   '/admin': typeof LayoutAdminRoute
+  '/post-register': typeof LayoutPostRegisterRoute
   '/receipts': typeof LayoutReceiptsRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
@@ -79,7 +93,9 @@ export interface FileRoutesByTo {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/add-receipt': typeof LayoutAddReceiptRoute
   '/admin': typeof LayoutAdminRoute
+  '/post-register': typeof LayoutPostRegisterRoute
   '/receipts': typeof LayoutReceiptsRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
@@ -91,7 +107,9 @@ export interface FileRoutesById {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/_layout/add-receipt': typeof LayoutAddReceiptRoute
   '/_layout/admin': typeof LayoutAdminRoute
+  '/_layout/post-register': typeof LayoutPostRegisterRoute
   '/_layout/receipts': typeof LayoutReceiptsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/': typeof LayoutIndexRoute
@@ -103,7 +121,9 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
+    | '/add-receipt'
     | '/admin'
+    | '/post-register'
     | '/receipts'
     | '/settings'
     | '/'
@@ -113,7 +133,9 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
+    | '/add-receipt'
     | '/admin'
+    | '/post-register'
     | '/receipts'
     | '/settings'
     | '/'
@@ -124,7 +146,9 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
+    | '/_layout/add-receipt'
     | '/_layout/admin'
+    | '/_layout/post-register'
     | '/_layout/receipts'
     | '/_layout/settings'
     | '/_layout/'
@@ -196,6 +220,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutReceiptsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/post-register': {
+      id: '/_layout/post-register'
+      path: '/post-register'
+      fullPath: '/post-register'
+      preLoaderRoute: typeof LayoutPostRegisterRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/admin': {
       id: '/_layout/admin'
       path: '/admin'
@@ -203,18 +234,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/add-receipt': {
+      id: '/_layout/add-receipt'
+      path: '/add-receipt'
+      fullPath: '/add-receipt'
+      preLoaderRoute: typeof LayoutAddReceiptRouteImport
+      parentRoute: typeof LayoutRoute
+    }
   }
 }
 
 interface LayoutRouteChildren {
+  LayoutAddReceiptRoute: typeof LayoutAddReceiptRoute
   LayoutAdminRoute: typeof LayoutAdminRoute
+  LayoutPostRegisterRoute: typeof LayoutPostRegisterRoute
   LayoutReceiptsRoute: typeof LayoutReceiptsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutAddReceiptRoute: LayoutAddReceiptRoute,
   LayoutAdminRoute: LayoutAdminRoute,
+  LayoutPostRegisterRoute: LayoutPostRegisterRoute,
   LayoutReceiptsRoute: LayoutReceiptsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
