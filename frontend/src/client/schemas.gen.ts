@@ -295,15 +295,10 @@ export const ProfileCreateSchema = {
         currency_preference: {
             '$ref': '#/components/schemas/CurrencyEnum',
             default: 'BAM'
-        },
-        user_id: {
-            type: 'string',
-            format: 'uuid',
-            title: 'User Id'
         }
     },
     type: 'object',
-    required: ['first_name', 'last_name', 'user_id'],
+    required: ['first_name', 'last_name'],
     title: 'ProfileCreate'
 } as const;
 

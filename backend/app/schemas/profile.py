@@ -8,7 +8,7 @@ from app.models import ProfileBase
 
 
 class ProfileCreate(ProfileBase):
-    user_id: uuid.UUID
+    pass
 
 
 class ProfileCreateMe(ProfileBase):

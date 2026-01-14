@@ -5,12 +5,16 @@ from sqlmodel import Session, func, select
 
 from app.models import Profile
 from app.schemas import ProfileCreate, ProfilePublic, ProfilesPublic, ProfileUpdate
+from app.schemas.profile import ProfileCreateMe
 
 
-def create_profile(*, session: Session, profile_create: ProfileCreate) -> Profile:
-    db_obj = Profile.model_validate(
-        profile_create,
-    )
+def create_profile(
+    *,
+    session: Session,
+    profile_create: ProfileCreate | ProfileCreateMe,
+    user_id: uuid.UUID,
+) -> Profile:
+    db_obj = Profile(**profile_create.model_dump(), user_id=user_id)
     session.add(db_obj)
     session.commit()
     session.refresh(db_obj)

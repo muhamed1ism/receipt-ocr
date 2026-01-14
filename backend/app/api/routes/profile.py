@@ -47,26 +47,6 @@ def read_profile_me(
 
 
 @router.post(
-    "/",
-    dependencies=[Depends(get_current_active_superuser)],
-    response_model=ProfilePublic,
-)
-def create_profile(*, session: SessionDep, profile_in: ProfileCreate) -> ProfilePublic:
-    """
-    Create new profile.
-    """
-    profile = crud.get_profile_by_user_id(session=session, user_id=profile_in.user_id)
-    if profile:
-        raise HTTPException(
-            status_code=400,
-            detail="User already has profile in the system.",
-        )
-
-    profile = crud.create_profile(session=session, profile_create=profile_in)
-    return ProfilePublic.model_validate(profile)
-
-
-@router.post(
     "/me",
     response_model=ProfilePublic,
 )
@@ -83,34 +63,34 @@ def create_profile_me(
             detail="You already have profile in the system.",
         )
 
-    profile_data = ProfileCreate(**profile_in.model_dump(), user_id=current_user.id)
-    profile = crud.create_profile(session=session, profile_create=profile_data)
+    profile = crud.create_profile(
+        session=session, profile_create=profile_in, user_id=current_user.id
+    )
     return ProfilePublic.model_validate(profile)
 
 
-@router.patch(
-    "/",
+@router.post(
+    "/{user_id}",
     dependencies=[Depends(get_current_active_superuser)],
     response_model=ProfilePublic,
 )
-def update_profile(
-    *, session: SessionDep, user_id: uuid.UUID, profile_in: ProfileUpdate
+def create_profile(
+    *, session: SessionDep, user_id: uuid.UUID, profile_in: ProfileCreate
 ) -> ProfilePublic:
     """
-    Update user profile.
+    Create new profile.
     """
-
-    profile_db = crud.get_profile_by_user_id(session=session, user_id=user_id)
-    if not profile_db:
+    profile = crud.get_profile_by_user_id(session=session, user_id=user_id)
+    if profile:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Profile not found",
+            status_code=400,
+            detail="User already has profile in the system.",
         )
 
-    new_profile = crud.update_profile(
-        session=session, db_profile=profile_db, profile_update=profile_in
+    profile = crud.create_profile(
+        session=session, profile_create=profile_in, user_id=user_id
     )
-    return ProfilePublic.model_validate(new_profile)
+    return ProfilePublic.model_validate(profile)
 
 
 @router.patch("/me", response_model=ProfilePublic)
@@ -131,5 +111,30 @@ def update_profile_me(
 
     new_profile = crud.update_profile(
         session=session, db_profile=current_profile, profile_update=profile_in
+    )
+    return ProfilePublic.model_validate(new_profile)
+
+
+@router.patch(
+    "/{user_id}",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=ProfilePublic,
+)
+def update_profile(
+    *, session: SessionDep, user_id: uuid.UUID, profile_in: ProfileUpdate
+) -> ProfilePublic:
+    """
+    Update user profile.
+    """
+
+    profile_db = crud.get_profile_by_user_id(session=session, user_id=user_id)
+    if not profile_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Profile not found",
+        )
+
+    new_profile = crud.update_profile(
+        session=session, db_profile=profile_db, profile_update=profile_in
     )
     return ProfilePublic.model_validate(new_profile)
