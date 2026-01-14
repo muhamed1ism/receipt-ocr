@@ -1,8 +1,12 @@
-const PROFILE_FIELDS: {
-  name: keyof FormData;
+import { UpdateProfileFormData } from "@/features/settings/schemas/settingsSchema";
+
+export type FieldConfig<T> = {
+  name: keyof T;
   label: string;
   type: "text" | "date" | "select";
-}[] = [
+};
+
+export const PROFILE_FIELDS: FieldConfig<UpdateProfileFormData>[] = [
   { name: "first_name", label: "Ime", type: "text" },
   { name: "last_name", label: "Prezime", type: "text" },
   { name: "country", label: "Država", type: "text" },

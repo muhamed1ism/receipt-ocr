@@ -27,7 +27,7 @@ const updateProfileFormSchema = z.object({
   first_name: z.string().max(30),
   last_name: z.string().max(30),
   phone_number: z.string().max(30).optional(),
-  date_of_birth: z.date().optional(),
+  date_of_birth: z.string().optional(),
   country: z.string().max(30).optional(),
   address: z.string().max(30).optional(),
   city: z.string().max(30).optional(),
