@@ -23,7 +23,7 @@ export function DatePicker({
   className,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
-  const date = new Date(dateValue);
+  const date = dateValue ? new Date(dateValue) : undefined;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

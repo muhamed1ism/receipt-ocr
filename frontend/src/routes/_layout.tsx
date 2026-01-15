@@ -1,24 +1,36 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-import { Footer } from "@/components/Common/Footer"
-import AppSidebar from "@/components/Sidebar/AppSidebar"
+import { Footer } from "@/components/Common/Footer";
+import AppSidebar from "@/components/Sidebar/AppSidebar";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { isLoggedIn } from "@/hooks/useAuth"
+} from "@/components/ui/sidebar";
+import { isLoggedIn } from "@/hooks/useAuth";
+import { queryClient } from "@/lib/query";
+import { UsersService } from "@/client";
 
 export const Route = createFileRoute("/_layout")({
   component: Layout,
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     if (!isLoggedIn()) {
       throw redirect({
         to: "/login",
-      })
+      });
+    }
+    const user = await queryClient.ensureQueryData({
+      queryKey: ["currentUser"],
+      queryFn: UsersService.readUserMe,
+    });
+
+    if (user.profile === null && location.pathname !== "/post-register") {
+      throw redirect({
+        to: "/post-register",
+      });
     }
   },
-})
+});
 
 function Layout() {
   return (
@@ -36,7 +48,7 @@ function Layout() {
         <Footer />
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }
 
-export default Layout
+export default Layout;
