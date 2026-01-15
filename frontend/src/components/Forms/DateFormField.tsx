@@ -14,14 +14,14 @@ interface DateFormFieldProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
   label: string;
-  editMode: boolean | string;
+  editMode?: boolean | string;
 }
 
 export default function DateFormField<T extends FieldValues>({
   name,
   control,
   label,
-  editMode,
+  editMode = "disabled",
 }: DateFormFieldProps<T>) {
   return (
     <FormField
@@ -33,6 +33,7 @@ export default function DateFormField<T extends FieldValues>({
             <FormLabel>{label}</FormLabel>
             <FormControl>
               <DatePicker
+                className="w-34"
                 dateValue={field.value}
                 setDateValue={field.onChange}
               />

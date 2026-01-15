@@ -133,15 +133,9 @@ export const BranchReceiptInSchema = {
                 }
             ],
             title: 'City'
-        },
-        store_id: {
-            type: 'string',
-            format: 'uuid',
-            title: 'Store Id'
         }
     },
     type: 'object',
-    required: ['store_id'],
     title: 'BranchReceiptIn'
 } as const;
 

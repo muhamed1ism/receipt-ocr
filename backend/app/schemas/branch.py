@@ -12,7 +12,7 @@ class BranchCreate(BranchBase):
 
 
 class BranchReceiptIn(BranchBase):
-    store_id: uuid.UUID
+    pass
 
 
 class BranchPublic(BranchBase):
@@ -32,3 +32,4 @@ class BranchUpdate(SQLModel):
     address: str | None = Field(default=None, max_length=255)
     city: str | None = Field(default=None, max_length=100)
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+

@@ -23,7 +23,6 @@ export type BranchPublicWithStore = {
 export type BranchReceiptIn = {
     address?: (string | null);
     city?: (string | null);
-    store_id: string;
 };
 
 export type CurrencyEnum = 'USD' | 'EUR' | 'BAM' | 'GBP';

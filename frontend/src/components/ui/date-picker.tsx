@@ -27,11 +27,11 @@ export function DatePicker({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger className="hover:shadow-none" asChild>
         <Button
           variant="ghost"
           id="date"
-          className={`flex bg-transparent font-sans dark:bg-accent justify-between rounded-none border-b-2 border-dashed border-foreground/50 data-[state=open]:border-foreground ${className}`}
+          className={`flex bg-transparent font-sans dark:bg-accent justify-between rounded-none border-b-2 border-dashed border-foreground/50 data-[state=open]:border-foreground hover:bg-transparent ${className}`}
         >
           {dateValue ? formatDate(dateValue) : "Odaberi datum"}
           <ChevronDownIcon />

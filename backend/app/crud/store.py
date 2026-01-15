@@ -1,10 +1,18 @@
 from sqlmodel import Session, func, select
 
 from app.models import Store
-from app.schemas import StoreCreate, StoreReceiptIn, StorePublic, StoresPublic, StoreUpdate
+from app.schemas import (
+    StoreCreate,
+    StorePublic,
+    StoreReceiptIn,
+    StoresPublic,
+    StoreUpdate,
+)
 
 
-def get_or_create_store(*, session: Session, store_data: StoreCreate | StoreReceiptIn) -> Store:
+def get_or_create_store(
+    *, session: Session, store_data: StoreCreate | StoreReceiptIn
+) -> Store:
     store = session.exec(
         select(Store).where(Store.name == store_data.name)
     ).one_or_none()
@@ -57,3 +65,4 @@ def delete_store(*, session: Session, store_id) -> StorePublic | None:
 
     session.delete(store)
     return StorePublic.model_validate(store)
+
