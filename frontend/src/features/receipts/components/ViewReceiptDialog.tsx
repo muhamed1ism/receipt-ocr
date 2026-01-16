@@ -1,7 +1,7 @@
-import { XIcon } from "lucide-react"
-import type { ReceiptPublicDetailedMe } from "@/client"
-import { ReceiptCard } from "@/components/Common/ReceiptCard"
-import { Button } from "@/components/ui/button"
+import { XIcon } from "lucide-react";
+import type { ReceiptPublicDetailedMe } from "@/client";
+import { ReceiptCard } from "@/components/Common/ReceiptCard";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,13 +9,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { formatDate, formatTime } from "@/utils/formatDateTime"
+} from "@/components/ui/card";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { formatDate, formatTime } from "@/utils/formatDateTime";
 
 interface ViewReceiptDialogProps {
-  receipt: ReceiptPublicDetailedMe | null
-  onClose: () => void
+  receipt: ReceiptPublicDetailedMe | null;
+  onClose: () => void;
 }
 
 export function ViewReceiptDialog({
@@ -92,6 +92,13 @@ export function ViewReceiptDialog({
 
               <CardFooter className="flex flex-col gap-0 items-stretch">
                 <div className="border-b-2 border-dashed border-muted-foreground mb-3" />
+                <div className="w-full flex justify-between mb-2 items-end text-muted-foreground">
+                  <p>PDV:</p>
+                  <p>
+                    {receipt.tax_amount} KM
+
+                  </p>
+                </div>
                 <div className="w-full flex justify-between mb-2 items-end">
                   <p className=" text-muted-foreground">Ukupno:</p>
                   <p className="text-2xl font-bold">
@@ -100,7 +107,7 @@ export function ViewReceiptDialog({
                 </div>
                 <div className="mx-15 border-b-2 border-dashed border-muted-foreground my-3" />
                 <div className="text-muted-foreground text-center">
-                  <p>HVALA NA POSJEI!</p>
+                  <p>HVALA NA POSJETI!</p>
                   <p>Thank you for your visit!</p>
                 </div>
               </CardFooter>
@@ -109,5 +116,5 @@ export function ViewReceiptDialog({
         )}
       </DialogContent>
     </Dialog>
-  )
+  );
 }
