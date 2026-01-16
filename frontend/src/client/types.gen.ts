@@ -111,11 +111,15 @@ export type ReceiptCreate = {
     items: Array<ReceiptItemCreate>;
 };
 
+export type ReceiptDetailsPublic = {
+    ibfm?: (string | null);
+    bf?: (number | null);
+    id: string;
+};
+
 export type ReceiptDetailsReceiptIn = {
     ibfm?: (string | null);
     bf?: (number | null);
-    ibk?: (number | null);
-    digital_signature?: (string | null);
 };
 
 export type ReceiptItemCreate = {
@@ -153,6 +157,7 @@ export type ReceiptPublicDetailed = {
     id: string;
     created_at: string;
     updated_at: string;
+    details: ReceiptDetailsPublic;
     items?: Array<ReceiptItemPublic>;
     branch: BranchPublicWithStore;
     user: UserPublicWithProfile;

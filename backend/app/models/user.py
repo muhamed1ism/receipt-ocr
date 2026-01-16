@@ -24,7 +24,7 @@ class User(UserBase, table=True):
     hashed_password: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    receipt: Receipt | None = Relationship(back_populates="user")
     profile: Mapped["Profile"] = Relationship(
         back_populates="user", sa_relationship_kwargs={"lazy": "selectin"}
     )
+    receipt: Receipt | None = Relationship(back_populates="user")

@@ -6,6 +6,7 @@ from sqlmodel import Session, String, cast, col, desc, func, or_, select
 
 from app.models import Profile, Receipt, ReceiptItem, User
 from app.models.branch import Branch
+from app.models.receipt_details import ReceiptDetails
 from app.models.store import Store
 from app.schemas import (
     ReceiptCreate,
@@ -81,6 +82,7 @@ def get_all_receipts(
             .join(User.profile)
             .join(Receipt.items)
             .join(Receipt.branch)
+            .join(Receipt.details)
             .join(Branch.store)
             .where(
                 or_(
@@ -104,6 +106,8 @@ def get_all_receipts(
                     cast(ReceiptItem.quantity, String).ilike(f"%{query}%"),
                     cast(ReceiptItem.price, String).ilike(f"%{query}%"),
                     cast(ReceiptItem.total_price, String).ilike(f"%{query}%"),
+                    col(ReceiptDetails.ibfm).ilike(f"%{query}%"),
+                    col(ReceiptDetails.bf).ilike(f"%{query}%"),
                     col(Branch.address).ilike(f"%{query}%"),
                     col(Branch.city).ilike(f"%{query}%"),
                     col(Store.name).ilike(f"%{query}%"),

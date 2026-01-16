@@ -4,31 +4,43 @@ from typing import Any
 from sqlmodel import Session, select
 
 from app.models import ReceiptDetails
-from app.schemas import ReceiptDetailsCreate, ReceiptDetailsUpdate, ReceiptDetailsReceiptIn
+from app.schemas import (
+    ReceiptDetailsCreate,
+    ReceiptDetailsReceiptIn,
+    ReceiptDetailsUpdate,
+)
+
 
 def get_or_create_receipt_details(
-        *,
-        session: Session,
-        receipt_details_data: ReceiptDetailsCreate | ReceiptDetailsReceiptIn,
-        receipt_id
+    *,
+    session: Session,
+    receipt_details_data: ReceiptDetailsCreate | ReceiptDetailsReceiptIn,
+    receipt_id,
 ) -> ReceiptDetails:
-        details = session.exec(
-            select(ReceiptDetails).where(ReceiptDetails.receipt_id == receipt_id)
-        ).first()
-        if details:
-            return details
+    details = session.exec(
+        select(ReceiptDetails).where(ReceiptDetails.receipt_id == receipt_id)
+    ).first()
+    if details:
+        return details
 
-        receipt_details_create = receipt_details_data.model_copy(
-            update={"receipt_id": receipt_id}
-        )
+    receipt_details_create = receipt_details_data.model_dump()
+    new_details = ReceiptDetails(
+        **receipt_details_create,
+        receipt_id=receipt_id,
+    )
+    session.add(new_details)
+    session.commit()
+    session.refresh(new_details)
+    return new_details
 
-        new_details = ReceiptDetails.model_validate(
-            receipt_details_create,
-        )
-        session.add(new_details)
-        session.commit()
-        session.refresh(new_details)
-        return new_details
+
+def get_receipt_details_by_receipt_id(
+    *,
+    session: Session,
+    receipt_id: uuid.UUID,
+) -> ReceiptDetails | None:
+    statement = select(ReceiptDetails).where(receipt_id == receipt_id)
+    return session.exec(statement).first()
 
 
 def update_receipt_details(
@@ -45,12 +57,3 @@ def update_receipt_details(
     session.commit()
     session.refresh(db_receipt_details)
     return db_receipt_details
-
-
-def get_receipt_details_by_receipt_id(
-    *,
-    session: Session,
-    receipt_id: uuid.UUID,
-) -> ReceiptDetails | None:
-    statement = select(ReceiptDetails).where(receipt_id == receipt_id)
-    return session.exec(statement).first()

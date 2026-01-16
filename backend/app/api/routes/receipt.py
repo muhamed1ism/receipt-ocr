@@ -129,7 +129,6 @@ def create_receipt(
         user_id=current_user.id,
         branch_id=branch.id,
     )
-    #  BUG: receipt details should be created for every new receipt
     get_or_create_receipt_details(
         session=session,
         receipt_details_data=receipt_in.details,

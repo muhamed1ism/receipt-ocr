@@ -7,7 +7,7 @@ from sqlmodel import Field, SQLModel
 from app.enums import CurrencyEnum
 from app.models import ReceiptBase
 from app.schemas.branch import BranchPublicWithStore, BranchReceiptIn
-from app.schemas.receipt_details import ReceiptDetailsReceiptIn
+from app.schemas.receipt_details import ReceiptDetailsPublic, ReceiptDetailsReceiptIn
 from app.schemas.receipt_item import (
     ReceiptItemCreate,
     ReceiptItemPublic,
@@ -30,6 +30,7 @@ class ReceiptPublic(ReceiptBase):
 
 
 class ReceiptPublicDetailed(ReceiptPublic):
+    details: ReceiptDetailsPublic
     items: list[ReceiptItemPublic] = []
     branch: BranchPublicWithStore
     user: UserPublicWithProfile

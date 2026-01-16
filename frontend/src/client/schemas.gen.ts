@@ -663,7 +663,7 @@ export const ReceiptCreateSchema = {
     title: 'ReceiptCreate'
 } as const;
 
-export const ReceiptDetailsReceiptInSchema = {
+export const ReceiptDetailsPublicSchema = {
     properties: {
         ibfm: {
             anyOf: [
@@ -688,7 +688,32 @@ export const ReceiptDetailsReceiptInSchema = {
             ],
             title: 'Bf'
         },
-        ibk: {
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['id'],
+    title: 'ReceiptDetailsPublic'
+} as const;
+
+export const ReceiptDetailsReceiptInSchema = {
+    properties: {
+        ibfm: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 50
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Ibfm'
+        },
+        bf: {
             anyOf: [
                 {
                     type: 'integer'
@@ -697,19 +722,7 @@ export const ReceiptDetailsReceiptInSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Ibk'
-        },
-        digital_signature: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Digital Signature'
+            title: 'Bf'
         }
     },
     type: 'object',
@@ -905,6 +918,9 @@ export const ReceiptPublicDetailedSchema = {
             format: 'date-time',
             title: 'Updated At'
         },
+        details: {
+            '$ref': '#/components/schemas/ReceiptDetailsPublic'
+        },
         items: {
             items: {
                 '$ref': '#/components/schemas/ReceiptItemPublic'
@@ -921,7 +937,7 @@ export const ReceiptPublicDetailedSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'created_at', 'updated_at', 'branch', 'user'],
+    required: ['id', 'created_at', 'updated_at', 'details', 'branch', 'user'],
     title: 'ReceiptPublicDetailed'
 } as const;
 
