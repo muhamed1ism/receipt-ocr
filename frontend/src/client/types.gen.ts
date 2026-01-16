@@ -114,12 +114,14 @@ export type ReceiptCreate = {
 export type ReceiptDetailsPublic = {
     ibfm?: (string | null);
     bf?: (number | null);
+    digital_signature?: (string | null);
     id: string;
 };
 
 export type ReceiptDetailsReceiptIn = {
     ibfm?: (string | null);
     bf?: (number | null);
+    digital_signature?: (string | null);
 };
 
 export type ReceiptItemCreate = {
@@ -172,6 +174,7 @@ export type ReceiptPublicDetailedMe = {
     id: string;
     created_at: string;
     updated_at: string;
+    details: ReceiptDetailsPublic;
     items?: Array<ReceiptItemPublic>;
     branch: BranchPublicWithStore;
 };
@@ -387,7 +390,7 @@ export type ReceiptDeleteReceiptResponse = (unknown);
 
 export type UsersReadUsersData = {
     limit?: number;
-    q?: (string | null);
+    query?: (string | null);
     skip?: number;
 };
 

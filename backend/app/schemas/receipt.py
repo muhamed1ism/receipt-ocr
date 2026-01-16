@@ -42,6 +42,7 @@ class ReceiptsPublicDetailed(SQLModel):
 
 
 class ReceiptPublicDetailedMe(ReceiptPublic):
+    details: ReceiptDetailsPublic
     items: list[ReceiptItemPublic] = []
     branch: BranchPublicWithStore
 

@@ -402,7 +402,7 @@ export class UsersService {
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
-     * @param data.q
+     * @param data.query
      * @returns UsersPublicWithProfile Successful Response
      * @throws ApiError
      */
@@ -413,7 +413,7 @@ export class UsersService {
             query: {
                 skip: data.skip,
                 limit: data.limit,
-                q: data.q
+                query: data.query
             },
             errors: {
                 422: 'Validation Error'

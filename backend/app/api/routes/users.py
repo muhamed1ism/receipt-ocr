@@ -2,7 +2,7 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import String, cast, col, func, or_, select
+from sqlmodel import func, or_, select
 
 from app import crud
 from app.api.deps import (
@@ -24,6 +24,7 @@ from app.schemas import (
 )
 from app.schemas.user import UserPublicWithProfile, UsersPublicWithProfile
 from app.utils import generate_new_account_email, send_email
+from app.utils.query import col_ilike, date_ilike, unaccent_ilike
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -34,7 +35,7 @@ router = APIRouter(prefix="/users", tags=["users"])
     response_model=UsersPublicWithProfile,
 )
 def read_users(
-    session: SessionDep, skip: int = 0, limit: int = 40, q: str | None = None
+    session: SessionDep, skip: int = 0, limit: int = 40, query: str | None = None
 ) -> Any:
     """
     Retrieve users.
@@ -42,19 +43,19 @@ def read_users(
 
     statement = select(User)
 
-    if q:
+    if query:
         statement = (
-            statement.join(User.profile)
+            statement.outerjoin(User.profile)
             .where(
                 or_(
-                    col(User.email).ilike(f"%{q}%"),
-                    col(Profile.first_name).ilike(f"%{q}%"),
-                    col(Profile.last_name).ilike(f"%{q}%"),
-                    col(Profile.country).ilike(f"%{q}%"),
-                    col(Profile.city).ilike(f"%{q}%"),
-                    col(Profile.address).ilike(f"%{q}%"),
-                    col(Profile.phone_number).ilike(f"%{q}%"),
-                    cast(Profile.date_of_birth, String).ilike(f"%{q}%"),
+                    col_ilike(User.email, query),
+                    unaccent_ilike(Profile.first_name, query),
+                    unaccent_ilike(Profile.last_name, query),
+                    unaccent_ilike(Profile.country, query),
+                    unaccent_ilike(Profile.city, query),
+                    unaccent_ilike(Profile.address, query),
+                    col_ilike(Profile.phone_number, query),
+                    date_ilike(Profile.date_of_birth, query),
                 )
             )
             .distinct()

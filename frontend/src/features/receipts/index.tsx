@@ -1,5 +1,5 @@
 import { ArrowDownWideNarrow, Grid2x2, List, Search } from "lucide-react";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { type ReceiptPublicDetailedMe } from "@/client";
 import { ReceiptCard } from "@/components/Common/ReceiptCard";
 import SearchBar from "@/components/Common/SearchBar";
@@ -13,9 +13,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatDate, formatTime } from "@/utils/formatDateTime";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import PendingReceipts from "./components/PendingReceipts";
-import { ViewReceiptDialog } from "./components/ViewReceiptDiolog";
+import { ViewReceiptDialog } from "./components/ViewReceiptDialog";
 import useGetReceipts from "./hooks/useGetReceipts";
 
 interface modalType {
@@ -34,7 +34,7 @@ export default function Receipts() {
     receipt: null,
   });
 
-  const { data: receipts } = useSuspenseQuery(useGetReceipts(query));
+  const { data: receipts, isLoading } = useQuery(useGetReceipts(query));
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -42,7 +42,7 @@ export default function Receipts() {
     }
   };
 
-  const groupedByDate = receipts.data.reduce<
+  const groupedByDate = receipts?.data.reduce<
     Record<string, ReceiptPublicDetailedMe[]>
   >((acc, receipt) => {
     const dateKey = receipt.date_time?.split("T")[0] ?? "Unknown Date";
@@ -93,17 +93,18 @@ export default function Receipts() {
         </div>
       </div>
 
-      <Suspense fallback={<PendingReceipts viewMode={viewMode} />}>
-        {/* Display receipts */}
-        {receipts.count === 0 ? (
-          <ReceiptCard>
-            <Card className="h-full rounded-none border-y-0">
-              <p className="text-muted-foreground text-center">Nema računa</p>
-            </Card>
-          </ReceiptCard>
-        ) : (
-          <div>
-            {Object.entries(groupedByDate).map(([date, receipts]) => (
+      {isLoading ? (
+        <PendingReceipts viewMode={viewMode} />
+      ) : receipts?.count === 0 ? (
+        <ReceiptCard>
+          <Card className="h-full rounded-none border-y-0">
+            <p className="text-muted-foreground text-center">Nema računa</p>
+          </Card>
+        </ReceiptCard>
+      ) : (
+        <div>
+          {groupedByDate &&
+            Object.entries(groupedByDate).map(([date, receipts]) => (
               <div
                 key={date}
                 className="mb-6 border-dashed border-b-2 border-foreground/50 pb-4"
@@ -201,9 +202,8 @@ export default function Receipts() {
                 </div>
               </div>
             ))}
-          </div>
-        )}
-      </Suspense>
+        </div>
+      )}
       <ViewReceiptDialog
         receipt={modal.receipt}
         onClose={() => setModal({ isOpen: false, receipt: null })}

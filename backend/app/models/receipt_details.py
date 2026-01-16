@@ -9,6 +9,7 @@ from .receipt import Receipt
 class ReceiptDetailsBase(SQLModel):
     ibfm: str | None = Field(default=None, max_length=50)
     bf: int | None = Field(default=None)
+    digital_signature: str | None = Field(default=None, max_length=255)
 
 
 class ReceiptDetails(ReceiptDetailsBase, table=True):

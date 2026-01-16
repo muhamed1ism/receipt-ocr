@@ -688,6 +688,18 @@ export const ReceiptDetailsPublicSchema = {
             ],
             title: 'Bf'
         },
+        digital_signature: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Digital Signature'
+        },
         id: {
             type: 'string',
             format: 'uuid',
@@ -723,6 +735,18 @@ export const ReceiptDetailsReceiptInSchema = {
                 }
             ],
             title: 'Bf'
+        },
+        digital_signature: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 255
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Digital Signature'
         }
     },
     type: 'object',
@@ -1001,6 +1025,9 @@ export const ReceiptPublicDetailedMeSchema = {
             format: 'date-time',
             title: 'Updated At'
         },
+        details: {
+            '$ref': '#/components/schemas/ReceiptDetailsPublic'
+        },
         items: {
             items: {
                 '$ref': '#/components/schemas/ReceiptItemPublic'
@@ -1014,7 +1041,7 @@ export const ReceiptPublicDetailedMeSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'created_at', 'updated_at', 'branch'],
+    required: ['id', 'created_at', 'updated_at', 'details', 'branch'],
     title: 'ReceiptPublicDetailedMe'
 } as const;
 
