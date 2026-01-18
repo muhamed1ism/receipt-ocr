@@ -14,6 +14,8 @@ interface TextFormFieldProps<T extends FieldValues> {
   control: Control<T>;
   label: string;
   editMode: boolean | string;
+  inputClassName?: string;
+  className?: string;
 }
 
 export default function TextFormField<T extends FieldValues>({
@@ -21,6 +23,8 @@ export default function TextFormField<T extends FieldValues>({
   control,
   label,
   editMode,
+  inputClassName,
+  className,
 }: TextFormFieldProps<T>) {
   return (
     <FormField
@@ -31,7 +35,14 @@ export default function TextFormField<T extends FieldValues>({
           <FormItem>
             <FormLabel>{label}</FormLabel>
             <FormControl>
-              <Input type="text" className="font-normal font-sans" {...field} />
+              <Input
+                type="text"
+                className={cn(
+                  "shadow-none font-normal font-sans",
+                  inputClassName,
+                )}
+                {...field}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -42,6 +53,7 @@ export default function TextFormField<T extends FieldValues>({
               className={cn(
                 "py-2 truncate max-w-sm font-normal font-sans",
                 !field.value && "text-muted-foreground",
+                className,
               )}
             >
               {field.value || "N/A"}

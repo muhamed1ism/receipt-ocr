@@ -1,12 +1,13 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Column, DateTime, Field, Relationship
 
+from .base import BaseModel
 from .receipt import Receipt
 
 
-class ReceiptItemBase(SQLModel):
+class ReceiptItemBase(BaseModel):
     name: str = Field(max_length=255)
     quantity: float = Field(default=1.0, ge=0.0)
     price: float = Field(ge=0.0)
@@ -21,6 +22,12 @@ class ReceiptItem(ReceiptItemBase, table=True):
     product_id: uuid.UUID = Field(
         foreign_key="product.id", nullable=False, ondelete="CASCADE"
     )
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_column=Column(DateTime(timezone=True), nullable=False),
+    )
+    updated_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_column=Column(DateTime(timezone=True), nullable=False),
+    )
     receipt: Receipt | None = Relationship(back_populates="items")

@@ -20,28 +20,30 @@ export function ReceiptCard({
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    const update = () => {
-      if (ref.current) {
-        setDimensions({
-          width: ref.current.offsetWidth,
-          height: ref.current.offsetHeight,
-        });
+    if (!ref.current) return;
+
+    // Use ResizeObserver to watch for content changes
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        setDimensions({ width, height });
       }
+    });
+
+    resizeObserver.observe(ref.current);
+
+    return () => {
+      resizeObserver.disconnect();
     };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
   }, []);
 
   const { width, height } = dimensions;
   const rawTeeth = width > 0 ? Math.max(4, Math.round(width / toothSize)) : 20;
   const teeth = rawTeeth % 2 === 0 ? rawTeeth : rawTeeth + 1;
 
-  // This ensures zigzag goes from x=0 to x=width exactly
   const numPoints = teeth * 2 + 1;
   const spacing = width / (numPoints - 1);
 
-  // Pattern: valley(0) -> peak -> valley -> peak -> ... -> valley(width)
   const top = Array.from({ length: numPoints }, (_, i) => {
     const x = i * spacing;
     const y = i % 2 === 0 ? toothHeight : 0;

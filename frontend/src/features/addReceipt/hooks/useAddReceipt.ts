@@ -3,7 +3,7 @@ import useCustomToast from "@/hooks/useCustomToast";
 import { handleError } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { AddReceiptFormValues } from "../schemas/receiptsShema";
+import { AddReceiptFormData } from "../schemas/receiptsShema";
 
 const useAddReceipt = () => {
   const queryClient = useQueryClient();
@@ -11,10 +11,10 @@ const useAddReceipt = () => {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (data: AddReceiptFormValues) =>
+    mutationFn: (data: AddReceiptFormData) =>
       ReceiptService.createReceipt({ requestBody: data }),
     onSuccess: (_, _variables, _context) => {
-      showSuccessToast("Svaka čast pajdo");
+      showSuccessToast("Uspješno dodan račun");
       queryClient.invalidateQueries({ queryKey: ["receipts"] });
       navigate({ to: "/receipts" });
     },

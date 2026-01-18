@@ -1,6 +1,7 @@
 # Generic message
-from sqlmodel import SQLModel
+
+from .base import BaseModel
 
 
-class Message(SQLModel):
+class Message(BaseModel):
     message: str

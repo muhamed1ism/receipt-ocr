@@ -8,8 +8,9 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
-interface NumberFormFieldProps<T extends FieldValues> {
+interface DecimalFormFieldProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
   label: string;
@@ -22,7 +23,7 @@ interface NumberFormFieldProps<T extends FieldValues> {
   append?: string;
 }
 
-export default function NumberFormField<T extends FieldValues>({
+export default function DecimalFormField<T extends FieldValues>({
   name,
   control,
   label,
@@ -33,7 +34,9 @@ export default function NumberFormField<T extends FieldValues>({
   onChange,
   prepend,
   append,
-}: NumberFormFieldProps<T>) {
+}: DecimalFormFieldProps<T>) {
+  const [textValue, setTextValue] = useState<string | undefined>(undefined);
+
   return (
     <FormField
       control={control}
@@ -47,29 +50,31 @@ export default function NumberFormField<T extends FieldValues>({
                 {prepend && <span className="text-md">{prepend}</span>}
                 <Input
                   type="text"
-                  inputMode="numeric"
+                  inputMode="decimal"
                   disabled={disabled}
                   className={cn(
                     "shadow-none font-normal font-sans text-end",
                     inputClassName,
                   )}
-                  {...field}
+                  value={textValue || field.value}
                   onChange={(e) => {
                     const value = e.target.value;
 
-                    // Allow empty or only digits (no decimals)
-                    if (!/^\d*$/.test(value)) return;
+                    // allow empty, digits, one dot
+                    if (!/^\d*\.?\d*$/.test(value)) return;
 
-                    // Prevent "0" as a valid value
-                    if (value === "0") return;
+                    setTextValue(value);
 
-                    // Update the form field (string)
-                    field.onChange(Number(value));
+                    if (value === "" || value === ".") {
+                      field.onChange(undefined);
+                      onChange?.(undefined);
+                      return;
+                    }
 
-                    // Convert to number for external handler
-                    if (onChange) {
-                      const num = value === "" ? undefined : Number(value);
-                      onChange(Number.isNaN(num) ? undefined : num);
+                    const num = Number(value);
+                    if (!Number.isNaN(num)) {
+                      field.onChange(num); // RHF gets number ✅
+                      onChange?.(num);
                     }
                   }}
                 />

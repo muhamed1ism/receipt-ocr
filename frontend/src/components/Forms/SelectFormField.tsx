@@ -25,6 +25,8 @@ interface SelectFormFieldProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
   label: string;
+  inputClassName?: string;
+  className?: string;
   editMode: boolean | string;
   options: OptionType[];
 }
@@ -33,6 +35,8 @@ export default function SelectFormField<T extends FieldValues>({
   name,
   control,
   label,
+  inputClassName,
+  className,
   editMode,
   options,
 }: SelectFormFieldProps<T>) {
@@ -46,7 +50,12 @@ export default function SelectFormField<T extends FieldValues>({
             <FormLabel>{label}</FormLabel>
             <FormControl>
               <Select {...field} onValueChange={field.onChange}>
-                <SelectTrigger className="flex font-sans border-0 border-b-2 border-dashed border-foreground/50 bg-transparent dark:bg-accent rounded-none shadow-none data-[state=open]:border-foreground">
+                <SelectTrigger
+                  className={cn(
+                    "flex font-sans border-0 border-b-2 border-dashed border-foreground/50 bg-transparent dark:bg-accent rounded-none shadow-none data-[state=open]:border-foreground",
+                    inputClassName,
+                  )}
+                >
                   <SelectValue placeholder="odaberi valutu" />
                 </SelectTrigger>
                 <SelectContent>
@@ -69,6 +78,7 @@ export default function SelectFormField<T extends FieldValues>({
               className={cn(
                 "py-2 truncate max-w-sm font-normal font-sans",
                 !field.value && "text-muted-foreground",
+                className,
               )}
             >
               {field.value || "N/A"}

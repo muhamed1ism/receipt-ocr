@@ -2,18 +2,21 @@ import uuid
 from datetime import date, datetime, timezone
 
 from pydantic_extra_types.phone_numbers import PhoneNumber
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Column, DateTime, Field, Relationship
 
 from app.enums import CurrencyEnum
 
+from .base import BaseModel
 from .user import User
 
 
-class ProfileBase(SQLModel):
+class ProfileBase(BaseModel):
     first_name: str = Field(max_length=100)
     last_name: str = Field(max_length=100)
     phone_number: PhoneNumber | None = Field(default=None)
-    date_of_birth: date | None = Field(default=None)
+    date_of_birth: date | None = Field(
+        default=None, sa_column=Column(DateTime(timezone=True), nullable=False)
+    )
     country: str | None = Field(default=None, max_length=100)
     address: str | None = Field(default=None, max_length=255)
     city: str | None = Field(default=None, max_length=100)
@@ -25,6 +28,12 @@ class Profile(ProfileBase, table=True):
     user_id: uuid.UUID = Field(
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_column=Column(DateTime(timezone=True), nullable=False),
+    )
+    updated_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_column=Column(DateTime(timezone=True), nullable=False),
+    )
     user: User | None = Relationship(back_populates="profile")

@@ -1,6 +1,6 @@
 export const currencyPreference = [
-  { label: "BAM", value: "BAM" },
-  { label: "USD", value: "USD" },
-  { label: "EUR", value: "EUR" },
-  { label: "GBP", value: "GBP" },
+  { label: "BAM (KM)", value: "BAM", symbol: "KM", position: "append" },
+  { label: "EUR (€)", value: "EUR", symbol: "€", position: "append" },
+  { label: "USD ($)", value: "USD", symbol: "$", position: "prepend" },
+  { label: "GBP (£)", value: "GBP", symbol: "£", position: "prepend" },
 ];

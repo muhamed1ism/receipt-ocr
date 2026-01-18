@@ -23,7 +23,7 @@ export function DatePicker({
   className,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
-  const date = dateValue ? new Date(dateValue) : undefined;
+  const date = dateValue ? new Date(dateValue) : new Date();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -31,7 +31,7 @@ export function DatePicker({
         <Button
           variant="ghost"
           id="date"
-          className={`flex bg-transparent font-sans dark:bg-accent justify-between rounded-none border-b-2 border-dashed border-foreground/50 data-[state=open]:border-foreground hover:bg-transparent ${className}`}
+          className={`flex min-w-36 w-full bg-transparent font-sans dark:bg-accent justify-between rounded-none border-b-2 border-dashed border-foreground/50 data-[state=open]:border-foreground hover:bg-transparent ${className}`}
         >
           {dateValue ? formatDate(dateValue) : "Odaberi datum"}
           <ChevronDownIcon />
@@ -45,8 +45,14 @@ export function DatePicker({
           mode="single"
           selected={date}
           captionLayout="dropdown"
-          onSelect={(date) => {
-            if (date) setDateValue(date?.toLocaleDateString("en-CA"));
+          onSelect={(value) => {
+            if (!value) {
+              setOpen(false);
+              return;
+            }
+            value.setHours(date.getHours());
+            value.setMinutes(date.getMinutes());
+            setDateValue(value.toISOString());
             setOpen(false);
           }}
         />

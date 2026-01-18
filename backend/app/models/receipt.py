@@ -3,9 +3,11 @@ from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
 from sqlalchemy.orm import Mapped
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Column, DateTime, Field, Relationship
 
 from app.enums import CurrencyEnum
+
+from .base import BaseModel
 
 if TYPE_CHECKING:
     from .branch import Branch
@@ -14,8 +16,10 @@ if TYPE_CHECKING:
     from .user import User
 
 
-class ReceiptBase(SQLModel):
-    date_time: datetime = Field(default=None)
+class ReceiptBase(BaseModel):
+    date_time: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), nullable=False)
+    )
     tax_amount: float | None = Field(default=None)
     total_amount: float | None = Field(default=None)
     payment_method: str | None = Field(default=None, max_length=50)
@@ -30,8 +34,14 @@ class Receipt(ReceiptBase, table=True):
     branch_id: uuid.UUID = Field(
         foreign_key="branch.id", nullable=False, ondelete="CASCADE"
     )
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_column=Column(DateTime(timezone=True), nullable=False),
+    )
+    updated_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_column=Column(DateTime(timezone=True), nullable=False),
+    )
     branch: Mapped["Branch"] = Relationship(
         back_populates="receipt",
         sa_relationship_kwargs={"lazy": "selectin"},

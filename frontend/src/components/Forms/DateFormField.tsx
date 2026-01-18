@@ -14,6 +14,8 @@ interface DateFormFieldProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
   label: string;
+  inputClassName?: string;
+  className?: string;
   editMode?: boolean | string;
 }
 
@@ -21,6 +23,8 @@ export default function DateFormField<T extends FieldValues>({
   name,
   control,
   label,
+  inputClassName,
+  className,
   editMode = "disabled",
 }: DateFormFieldProps<T>) {
   return (
@@ -33,7 +37,7 @@ export default function DateFormField<T extends FieldValues>({
             <FormLabel>{label}</FormLabel>
             <FormControl>
               <DatePicker
-                className="w-34"
+                className={cn(inputClassName)}
                 dateValue={field.value}
                 setDateValue={field.onChange}
               />
@@ -47,6 +51,7 @@ export default function DateFormField<T extends FieldValues>({
               className={cn(
                 "py-2 truncate max-w-sm font-normal font-sans",
                 !field.value && "text-muted-foreground",
+                className,
               )}
             >
               {field.value ? formatDate(field.value) : "N/A"}

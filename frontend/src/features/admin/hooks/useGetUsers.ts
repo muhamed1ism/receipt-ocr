@@ -13,7 +13,7 @@ const useGetUsers = ({ query, skip = 0, limit = 30 }: useGetUsersProps) => {
       UsersService.readUsers({
         skip,
         limit,
-        q: query || undefined,
+        query: query || undefined,
       }),
   };
 };
