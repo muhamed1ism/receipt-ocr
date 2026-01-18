@@ -22,17 +22,15 @@ export function ManualEntry() {
       branch: { address: "", city: "" },
       details: {
         ibfm: "",
-        bf: undefined,
+        bf: 0,
         digital_signature: "",
       },
       date_time: new Date().toISOString(),
       payment_method: "Gotovina",
       currency: user?.profile?.currency_preference || "BAM",
-      tax_amount: undefined,
-      total_amount: undefined,
-      items: [
-        { name: "", quantity: undefined, price: undefined, total_price: 0 },
-      ],
+      tax_amount: 0,
+      total_amount: 0,
+      items: [{ name: "", quantity: 0, price: 0, total_price: 0 }],
     },
   });
 

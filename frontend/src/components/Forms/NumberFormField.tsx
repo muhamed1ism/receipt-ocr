@@ -8,6 +8,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface NumberFormFieldProps<T extends FieldValues> {
   name: Path<T>;
@@ -34,6 +35,8 @@ export default function NumberFormField<T extends FieldValues>({
   prepend,
   append,
 }: NumberFormFieldProps<T>) {
+  const [textValue, setTextValue] = useState<string | undefined>(undefined);
+
   return (
     <FormField
       control={control}
@@ -53,23 +56,28 @@ export default function NumberFormField<T extends FieldValues>({
                     "shadow-none font-normal font-sans text-end",
                     inputClassName,
                   )}
-                  {...field}
+                  // Show textValue if defined, else show field.value
+                  value={
+                    textValue !== undefined ? textValue : (field.value ?? "")
+                  }
                   onChange={(e) => {
                     const value = e.target.value;
 
-                    // Allow empty or only digits (no decimals)
+                    // Allow empty or digits only (no decimals)
                     if (!/^\d*$/.test(value)) return;
 
-                    // Prevent "0" as a valid value
-                    if (value === "0") return;
+                    setTextValue(value);
 
-                    // Update the form field (string)
-                    field.onChange(Number(value));
+                    if (value === "") {
+                      field.onChange(undefined);
+                      onChange?.(undefined);
+                      return;
+                    }
 
-                    // Convert to number for external handler
-                    if (onChange) {
-                      const num = value === "" ? undefined : Number(value);
-                      onChange(Number.isNaN(num) ? undefined : num);
+                    const num = Number(value);
+                    if (!Number.isNaN(num) && num !== 0) {
+                      field.onChange(num);
+                      onChange?.(num);
                     }
                   }}
                 />

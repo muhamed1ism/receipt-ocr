@@ -48,6 +48,7 @@ export default function DecimalFormField<T extends FieldValues>({
             <FormControl>
               <div className="flex flex-row gap-2 items-center">
                 {prepend && <span className="text-md">{prepend}</span>}
+
                 <Input
                   type="text"
                   inputMode="decimal"
@@ -56,7 +57,10 @@ export default function DecimalFormField<T extends FieldValues>({
                     "shadow-none font-normal font-sans text-end",
                     inputClassName,
                   )}
-                  value={textValue || field.value}
+                  // Show textValue if it's defined, otherwise show field.value
+                  value={
+                    textValue !== undefined ? textValue : (field.value ?? "")
+                  }
                   onChange={(e) => {
                     const value = e.target.value;
 
@@ -78,6 +82,7 @@ export default function DecimalFormField<T extends FieldValues>({
                     }
                   }}
                 />
+
                 {append && <span className="text-md">{append}</span>}
               </div>
             </FormControl>
